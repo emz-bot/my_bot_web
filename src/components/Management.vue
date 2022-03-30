@@ -13,7 +13,7 @@
         <BotManage/>
       </n-tab-pane>
       <n-tab-pane name="黑名单管理" tab="黑名单管理">
-        黑黑黑
+        <BlackList/>
       </n-tab-pane>
       <n-tab-pane name="聊天记录" tab="聊天记录" v-if="user_permission >= 5">
         <ChatLog/>
@@ -33,6 +33,7 @@ import {
 } from "naive-ui";
 import ChatLog from './ChatLog.vue'
 import BotManage from './BotManage.vue'
+import BlackList from './BlackList.vue'
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 

@@ -20,7 +20,7 @@
             />
           </n-form-item-row>
         </n-form>
-        <n-button type="primary" block secondary strong @click="start_login">
+        <n-button id="login_button" type="primary" block secondary strong @click="start_login">
           登录
         </n-button>
       </n-tab-pane>
@@ -79,7 +79,6 @@ import { useRouter } from "vue-router";
 
 const router = useRouter();
 const message = useMessage();
-
 var reqData = {};
 
 var login_data = ref({
@@ -102,7 +101,7 @@ async function start_login() {
       localStorage.setItem("token", res.data.token);
       localStorage.setItem("username", res.data.username);
       localStorage.setItem("user_permission", res.data.user_permission);
-      router.push({ path: "/management" });
+      router.push({ path: "/index/management" });
     } else {
       message.error(res.msg, { duration: 5e3 });
     }
@@ -115,10 +114,10 @@ async function start_register() {
   reqData.authorization_code = register_data.value.authorization_code;
   await register(reqData).then((res) => {
     if (res.code == 200) {
-      console.log(res.data);
-      router.push({ path: "/login" });
+      message.success(res.msg, { duration: 5e3 });
     } else {
-      console.log(3333333);
+      message.error(res.msg, { duration: 5e3 });
+      console.log(res.code);
     }
   });
 }

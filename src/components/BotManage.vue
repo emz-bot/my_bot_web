@@ -13,11 +13,18 @@
     </thead>
     <tbody>
       <tr v-for="i in re_data" :key="i.id">
-        <td>{{ i._id }}</td>
         <td>
-            <n-text :type="isOK[i.online_status]">
-              {{ i.bot_name }}
-            </n-text>
+              {{ i._id }}
+        </td>
+        <td>
+          <n-tooltip trigger="hover">
+            <template #trigger>
+              <n-text :type="isOK[i.online_status]">
+                {{ i.bot_name }}
+              </n-text>
+            </template>
+            {{ i.node_domain }}
+          </n-tooltip>
         </td>
         <td>
           <n-input-number v-model:value="i.access_group_num" :show-button="0" :bordered="0" @blur="set_group_num(i._id, i.access_group_num)">
@@ -31,7 +38,7 @@
         </td>
         <td>{{ i.login_data }}</td>
         <td>
-          <n-button quaternary circle type="primary" @click='manipulate("restart", i._id)'>
+          <n-button quaternary circle type="primary" @click='manipulate("restart", i._id, i.node_name)'>
             <template #icon>
               <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 32 32"><path d="M26 18A10 10 0 1 1 16 8h6.182l-3.584 3.585L20 13l6-6l-6-6l-1.402 1.414L22.185 6H16a12 12 0 1 0 12 12z" fill="currentColor"></path></svg>
             </template>
@@ -71,6 +78,7 @@ import {
   NButton,
   NText,
   NInputNumber,
+  NTooltip,
   useMessage
 } from "naive-ui";
 import { ref } from "vue";
@@ -94,7 +102,7 @@ async function start() {
     if (! localStorage.token) {
     message.error("账号未登录, 前往登录页面..", { duration: 5e3 });
     setTimeout(() =>{
-      router.push({ path: "/login" });
+      router.push({ path: "/index/login" });
     },1000);
   }
   await get_bot_list().then((res) => {
@@ -104,17 +112,18 @@ async function start() {
     } else {
       message.error(res.msg, { duration: 5e3 });
     setTimeout(() =>{
-      router.push({ path: "/login" });
+      router.push({ path: "/index/login" });
     },1000);
     }
   });
 }
 start()
-async function manipulate(action, bot_id) {
+async function manipulate(action, bot_id, node_name) {
   var req_data = {
       action: action,
       data: {
-        bot_id: bot_id
+        bot_id: bot_id,
+        node_name: node_name
       }
   }
   await manipulate_bot(req_data).then((res) => {
