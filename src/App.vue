@@ -32,7 +32,7 @@ export default  defineComponent({
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #c1d1e0;
-  margin-top: 60px;
+  margin-top: 40px;
 }
 #record {
   color: #434649b9;

@@ -2,8 +2,8 @@
   <n-table size="small" :bordered="false" :single-line="false">
     <thead>
       <tr>
-        <th style="width: 100px;">QQ</th>
-        <th style="width: 200px;">名称</th>
+        <th>QQ</th>
+        <th>主机</th>
         <th style="width: 120px;">加群</th>
         <th style="width: 200px;">登陆时间</th>
         <th>重启</th>
@@ -14,17 +14,20 @@
     <tbody>
       <tr v-for="i in re_data" :key="i.id">
         <td>
-              {{ i._id }}
+          <n-space>
+            <n-space>
+              <n-avatar size="large" :src="'http://q1.qlogo.cn/g?b=qq&nk='+i._id+'&s=1'"/>
+            </n-space>
+            <n-space vertical size="small">
+              <n-text :type="isOK[i.online_status]">
+                <div>{{ i._id }}</div>
+                <div>{{ i.bot_name }}</div>
+              </n-text>
+            </n-space>
+          </n-space>
         </td>
         <td>
-          <n-tooltip trigger="hover">
-            <template #trigger>
-              <n-text :type="isOK[i.online_status]">
-                {{ i.bot_name }}
-              </n-text>
-            </template>
-            {{ i.node_domain }}
-          </n-tooltip>
+          {{ i.node_domain }}
         </td>
         <td>
           <n-input-number v-model:value="i.access_group_num" :show-button="0" :bordered="0" @blur="set_group_num(i._id, i.access_group_num)">
@@ -73,12 +76,13 @@
 </template>
 <script setup>
 import {
+  NSpace,
+  NAvatar,
   NTable,
   NSwitch,
   NButton,
   NText,
   NInputNumber,
-  NTooltip,
   useMessage
 } from "naive-ui";
 import { ref } from "vue";

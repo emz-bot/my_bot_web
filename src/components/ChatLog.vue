@@ -24,13 +24,6 @@
         placeholder="消息正则"
         clearable
       />
-    </n-input-group>
-    <n-input
-      type="text"
-      v-model:value="data.limit"
-      placeholder="每页显示(默认100)"
-      clearable
-    />
     <n-button
       type="primary"
       :loading="loading"
@@ -39,8 +32,9 @@
     >
       搜索
     </n-button>
+    </n-input-group>
   </n-space>
-  <n-card :bordered="false">
+  <n-card :bordered="false" style="overflow: auto; height: 720px">
     <n-pagination
       v-if="data.page_show"
       v-model:page="data.page"
@@ -57,15 +51,15 @@
             <n-avatar size="large" :src="i.qlogo" />
           </n-space>
           <n-space vertical size="small">
-            <div class="user_info">{{ i.group_name }}({{ i.group_id }})</div>
-            <div class="user_info">{{ i.nickname }}({{ i.user_id }})</div>
+            <div class="user_info">{{ i.group_name }} (<n-tag size="small" checkable @click="find_group(i.group_id)">{{ i.group_id }}</n-tag>)</div>
+            <div class="user_info">{{ i.nickname }} (<n-tag size="small" checkable @click="find_user(i.user_id)">{{ i.user_id }}</n-tag>)</div>
           </n-space>
         </n-space>
         <n-space vertical size="medium" v-for="n in i.message_list" :key="n.id">
           <n-image
             v-if="n.type == 'img'"
             class="user_message"
-            :src="window.gurl.SERVICE_CONTEXT_PATH + '/get_chat_img?img=' + n.content"
+            :src="'/chat_log_imgs/'+i.group_id+'/'+n.content"
           />
           <p class="user_message" v-if="n.type == 'text'">
             {{ n.content }}
@@ -84,6 +78,7 @@
 </template>
 <script setup>
 import {
+  NTag,
   NDatePicker,
   NInput,
   NInputGroup,
@@ -119,14 +114,13 @@ function update_date() {
   reqData.date_end = data.value.date_range[1];
 }
 
-async function start() {
-  loadingRef.value = true;
+async function start(is_login) {
+  loadingRef.value = is_login;
   reqData.qq = data.value.qq;
   reqData.group_id = data.value.group_id;
   reqData.message = data.value.message;
   reqData.limit = data.value.limit;
   reqData.page = data.value.page;
-  resData.value = {};
   console.log(resData);
   await get_chat_log(reqData).then((res) => {
     if (res.code == 200) {
@@ -141,6 +135,21 @@ async function start() {
     }
   });
 }
+start()
+
+function find_user(user_id) {
+  data.value.qq = user_id
+  data.value.group_id = ""
+  data.value.message = ""
+  start()
+}
+function find_group(group_id) {
+  data.value.qq = ""
+  data.value.group_id = group_id
+  data.value.message = ""
+  start()
+}
+
 function railStyle({ focused, checked }) {
   const style = {};
   if (checked) {
