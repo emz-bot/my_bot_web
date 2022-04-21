@@ -51,8 +51,14 @@
             <n-avatar size="large" :src="i.qlogo" />
           </n-space>
           <n-space vertical size="small">
-            <div class="user_info">{{ i.group_name }} (<n-tag size="small" checkable @click="find_group(i.group_id)">{{ i.group_id }}</n-tag>)</div>
-            <div class="user_info">{{ i.nickname }} (<n-tag size="small" checkable @click="find_user(i.user_id)">{{ i.user_id }}</n-tag>)</div>
+            <div class="user_info">
+              {{ i.group_name }} (<n-tag size="small" checkable @click="find_group(i.group_id)">{{ i.group_id }}</n-tag>)
+              <n-tag v-if="i.role=='owner'" size="small" type="warning"> 群主 </n-tag>
+              <n-tag v-else-if="i.role=='admin'" size="small" type="success"> 管理 </n-tag>
+            </div>
+            <div class="user_info">
+              {{ i.nickname }} (<n-tag size="small" checkable @click="find_user(i.user_id)">{{ i.user_id }}</n-tag>)
+            </div>
           </n-space>
         </n-space>
         <n-space vertical size="medium" v-for="n in i.message_list" :key="n.id">
@@ -182,8 +188,9 @@ body {
 }
 
 .user_info {
-  font-size: 8px;
+  font-size: 10px;
 }
+
 .n-card--bordered {
   width: 50%;
   margin: 0 auto;
