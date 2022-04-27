@@ -1,5 +1,5 @@
 <template>
-  <n-card style="margin-bottom: 16px">
+  <n-card style="margin-bottom: 16px" v-if="user_permission >= 3">
     <n-space justify="space-between">
       <h2>二猫子管理</h2>
       <n-button quaternary circle @click="logout">
@@ -39,7 +39,6 @@ import { useRouter } from "vue-router";
 
 var user_permission = ref(localStorage.user_permission)
 
-
 const router = useRouter();
 const message = useMessage();
 
@@ -50,24 +49,17 @@ function logout(){
   router.push({ path: "/" });
 }
 
+function check_permission(){
+  if (user_permission.value < 3){
+    message.warning("地址不存在")
+    router.push({ path: "/index/login" })
+  }
+}
+check_permission()
+
 </script>
 <style>
 body {
   background: #1d1d1d;
-}
-
-.user_info {
-  font-size: 8px;
-}
-
-.n-card--bordered {
-  width: 50%;
-  min-width:600px;
-  margin: 0 auto;
-}
-
-.n-divider__title {
-  font-size: 14px;
-  color: darkgrey;
 }
 </style>

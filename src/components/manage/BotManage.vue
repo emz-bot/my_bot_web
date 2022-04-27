@@ -16,7 +16,7 @@
         <td>
           <n-space>
             <n-space>
-              <n-avatar size="large" :src="'http://q1.qlogo.cn/g?b=qq&nk='+i._id+'&s=1'"/>
+              <n-avatar size="large" :src="'https://q1.qlogo.cn/g?b=qq&nk='+i._id+'&s=1'"/>
             </n-space>
             <n-space vertical size="small">
               <n-text :type="isOK[i.online_status]">
@@ -112,7 +112,6 @@ async function start() {
   await get_bot_list().then((res) => {
     if (res.code == 200) {
       resData.value = res.data
-      console.log(resData);
     } else {
       message.error(res.msg, { duration: 5e3 });
     setTimeout(() =>{

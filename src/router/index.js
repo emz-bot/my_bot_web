@@ -1,5 +1,6 @@
 import { createWebHistory, createRouter } from "vue-router";
-import Management from "@/components/Management.vue";
+import Management from "@/components/manage/Management.vue";
+import Common from "@/components/common/Common.vue";
 import Login from "@/components/Login.vue";
 import Index from "@/components/Index.vue";
 
@@ -18,6 +19,11 @@ const routes = [
       path: '/index/management',
       name: 'Management',
       component: Management
+    },
+    {
+      path: '/index/common',
+      name: 'Common',
+      component: Common
     }
   ]
 

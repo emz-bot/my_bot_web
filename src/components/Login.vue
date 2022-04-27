@@ -101,7 +101,11 @@ async function start_login() {
       localStorage.setItem("token", res.data.token);
       localStorage.setItem("username", res.data.username);
       localStorage.setItem("user_permission", res.data.user_permission);
-      router.push({ path: "/index/management" });
+      if (res.data.user_permission >= 3){
+        router.push({ path: "/index/management" });
+      } else {
+        router.push({ path: "/index/common" });
+      }
     } else {
       message.error(res.msg, { duration: 5e3 });
     }
@@ -117,7 +121,6 @@ async function start_register() {
       message.success(res.msg, { duration: 5e3 });
     } else {
       message.error(res.msg, { duration: 5e3 });
-      console.log(res.code);
     }
   });
 }

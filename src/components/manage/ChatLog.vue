@@ -127,17 +127,14 @@ async function start(is_login) {
   reqData.message = data.value.message;
   reqData.limit = data.value.limit;
   reqData.page = data.value.page;
-  console.log(resData);
   await get_chat_log(reqData).then((res) => {
     if (res.code == 200) {
       data.value.page_show = true;
       loadingRef.value = false;
       resData.value = res.data;
       data.value.page_count = res.page_count;
-      console.log(resData);
     } else {
       loadingRef.value = false;
-      console.log(3333333);
     }
   });
 }
