@@ -52,7 +52,7 @@ function logout(){
 function check_permission(){
   if (user_permission.value < 3){
     message.warning("地址不存在")
-    router.push({ path: "/index/login" })
+    router.push({ path: "/login" })
   }
 }
 check_permission()
@@ -61,5 +61,9 @@ check_permission()
 <style>
 body {
   background: #1d1d1d;
+}
+.n-card--bordered {
+  width: 800px;
+  margin: 0 auto;
 }
 </style>

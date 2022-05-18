@@ -11,17 +11,17 @@ const routes = [
       component: Index
     },
     {
-      path: '/index/login',
+      path: '/login',
       name: 'Login',
       component: Login
     },
     {
-      path: '/index/management',
+      path: '/management',
       name: 'Management',
       component: Management
     },
     {
-      path: '/index/common',
+      path: '/common',
       name: 'Common',
       component: Common
     }

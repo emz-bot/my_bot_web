@@ -102,9 +102,9 @@ async function start_login() {
       localStorage.setItem("username", res.data.username);
       localStorage.setItem("user_permission", res.data.user_permission);
       if (res.data.user_permission >= 3){
-        router.push({ path: "/index/management" });
+        router.push({ path: "/management" });
       } else {
-        router.push({ path: "/index/common" });
+        router.push({ path: "/common" });
       }
     } else {
       message.error(res.msg, { duration: 5e3 });

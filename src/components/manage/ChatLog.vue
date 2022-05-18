@@ -1,38 +1,26 @@
 <template>
   <n-space>
-    <n-date-picker
-      v-model:value="data.date_range"
-      type="datetimerange"
-      @update:value="update_date"
-      clearable
-    />
-    <n-switch :rail-style="railStyle">
-      <template #checked> 正序 ↑ </template>
-      <template #unchecked> 倒序 ↓ </template>
-    </n-switch>
-    <n-input-group>
+      <n-date-picker
+        v-model:value="data.date_range"
+        type="datetimerange"
+        @update:value="update_date"
+        clearable
+      />
       <n-input type="text" v-model:value="data.qq" placeholder="QQ" clearable />
-      <n-input
-        type="text"
-        v-model:value="data.group_id"
-        placeholder="群号"
-        clearable
-      />
-      <n-input
-        type="text"
-        v-model:value="data.message"
-        placeholder="消息正则"
-        clearable
-      />
-    <n-button
-      type="primary"
-      :loading="loading"
-      attr-type="button"
-      @click="start"
-    >
-      搜索
-    </n-button>
-    </n-input-group>
+      <n-input type="text" v-model:value="data.nickname" placeholder="昵称" clearable />
+      <n-input type="text" v-model:value="data.group_id" placeholder="群号" clearable />
+      <n-input type="text" v-model:value="data.group_name" placeholder="群名" clearable />
+      <n-input type="text" v-model:value="data.bot_id" placeholder="机器人" clearable />
+      <n-input type="text" v-model:value="data.message" placeholder="消息正则" clearable />
+    <div>
+      <n-switch :rail-style="railStyle">
+        <template #checked> 正序 ↑ </template>
+        <template #unchecked> 倒序 ↓ </template>
+      </n-switch>
+      <n-button style="width: 100px;margin: 10px" type="primary" :loading="loading" attr-type="button" @click="start" >
+        搜索
+      </n-button>
+    </div>
   </n-space>
   <n-card :bordered="false" style="overflow: auto; height: 720px">
     <n-pagination
@@ -45,7 +33,7 @@
     <n-skeleton v-if="loadingRef" text :repeat="6" />
     <template v-else>
       <n-space vertical size="medium" v-for="i in re_data" :key="i.id">
-        <n-divider title-placement="left">{{ i.sent_time }}</n-divider>
+        <n-divider title-placement="left">{{ i.sent_time }} ({{ i.bot_id }})</n-divider>
         <n-space>
           <n-space>
             <n-avatar size="large" :src="i.qlogo" />
@@ -65,7 +53,7 @@
           <n-image
             v-if="n.type == 'img'"
             class="user_message"
-            :src="'/chat_log_imgs/'+i.group_id+'/'+n.content"
+            :src="n.content"
           />
           <p class="user_message" v-if="n.type == 'text'">
             {{ n.content }}
@@ -87,7 +75,6 @@ import {
   NTag,
   NDatePicker,
   NInput,
-  NInputGroup,
   NSpace,
   NButton,
   NAvatar,
@@ -123,7 +110,10 @@ function update_date() {
 async function start(is_login) {
   loadingRef.value = is_login;
   reqData.qq = data.value.qq;
+  reqData.nickname = data.value.nickname;
   reqData.group_id = data.value.group_id;
+  reqData.group_name = data.value.group_name;
+  reqData.bot_id = data.value.bot_id;
   reqData.message = data.value.message;
   reqData.limit = data.value.limit;
   reqData.page = data.value.page;
@@ -132,6 +122,7 @@ async function start(is_login) {
       data.value.page_show = true;
       loadingRef.value = false;
       resData.value = res.data;
+      console.log(res.data)
       data.value.page_count = res.page_count;
     } else {
       loadingRef.value = false;
@@ -188,10 +179,6 @@ body {
   font-size: 10px;
 }
 
-.n-card--bordered {
-  width: 50%;
-  margin: 0 auto;
-}
 .n-divider__title {
   font-size: 14px;
   color: darkgrey;

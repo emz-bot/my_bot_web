@@ -237,10 +237,6 @@ body {
 .user_info {
   font-size: 8px;
 }
-.n-card--bordered {
-  width: 50%;
-  margin: 0 auto;
-}
 .n-divider__title {
   font-size: 14px;
   color: darkgrey;

@@ -1,14 +1,26 @@
 <template>
+  <n-button quaternary circle @click="start">
+    <template #icon>
+      <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24"><path d="M12 5V2L8 6l4 4V7c3.31 0 6 2.69 6 6c0 2.97-2.17 5.43-5 5.91v2.02c3.95-.49 7-3.85 7-7.93c0-4.42-3.58-8-8-8zm-6 8c0-1.65.67-3.15 1.76-4.24L6.34 7.34A8.014 8.014 0 0 0 4 13c0 4.08 3.05 7.44 7 7.93v-2.02c-2.83-.48-5-2.94-5-5.91z" fill="currentColor"></path></svg>
+    </template>
+  </n-button>
+  <n-button type="success" quaternary circle @click="add_bot">
+    <template #icon>
+      <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 28 28">
+        <g fill="none"><path d="M14.5 13V3.754a.75.75 0 0 0-1.5 0V13H3.754a.75.75 0 0 0 0 1.5H13v9.253a.75.75 0 0 0 1.5 0V14.5l9.25.003a.75.75 0 0 0 0-1.5L14.5 13z" fill="currentColor"></path></g>
+      </svg>
+    </template>
+  </n-button>
   <n-table size="small" :bordered="false" :single-line="false">
     <thead>
       <tr>
-        <th>QQ</th>
-        <th>主机</th>
-        <th style="width: 120px;">加群</th>
-        <th style="width: 200px;">登陆时间</th>
+        <th style="width: 240px">QQ</th>
+        <th>节点名称</th>
+        <th style="width: 120px">加群</th>
+        <th style="width: 200px">登陆时间</th>
         <th>重启</th>
-        <th>工作开关</th>
-        <th v-if="user_permission >= 5">删除</th>
+        <th>是否公开</th>
+        <th v-if="user_permission >= 4">更多</th>
       </tr>
     </thead>
     <tbody>
@@ -16,7 +28,10 @@
         <td>
           <n-space>
             <n-space>
-              <n-avatar size="large" :src="'https://q1.qlogo.cn/g?b=qq&nk='+i._id+'&s=1'"/>
+              <n-avatar
+                size="large"
+                :src="'https://q1.qlogo.cn/g?b=qq&nk=' + i._id + '&s=1'"
+              />
             </n-space>
             <n-space vertical size="small">
               <n-text :type="isOK[i.online_status]">
@@ -27,55 +42,139 @@
           </n-space>
         </td>
         <td>
-          {{ i.node_domain }}
+          {{ i.node_name }}
         </td>
         <td>
-          <n-input-number v-model:value="i.access_group_num" :show-button="0" :bordered="0" @blur="set_group_num(i._id, i.access_group_num)">
+          <n-input-number
+            v-model:value="i.access_group_num"
+            :show-button="false"
+            :bordered="false"
+            @blur="set_group_num(i._id, i.access_group_num)"
+          >
             <template #prefix>
-              <n-text :type="isOK[i.group_num<i.access_group_num]">
+              <n-text :type="isOK[i.group_num < i.access_group_num]">
                 {{ i.group_num }}
-              </n-text> /
+              </n-text>
+              /
             </template>
           </n-input-number>
-
         </td>
         <td>{{ i.login_data }}</td>
         <td>
-          <n-button quaternary circle type="primary" @click='manipulate("restart", i._id, i.node_name)'>
+          <n-button
+            quaternary
+            circle
+            type="primary"
+            @click="manipulate('restart', i._id, i.node_name)"
+          >
             <template #icon>
-              <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 32 32"><path d="M26 18A10 10 0 1 1 16 8h6.182l-3.584 3.585L20 13l6-6l-6-6l-1.402 1.414L22.185 6H16a12 12 0 1 0 12 12z" fill="currentColor"></path></svg>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                xmlns:xlink="http://www.w3.org/1999/xlink"
+                viewBox="0 0 32 32"
+              >
+                <path
+                  d="M26 18A10 10 0 1 1 16 8h6.182l-3.584 3.585L20 13l6-6l-6-6l-1.402 1.414L22.185 6H16a12 12 0 1 0 12 12z"
+                  fill="currentColor"
+                ></path>
+              </svg>
             </template>
           </n-button>
         </td>
         <td>
-          <n-switch v-model:value="i.work_stat" @update:value='manipulate("set_status", i._id)'>
-            <template #checked-icon>
-                🙃
-            </template>
-            <template #unchecked-icon>
-                🙂
-            </template>
+          <n-switch
+            v-model:value="i.work_stat"
+            @update:value="manipulate('set_status', i._id)"
+          >
+            <template #checked-icon> 🙃 </template>
+            <template #unchecked-icon> 🙂 </template>
           </n-switch>
         </td>
-        <td  v-if="user_permission >= 5">
-          <n-button quaternary circle type="error" @click='manipulate("del", i._id)'>
+        <td v-if="user_permission >= 5">
+          <n-button
+            quaternary
+            circle
+            :type="is_enable[i.enable]"
+            @click="open_modal(i)"
+          >
             <template #icon>
-              <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 20 20"><g fill="none"><path d="M11.5 4a1.5 1.5 0 0 0-3 0h-1a2.5 2.5 0 0 1 5 0H17a.5.5 0 0 1 0 1h-.554L15.15 16.23A2 2 0 0 1 13.163 18H6.837a2 2 0 0 1-1.987-1.77L3.553 5H3a.5.5 0 0 1-.492-.41L2.5 4.5A.5.5 0 0 1 3 4h8.5zm3.938 1H4.561l1.282 11.115a1 1 0 0 0 .994.885h6.326a1 1 0 0 0 .993-.885L15.438 5zM8.5 7.5c.245 0 .45.155.492.359L9 7.938v6.125c0 .241-.224.437-.5.437c-.245 0-.45-.155-.492-.359L8 14.062V7.939c0-.242.224-.438.5-.438zm3 0c.245 0 .45.155.492.359l.008.079v6.125c0 .241-.224.437-.5.437c-.245 0-.45-.155-.492-.359L11 14.062V7.939c0-.242.224-.438.5-.438z" fill="currentColor"></path></g></svg>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                xmlns:xlink="http://www.w3.org/1999/xlink"
+                viewBox="0 0 32 32"
+              >
+                <g fill="none">
+                  <path
+                    d="M9.5 16a2.5 2.5 0 1 1-5 0a2.5 2.5 0 0 1 5 0zm9 0a2.5 2.5 0 1 1-5 0a2.5 2.5 0 0 1 5 0zm6.5 2.5a2.5 2.5 0 1 0 0-5a2.5 2.5 0 0 0 0 5z"
+                    fill="currentColor"
+                  ></path>
+                </g>
+              </svg>
             </template>
           </n-button>
         </td>
       </tr>
     </tbody>
-    <br>
-    <n-button quaternary circle @click="start">
-      <template #icon>
-        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24"><path d="M12 5V2L8 6l4 4V7c3.31 0 6 2.69 6 6c0 2.97-2.17 5.43-5 5.91v2.02c3.95-.49 7-3.85 7-7.93c0-4.42-3.58-8-8-8zm-6 8c0-1.65.67-3.15 1.76-4.24L6.34 7.34A8.014 8.014 0 0 0 4 13c0 4.08 3.05 7.44 7 7.93v-2.02c-2.83-.48-5-2.94-5-5.91z" fill="currentColor"></path></svg>
+    <n-modal
+      v-model:show="showModal"
+      preset="dialog"
+      title="机器人配置"
+    >
+      <template #header-extra />
+      <br>
+      <div>
+        <n-input-group>
+          允许使用
+        <n-switch v-model:value="enable" />
+        </n-input-group>
+      </div>
+      <br>
+      <div>
+        <n-input-group>
+          <n-input-group-label>主人QQ</n-input-group-label>
+          <n-input-number v-model:value="master" :show-button="false" />
+        </n-input-group>
+      </div>
+      <template #action>
+        <div>
+          <n-button style="margin: 10px" type="error" @click="manipulate('del')">删除</n-button>
+          <n-button @click="set_bot_info">确定</n-button>
+        </div>
       </template>
-    </n-button>
+    </n-modal>
+    <n-modal
+      v-model:show="addModal"
+      title="添加机器人"
+      preset="dialog"
+    >
+      <template #header-extra />
+      <br>
+      <div>
+        <n-input-group>
+          <n-input-group-label>主人QQ</n-input-group-label>
+          <n-input-number v-model:value="master" :show-button="false" />
+        </n-input-group>
+      </div>
+      <br>
+      <div>
+        <n-input-group>
+          <n-input-group-label>机器人QQ</n-input-group-label>
+          <n-input-number v-model:value="bot_id" :show-button="false" />
+        </n-input-group>
+      </div>
+      <template #action>
+        <div>
+          <n-button @click="set_bot_info">确定</n-button>
+        </div>
+      </template>
+    </n-modal>
   </n-table>
 </template>
 <script setup>
 import {
+  NInputGroup,
+  NInputGroupLabel,
+  NModal,
   NSpace,
   NAvatar,
   NTable,
@@ -83,55 +182,108 @@ import {
   NButton,
   NText,
   NInputNumber,
-  useMessage
+  useMessage,
 } from "naive-ui";
 import { ref } from "vue";
-import { get_bot_list, set_access_group_num, manipulate_bot } from "@/utils/api";
+import {
+  get_bot_list,
+  set_access_group_num,
+  manipulate_bot,
+} from "@/utils/api";
 import { useRouter } from "vue-router";
 
-var user_permission = ref(localStorage.user_permission)
+var user_permission = ref(localStorage.user_permission);
 
 const isOK = ref({
   true: "",
-  false: "error"
-})
+  false: "error",
+});
 
+const is_enable = ref({
+  true: "info",
+  false: "warning",
+});
 const router = useRouter();
-
 const resData = ref([]);
-
 const message = useMessage();
 
+const showModal = ref();
+const enable = ref();
+const master = ref(747761541);
+const bot_id = ref();
+
+function open_modal(data) {
+  bot_id.value = data._id;
+  enable.value = data.enable;
+  master.value = data.master;
+  showModal.value = true;
+}
+
+const addModal = ref(false);
+
+function add_bot() {
+  bot_id.value = null;
+  master.value = null;
+  addModal.value = true;
+}
+
 async function start() {
-    if (! localStorage.token) {
+  if (!localStorage.token) {
     message.error("账号未登录, 前往登录页面..", { duration: 5e3 });
-    setTimeout(() =>{
-      router.push({ path: "/index/login" });
-    },1000);
+    setTimeout(() => {
+      router.push({ path: "/login" });
+    }, 1000);
   }
   await get_bot_list().then((res) => {
     if (res.code == 200) {
-      resData.value = res.data
+      resData.value = res.data;
     } else {
       message.error(res.msg, { duration: 5e3 });
-    setTimeout(() =>{
-      router.push({ path: "/index/login" });
-    },1000);
+      setTimeout(() => {
+        router.push({ path: "/login" });
+      }, 1000);
     }
   });
 }
-start()
-async function manipulate(action, bot_id, node_name) {
+start();
+
+async function set_bot_info() {
   var req_data = {
-      action: action,
-      data: {
-        bot_id: bot_id,
-        node_name: node_name
-      }
-  }
+    action: "set_info",
+    data: {
+      bot_id: bot_id.value,
+      enable: enable.value,
+      master: master.value,
+    },
+  };
   await manipulate_bot(req_data).then((res) => {
     if (res.code == 200) {
       message.success(res.msg, { duration: 5e3 });
+      addModal.value = false;
+      showModal.value = false;
+      start();
+    } else {
+      message.error(res.msg, { duration: 5e3 });
+    }
+  });
+}
+
+async function manipulate(action, ac_bot_id, node_name) {
+  if (action == "del") {
+    ac_bot_id = bot_id.value;
+  }
+  var req_data = {
+    action: action,
+    data: {
+      bot_id: ac_bot_id,
+      node_name: node_name,
+    },
+  };
+  await manipulate_bot(req_data).then((res) => {
+    if (res.code == 200) {
+      message.success(res.msg, { duration: 5e3 });
+      showModal.value = false;
+      start();
     } else {
       message.error(res.msg, { duration: 5e3 });
     }
@@ -140,12 +292,12 @@ async function manipulate(action, bot_id, node_name) {
 
 async function set_group_num(bot_id, access_group_num) {
   var req_data = {
-      action: "set_access_group_num",
-      data: {
-        access_group_num: access_group_num,
-        bot_id: bot_id
-      }
-  }
+    action: "set_access_group_num",
+    data: {
+      access_group_num: access_group_num,
+      bot_id: bot_id,
+    },
+  };
   await set_access_group_num(req_data).then((res) => {
     if (res.code == 200) {
       message.success(res.msg, { duration: 5e3 });
