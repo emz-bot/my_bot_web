@@ -9,7 +9,7 @@ module.exports = {
   runtimeCompiler: true,
   lintOnSave: false,
   productionSourceMap: false,
-  publicPath: "./static",
+  publicPath: "./",
   assetsDir: './',
   chainWebpack(config) {
     config.plugins.delete('preload')
