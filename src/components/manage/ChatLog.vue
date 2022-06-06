@@ -40,21 +40,29 @@
           </n-space>
           <n-space vertical size="small">
             <div class="user_info">
-              {{ i.group_name }} (<n-tag size="small" checkable @click="find_group(i.group_id)">{{ i.group_id }}</n-tag>)
-              <n-tag v-if="i.role=='owner'" size="small" type="warning"> 群主 </n-tag>
-              <n-tag v-else-if="i.role=='admin'" size="small" type="success"> 管理 </n-tag>
-            </div>
-            <div class="user_info">
-              {{ i.nickname }} (<n-tag size="small" checkable @click="find_user(i.user_id)">{{ i.user_id }}</n-tag>)
+              <div>
+                {{ i.group_name }} (<n-tag size="small" checkable @click="find_group(i.group_id)">{{ i.group_id }}</n-tag>)
+                <n-tag v-if="i.role=='owner'" size="small" type="warning"> 群主 </n-tag>
+                <n-tag v-else-if="i.role=='admin'" size="small" type="success"> 管理 </n-tag>
+              </div>
+              <div>
+                {{ i.nickname }} (<n-tag size="small" checkable @click="find_user(i.user_id)">{{ i.user_id }}</n-tag>)
+              </div>
             </div>
           </n-space>
         </n-space>
         <n-space vertical size="medium" v-for="n in i.message_list" :key="n.id">
-          <n-image
-            v-if="n.type == 'img'"
-            class="user_message"
-            :src="n.content"
-          />
+          <div class="container" v-if="n.type == 'img'">
+            <n-image
+              class="user_message user_image"
+              :src="n.content"
+            />
+            <div class="meme_btn">
+              <n-button type="success" strong secondary @click="add_meme(n.content)">
+                添加表情包
+              </n-button>
+            </div>
+          </div>
           <p class="user_message" v-if="n.type == 'text'">
             {{ n.content }}
           </p>
@@ -84,9 +92,12 @@ import {
   NPagination,
   NSwitch,
   NCard,
+  useMessage
 } from "naive-ui";
 import { ref } from "vue";
-import { get_chat_log } from "@/utils/api";
+import { get_chat_log, api_add_meme } from "@/utils/api";
+
+const message = useMessage();
 
 var data = ref({
   qq: "",
@@ -161,6 +172,20 @@ function railStyle({ focused, checked }) {
   }
   return style;
 }
+
+async function add_meme(meme_url) {
+    var req_data = {
+        meme_url: meme_url,
+    }
+    await api_add_meme(req_data).then((res) => {
+    if (res.code == 200) {
+        message.success(res.msg)
+    } else {
+        message.error(res.msg)
+    }
+  });
+}
+
 var re_data = resData;
 var loading = loadingRef;
 </script>
@@ -186,5 +211,18 @@ body {
 .user_message img {
   max-width: 80% !important;
   height: auto !important;
+}
+.meme_btn {
+  display: none;
+}
+
+.container:hover .meme_btn {
+  display: inline-block; /* the default for span */
+  position: absolute;
+}
+
+.container:hover .user_image {
+  /* opacity: 0.5; */
+  transition: 0.3s;
 }
 </style>

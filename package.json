@@ -5,11 +5,13 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
+    "build-qiniu": "vue-cli-service build && node ./qiniu.js ",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
     "axios": "^0.26.0",
     "core-js": "^3.6.5",
+    "qiniu": "^7.6.1",
     "vue": "^3.0.0",
     "vue-router": "^4.0.14"
   },
