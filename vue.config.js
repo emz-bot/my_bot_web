@@ -1,6 +1,4 @@
-
 const path = require('path')
-var qiniuPrefix = require("./qiniu-upload-prefiex");
 
 function resolve(dir) {
   return path.join(__dirname, dir)
@@ -11,7 +9,7 @@ module.exports = {
   runtimeCompiler: true,
   lintOnSave: false,
   productionSourceMap: false,
-  publicPath: process.env.NODE_ENV === 'development' ? '/' : qiniuPrefix.prefixhost + qiniuPrefix.prefix,
+  publicPath: "./static",
   assetsDir: './',
   chainWebpack(config) {
     config.plugins.delete('preload')

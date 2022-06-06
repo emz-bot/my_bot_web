@@ -45,7 +45,7 @@ function main() {
 
 async function refresDNS() {
     var dirsToRefresh = [
-        prefixhost+prefix
+        prefixhost
       ];
     //单次请求链接不可以超过10个，如果超过，请分批发送请求
     cdnManager.refreshDirs(dirsToRefresh, function(err, respBody, respInfo) {
@@ -73,7 +73,7 @@ async function refresDNS() {
 async function getQiniuList() {
     var options = {
       limit: limit,
-      prefix: prefix,
+      prefix: "",
     }
     var array = []
     var list = await getList()
@@ -173,7 +173,7 @@ function upload(key, localFile) {
   } else {
     str = localFile
   }
-  key = prefix + str
+  key = str
   key = key.replace("\\", "/")
   formUploader.putFile(uploadToken, key, localFile, null, function (respErr, respBody, respInfo) {
     if (respErr) {
@@ -210,7 +210,7 @@ function displayFile(param) {
       })
     } else {
       //file2/这里是空间里的文件前缀
-      var key = qiniuPrefix.space
+      var key = space
       var localFile = './' + param
       if (!localFile.endsWith(".gz")) {
         upload(key, localFile)
