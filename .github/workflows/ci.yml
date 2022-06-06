@@ -1,6 +1,12 @@
 name: actions
 
-on: [push, pull_request] # 触发事件
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
   build:
