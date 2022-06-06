@@ -59,9 +59,6 @@ check_permission()
 
 </script>
 <style>
-body {
-  background: #1d1d1d;
-}
 .n-card--bordered {
   width: 800px;
   margin: 0 auto;

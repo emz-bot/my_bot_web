@@ -126,10 +126,6 @@ async function start_register() {
 }
 </script>
 <style>
-body {
-  background: #1d1d1d;
-}
-
 #login {
   width: 30%;
   margin: 0 auto;

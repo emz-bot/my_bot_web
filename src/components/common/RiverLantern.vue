@@ -30,8 +30,3 @@ async function start() {
 start();
 var re_data = resData;
 </script>
-<style>
-body {
-  background: #1d1d1d;
-}
-</style>

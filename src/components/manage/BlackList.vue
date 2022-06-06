@@ -225,9 +225,6 @@ black_list()
 </script>
 
 <style>
-body {
-  background: #1d1d1d;
-}
 .user_message {
   border-radius: 15px;
   font-size: 14px;

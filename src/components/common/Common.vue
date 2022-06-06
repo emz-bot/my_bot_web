@@ -21,9 +21,3 @@
   } from "naive-ui";
   import RiverLantern from './RiverLantern.vue'
 </script>
-
-<style>
-body {
-  background: #1d1d1d;
-}
-</style>
