@@ -1,4 +1,4 @@
 window.gurl={
     AXIOS_TIMEOUT:10000,
-    SERVICE_CONTEXT_PATH: 'http://www.ermaozi.cn'
+    SERVICE_CONTEXT_PATH: 'https://www.ermaozi.cn'
 }
