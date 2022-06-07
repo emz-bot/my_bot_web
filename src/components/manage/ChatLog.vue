@@ -57,11 +57,9 @@
               class="user_message user_image"
               :src="n.content"
             />
-            <div class="meme_btn">
-              <n-button type="success" strong secondary @click="add_meme(n.content)">
-                添加表情包
-              </n-button>
-            </div>
+            <n-button class="meme_btn" type="info" round @click="add_meme(n.content)">
+              +
+            </n-button>
           </div>
           <p class="user_message" v-if="n.type == 'text'">
             {{ n.content }}
@@ -95,7 +93,7 @@ import {
   useMessage
 } from "naive-ui";
 import { ref } from "vue";
-import { get_chat_log, api_add_meme } from "@/utils/api";
+import { get_chat_log, api_meme } from "@/utils/api";
 
 const message = useMessage();
 
@@ -176,8 +174,9 @@ function railStyle({ focused, checked }) {
 async function add_meme(meme_url) {
     var req_data = {
         meme_url: meme_url,
+        method: "add"
     }
-    await api_add_meme(req_data).then((res) => {
+    await api_meme(req_data).then((res) => {
     if (res.code == 200) {
         message.success(res.msg)
     } else {
@@ -191,10 +190,29 @@ var loading = loadingRef;
 </script>
 
 <style>
+
+.container {
+  display: inline-block;
+  position: relative;
+}
+
+.container .meme_btn {
+  position: absolute;
+  top: 3px;
+  right: 10px;
+  display: none;
+}
+
 .user_message {
   border-radius: 15px;
   font-size: 14px;
-  padding-left: 5%;
+  padding-left: 20px;
+}
+.user_message .user_image {
+  max-width: 80%;
+}
+.user_image img {
+  width: 100%;
 }
 
 .user_info {
@@ -205,21 +223,10 @@ var loading = loadingRef;
   font-size: 14px;
   color: darkgrey;
 }
-.user_message img {
-  max-width: 80% !important;
-  height: auto !important;
-}
-.meme_btn {
-  display: none;
-}
+
 
 .container:hover .meme_btn {
-  display: inline-block; /* the default for span */
-  position: absolute;
+  display: inline-block;
 }
 
-.container:hover .user_image {
-  /* opacity: 0.5; */
-  transition: 0.3s;
-}
 </style>

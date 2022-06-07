@@ -223,23 +223,3 @@ async function black_list(){
 }
 black_list()
 </script>
-
-<style>
-.user_message {
-  border-radius: 15px;
-  font-size: 14px;
-  padding-left: 5%;
-}
-
-.user_info {
-  font-size: 8px;
-}
-.n-divider__title {
-  font-size: 14px;
-  color: darkgrey;
-}
-.user_message img {
-  max-width: 80% !important;
-  height: auto !important;
-}
-</style>
