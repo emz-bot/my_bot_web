@@ -1,4 +1,11 @@
 <template>
+  <n-pagination
+    v-model:page="page"
+    :page-count="page_count"
+    @update:page="get_meme"
+    show-quick-jumper
+  />
+  <br>
   <n-image-group>
     <n-space>
       <div class="memes" v-for="i in memes" :key="i.id">
@@ -10,10 +17,12 @@
 </template>
 
 <script setup>
-import { NSpace, NImageGroup, NImage, NButton } from "naive-ui";
+import { NSpace, NImageGroup, NImage, NButton, NPagination } from "naive-ui";
 import { api_get_meme, api_meme } from "@/utils/api";
 import { ref } from "vue";
 const memes = ref([]);
+const page = ref()
+const page_count = ref()
 
 async function del_meme(meme_id) {
     var req_data = {
@@ -30,10 +39,11 @@ async function del_meme(meme_id) {
 }
 
 async function get_meme() {
-    var req_data = {}
+    var req_data = {page: page.value}
     await api_get_meme(req_data).then((res) => {
     if (res.code == 200) {
         memes.value = res.data;
+        page_count.value = res.page_count
     } else {
         message.error(res.msg)
     }

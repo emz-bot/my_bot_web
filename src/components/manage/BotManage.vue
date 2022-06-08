@@ -11,6 +11,12 @@
       </svg>
     </template>
   </n-button>
+  <n-pagination
+    v-model:page="re_data.page"
+    :page-count="re_data.page_count"
+    @update:page="start"
+    show-quick-jumper
+  />
   <n-table size="small" :bordered="false" :single-line="false">
     <thead>
       <tr>
@@ -24,7 +30,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr v-for="i in re_data" :key="i.id">
+      <tr v-for="i in re_data.data" :key="i.id">
         <td>
           <n-space>
             <n-space>
@@ -182,6 +188,7 @@ import {
   NButton,
   NText,
   NInputNumber,
+  NPagination,
   useMessage,
 } from "naive-ui";
 import { ref } from "vue";
@@ -234,9 +241,9 @@ async function start() {
       router.push({ path: "/login" });
     }, 1000);
   }
-  await get_bot_list().then((res) => {
+  await get_bot_list({page: resData.value.page}).then((res) => {
     if (res.code == 200) {
-      resData.value = res.data;
+      resData.value = res;
     } else {
       message.error(res.msg, { duration: 5e3 });
       setTimeout(() => {
