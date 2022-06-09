@@ -20,17 +20,24 @@
             />
           </n-form-item-row>
         </n-form>
-        <n-button id="login_button" type="primary" block secondary strong @click="start_login">
+        <n-button
+          id="login_button"
+          type="primary"
+          block
+          secondary
+          strong
+          @click="start_login"
+        >
           登录
         </n-button>
       </n-tab-pane>
       <n-tab-pane name="signup" tab="注册">
         <n-form>
-          <n-form-item-row label="用户名">
+          <n-form-item-row label="邮箱">
             <n-input
               type="text"
               v-model:value="register_data.user"
-              placeholder="用户名"
+              placeholder="邮箱"
               clearable
             />
           </n-form-item-row>
@@ -42,16 +49,20 @@
               clearable
             />
           </n-form-item-row>
-          <n-form-item-row label="重复密码">
-            <n-input type="password" placeholder="密码" clearable />
-          </n-form-item-row>
-          <n-form-item-row label="授权码">
+          <n-form-item-row label="验证码">
             <n-input
               type="text"
               v-model:value="register_data.authorization_code"
-              placeholder="授权码"
+              placeholder="验证码"
               clearable
             />
+            <n-button
+              :disabled="buttonDisabled"
+              attr-type="button"
+              @click="send_verification_code"
+            >
+              {{ codeText }}
+            </n-button>
           </n-form-item-row>
         </n-form>
         <n-button type="primary" block secondary strong @click="start_register">
@@ -74,7 +85,7 @@ import {
   useMessage,
 } from "naive-ui";
 import { ref } from "vue";
-import { login, register } from "@/utils/api";
+import { login, register, api_verification_code } from "@/utils/api";
 import { useRouter } from "vue-router";
 
 const router = useRouter();
@@ -101,7 +112,7 @@ async function start_login() {
       localStorage.setItem("token", res.data.token);
       localStorage.setItem("username", res.data.username);
       localStorage.setItem("user_permission", res.data.user_permission);
-      if (res.data.user_permission >= 3){
+      if (res.data.user_permission >= 3) {
         router.push({ path: "/management" });
       } else {
         router.push({ path: "/common" });
@@ -123,6 +134,42 @@ async function start_register() {
       message.error(res.msg, { duration: 5e3 });
     }
   });
+}
+
+let buttonDisabled = ref(false);
+let codeText = ref("发送验证码");
+let time = null;
+let times = 0;
+
+async function send_verification_code() {
+  if (!register_data.value.user) {
+    message.error("请填写邮箱");
+  } else {
+    buttonDisabled.value = true;
+    buttonDisabledCountDown();
+    await api_verification_code({ user: register_data.value.user }).then(
+      (res) => {
+        if (res.code == 200) {
+          message.success("验证码发送成功");
+        } else {
+          message.error(res.msg);
+        }
+      }
+    );
+  }
+}
+function buttonDisabledCountDown() {
+  times = 60;
+  time = setInterval(() => {
+    codeText.value = times + "s";
+    times--;
+    if (times == 0) {
+      buttonDisabled.value = false;
+      codeText.value = "发送验证码";
+      clearInterval(time);
+      time = null;
+    }
+  }, 1000);
 }
 </script>
 <style>

@@ -11,9 +11,12 @@ export const api_get_meme = data => get('/api/meme', data)
 
 export const login = data => post('/api/login', data)
 export const register = data => post('/api/register', data)
+export const api_verification_code = data => get('/api/register', data)
 
 export const get_black_list = data => get('/api/black_list', data)
 export const post_black_list = data => post('/api/black_list', data)
 
 
 export const get_river_lantern = data => get('/api/get_river_lantern', data)
+
+export const api_j3_team = data => post('/api/j3_team', data)
