@@ -183,6 +183,7 @@ const drop = function (ev) {
 .bodyinfo {
   width: 100%;
   margin-top: 15px;
+  display: flex;
 }
 .bodyinfo_box {
   height: 40px;

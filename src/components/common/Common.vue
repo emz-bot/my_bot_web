@@ -22,3 +22,10 @@
   import RiverLantern from './RiverLantern.vue'
   import TeamManagement from './TeamManagement.vue'
 </script>
+
+<style scoped>
+.n-card--bordered {
+  width: 800px;
+  margin: 0 auto;
+}
+</style>
