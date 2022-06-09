@@ -85,22 +85,11 @@ const teamList = ref([]); // 原始数据
 async function get_all_j3_team(){
     await api_j3_team({action: "get", data: {team_id: 0}}).then((res) => {
     if (res.code == 200) {
-      console.log(res.data)
-      console.log(teamList)
       teamList.value = res.data;
-      console.log(teamList)
     }
   });
 }
 get_all_j3_team()
-
-async function set_j3_team(team_data){
-    await api_j3_team({action: "set", data: team_data}).then((res) => {
-    if (res.code == 200) {
-      console.log(res.data)
-    }
-  });
-}
 
 let teamDetailInfo = reactive({
   info: {},
@@ -169,7 +158,15 @@ const drop = function (ev) {
 
   teamDetailInfo.info.team_members[movedomIndex][movedomSIndex] = replaceItem; // 给移动的对象赋值 被替换的对象
   teamDetailInfo.info.team_members[replacedomIndex][replacedomSIndex] = moveItem; // 给被替换的对象 复制 移动的对象
-  set_j3_team(teamDetailInfo)
+  api_j3_team({action: "set", data: teamDetailInfo}).then((res) => {
+    if (res.code == 200) {
+      return true
+    } else {
+      teamDetailInfo.info.team_members[movedomIndex][movedomSIndex] = moveItem; // 给移动的对象赋值 被替换的对象
+      teamDetailInfo.info.team_members[replacedomIndex][replacedomSIndex] = replaceItem; // 给被替换的对象 复制 移动的对象
+    }
+  });
+
 };
 </script>
 
