@@ -26,11 +26,11 @@
       </n-tab-pane>
       <n-tab-pane name="signup" tab="注册">
         <n-form>
-          <n-form-item-row label="用户名">
+          <n-form-item-row label="邮箱">
             <n-input
               type="text"
               v-model:value="register_data.user"
-              placeholder="用户名"
+              placeholder="邮箱"
               clearable
             />
           </n-form-item-row>
@@ -45,13 +45,16 @@
           <n-form-item-row label="重复密码">
             <n-input type="password" placeholder="密码" clearable />
           </n-form-item-row>
-          <n-form-item-row label="授权码">
+          <n-form-item-row label="验证码">
             <n-input
               type="text"
               v-model:value="register_data.authorization_code"
-              placeholder="授权码"
+              placeholder="验证码"
               clearable
             />
+            <n-button attr-type="button" @click="send_verification_code">
+              发送验证码
+            </n-button>
           </n-form-item-row>
         </n-form>
         <n-button type="primary" block secondary strong @click="start_register">
@@ -74,7 +77,7 @@ import {
   useMessage,
 } from "naive-ui";
 import { ref } from "vue";
-import { login, register } from "@/utils/api";
+import { login, register, api_verification_code } from "@/utils/api";
 import { useRouter } from "vue-router";
 
 const router = useRouter();
@@ -123,6 +126,19 @@ async function start_register() {
       message.error(res.msg, { duration: 5e3 });
     }
   });
+}
+async function send_verification_code() {
+  if (! register_data.value.user){
+    message.error("请填写邮箱");
+  } else {
+    await api_verification_code({"user": register_data.value.user}).then((res) => {
+      if (res.code == 200) {
+        message.success("验证码发送成功");
+      } else {
+        message.error(res.msg);
+      }
+    });
+  }
 }
 </script>
 <style>
