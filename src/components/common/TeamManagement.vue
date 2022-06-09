@@ -19,7 +19,7 @@
 
   <n-modal v-model:show="showModal" :mask-closable="false">
     <n-card
-      style="width: 600px"
+      style="width: 950px"
       title="团队详情"
       :bordered="false"
       size="huge"
@@ -37,7 +37,7 @@
         <!-- <div>人数（20/{{ teamDetailInfo.info.team_configuration["人数"] }}）</div> -->
       </div>
       <div class="bodyinfo">
-        <div class="bodyinfo_teamitem">
+        <div  style="width: 50px" class="bodyinfo_teamitem">
           <div class="bodyinfo_box"></div>
           <div class="bodyinfo_box SortItem">1</div>
           <div class="bodyinfo_box SortItem">2</div>
@@ -65,7 +65,7 @@
                 :id="Math.random(0, 9) * 100"
                 class="bodyinfo_box SortItem"
               >
-                {{ sitem.user_name ? sitem.user_name : "空" }}
+                 <img v-if="sitem.profession" style="width: 23px" :src="require(`@/assets/sect/${sitem.profession}.png`)">{{ sitem.user_name ? sitem.user_name : "无" }}
               </div>
             </template>
           </div>
@@ -93,6 +93,14 @@ async function get_all_j3_team(){
   });
 }
 get_all_j3_team()
+
+async function set_j3_team(team_data){
+    await api_j3_team({action: "set", data: team_data}).then((res) => {
+    if (res.code == 200) {
+      console.log(res.data)
+    }
+  });
+}
 
 let teamDetailInfo = reactive({
   info: {},
@@ -161,7 +169,7 @@ const drop = function (ev) {
 
   teamDetailInfo.info.team_members[movedomIndex][movedomSIndex] = replaceItem; // 给移动的对象赋值 被替换的对象
   teamDetailInfo.info.team_members[replacedomIndex][replacedomSIndex] = moveItem; // 给被替换的对象 复制 移动的对象
-  console.log(teamDetailInfo)
+  set_j3_team(teamDetailInfo)
 };
 </script>
 
@@ -185,8 +193,14 @@ const drop = function (ev) {
   margin-top: -1px;
   margin-left: -1px;
 }
+.SortItem {
+  display: flex;
+  align-items:center;
+  justify-content: center;
+}
 .bodyinfo_teamitem {
   display: inline-block;
   width: 16%;
 }
+
 </style>
