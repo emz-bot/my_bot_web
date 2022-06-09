@@ -17,3 +17,5 @@ export const post_black_list = data => post('/api/black_list', data)
 
 
 export const get_river_lantern = data => get('/api/get_river_lantern', data)
+
+export const api_j3_team = data => post('/api/j3_team', data)
