@@ -18,6 +18,7 @@ router.beforeEach((to, from) => {
 	// 获取到token状态
 	const isLogin = localStorage.token;
 	if (!isLogin && to.path != "/login") {
+		debugger
 		return { path: "/login" };
 	}
 
