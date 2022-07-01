@@ -1,4 +1,5 @@
 <template>
+<n-space>
   <n-button quaternary circle @click="start">
     <template #icon>
       <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24"><path d="M12 5V2L8 6l4 4V7c3.31 0 6 2.69 6 6c0 2.97-2.17 5.43-5 5.91v2.02c3.95-.49 7-3.85 7-7.93c0-4.42-3.58-8-8-8zm-6 8c0-1.65.67-3.15 1.76-4.24L6.34 7.34A8.014 8.014 0 0 0 4 13c0 4.08 3.05 7.44 7 7.93v-2.02c-2.83-.48-5-2.94-5-5.91z" fill="currentColor"></path></svg>
@@ -11,12 +12,17 @@
       </svg>
     </template>
   </n-button>
+  <n-input type="text" v-model:value="re_data.bot_id" placeholder="机器人QQ" clearable @input="start"/>
+  <n-input type="text" v-model:value="re_data.master" placeholder="主人QQ" clearable @input="start"/>
+</n-space>
+<br>
   <n-pagination
     v-model:page="re_data.page"
     :page-count="re_data.page_count"
     @update:page="start"
     show-quick-jumper
   />
+  <br>
   <n-table size="small" :bordered="false" :single-line="false">
     <thead>
       <tr>
@@ -178,6 +184,7 @@
 </template>
 <script setup>
 import {
+  NInput,
   NInputGroup,
   NInputGroupLabel,
   NModal,
@@ -241,9 +248,17 @@ async function start() {
       router.push({ path: "/login" });
     }, 1000);
   }
-  await get_bot_list({page: resData.value.page}).then((res) => {
+  let filter = {}
+  if (resData.value.bot_id){
+    filter._id = Number(resData.value.bot_id)
+  }
+  if (resData.value.master){
+    filter.master = Number(resData.value.master)
+  }
+  await get_bot_list({page: resData.value.page, filter: filter}).then((res) => {
     if (res.code == 200) {
       resData.value = res;
+      console.log(res);
     } else {
       message.error(res.msg, { duration: 5e3 });
       setTimeout(() => {
