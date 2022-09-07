@@ -12,7 +12,7 @@
   <n-pagination
     v-model:page="page"
     :page-count="page_count"
-    @update:page="get_meme"
+    @update:page="get_kfc"
     show-quick-jumper
   />
   <br>
