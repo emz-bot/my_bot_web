@@ -18,8 +18,8 @@
       <n-tab-pane name="聊天记录" tab="聊天记录" v-if="user_permission >= 5">
         <ChatLog/>
       </n-tab-pane>
-      <n-tab-pane name="表情包" tab="表情包" v-if="user_permission >= 5">
-        <MemesManage/>
+      <n-tab-pane name="资源" tab="资源" v-if="user_permission >= 5">
+        <Source/>
       </n-tab-pane>
     </n-tabs>
   </n-card>
@@ -34,7 +34,7 @@ import {
   NSpace,
   useMessage
 } from "naive-ui";
-import MemesManage from './MemesManage.vue'
+import Source from './Source.vue'
 import ChatLog from './ChatLog.vue'
 import BotManage from './BotManage.vue'
 import BlackList from './BlackList.vue'

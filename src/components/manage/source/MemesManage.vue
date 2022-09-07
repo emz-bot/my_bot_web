@@ -21,7 +21,7 @@ import { NSpace, NImageGroup, NImage, NButton, NPagination } from "naive-ui";
 import { api_get_meme, api_meme } from "@/utils/api";
 import { ref } from "vue";
 const memes = ref([]);
-const page = ref()
+const page = ref(1)
 const page_count = ref()
 
 async function del_meme(meme_id) {
