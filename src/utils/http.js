@@ -1,4 +1,5 @@
 import axios from 'axios'
+import qs from 'qs'
 
 axios.defaults.timeout = 20000
 axios.defaults.baseURL = window.gurl.SERVICE_CONTEXT_PATH;
@@ -7,7 +8,7 @@ axios.interceptors.request.use(
   config => {
     config.data = JSON.stringify(config.data)
     config.headers = {
-        'Content-Type': 'application/x-www-form-urlencoded'
+        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
     }
     if (localStorage.token) {
         config.headers.Authorization = localStorage.token
@@ -97,9 +98,9 @@ export function get (url, params = {}) {
  * @returns {Promise}
  */
 
- export function post (url, data = {}) {
+ export function post (url, data) {
    return new Promise((resolve, reject) => {
-     axios.post(url, data)
+     axios.post(url, qs.stringify(data))
           .then(response => {
             resolve(response.data)
           }, err => {
