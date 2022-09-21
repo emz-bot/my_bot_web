@@ -98,9 +98,6 @@ import { get_chat_log, api_meme } from "@/utils/api";
 const message = useMessage();
 
 var data = ref({
-  qq: "",
-  group_id: "",
-  message: "",
   page: 1,
   page_count: 1,
   limit: null,
@@ -124,7 +121,6 @@ async function start(is_login) {
   reqData.group_name = data.value.group_name;
   reqData.bot_id = data.value.bot_id;
   reqData.message = data.value.message;
-  reqData.limit = data.value.limit;
   reqData.page = data.value.page;
   await get_chat_log(reqData).then((res) => {
     if (res.code == 200) {
@@ -142,14 +138,14 @@ start()
 
 function find_user(user_id) {
   data.value.qq = user_id
-  data.value.group_id = ""
-  data.value.message = ""
+  data.value.group_id = null
+  data.value.message = null
   start()
 }
 function find_group(group_id) {
-  data.value.qq = ""
+  data.value.qq = null
   data.value.group_id = group_id
-  data.value.message = ""
+  data.value.message = null
   start()
 }
 

@@ -180,7 +180,7 @@ function add_date(){
 
 async function add_black_list(){
     var req_data = {
-        actiom: "add",
+        action: "add",
         num_type: singleValue.value,
         number: number.value,
         remark: remark.value,
@@ -198,7 +198,7 @@ async function add_black_list(){
 
 async function del_black_list(number, num_type){
     var req_data = {
-        actiom: "del",
+        action: "del",
         num_type: num_type,
         number: number,
     }
