@@ -52,7 +52,7 @@
                     <n-form-item-row label="验证码">
                         <n-input
                             type="text"
-                            v-model:value="register_data.authorization_code"
+                            v-model:value="register_data.verifycode"
                             placeholder="验证码"
                             clearable
                         />
@@ -101,16 +101,12 @@ var login_data = ref({
 var register_data = ref({
     user: "",
     password: "",
-    authorization_code: "",
+    verifycode: "",
 });
 
 async function start_login() {
-    reqData.grant_type = null;
     reqData.username = login_data.value.user;
     reqData.password = login_data.value.password;
-    reqData.scope = null;
-    reqData.client_id = null;
-    reqData.client_secret = null;
     await login(reqData).then((res) => {
         console.log(res)
         if (res.code == 200) {
@@ -132,14 +128,14 @@ async function start_login() {
 async function start_register() {
     reqData.username = register_data.value.user;
     reqData.password = register_data.value.password;
-    reqData.authorization_code = register_data.value.authorization_code;
+    reqData.verifycode = register_data.value.verifycode;
     await register(reqData).then((res) => {
         if (res.code == 200) {
             message.success(res.msg, { duration: 5e3 });
             // 赋值为空，并且跳转到登录
             register_data.value.username = "";
             register_data.value.password = "";
-            register_data.value.authorization_code = "";
+            register_data.value.verifycode = "";
             tabValue.value = "signin";
         } else {
             message.error(res.msg, { duration: 5e3 });

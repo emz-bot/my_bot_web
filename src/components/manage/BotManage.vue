@@ -320,7 +320,7 @@ async function set_group_num(bot_id, access_group_num) {
       bot_id: bot_id,
     },
   };
-  await set_access_group_num(req_data).then((res) => {
+  await manipulate_bot(req_data).then((res) => {
     if (res.code == 200) {
       message.success(res.msg, { duration: 5e3 });
     } else {
