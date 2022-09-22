@@ -9,7 +9,7 @@
   <n-image-group>
     <n-space>
       <div class="memes" v-for="i in memes" :key="i.id">
-        <n-image height="100" :src="i.url" />
+        <n-image height="100" :src="i.content" />
         <n-button class="delete" type="error" round @click="del_meme(i._id)">x</n-button>
         </div>
     </n-space>
@@ -18,7 +18,7 @@
 
 <script setup>
 import { NSpace, NImageGroup, NImage, NButton, NPagination } from "naive-ui";
-import { api_get_meme, api_meme } from "@/utils/api";
+import { api_get_memes, api_source } from "@/utils/api";
 import { ref } from "vue";
 const memes = ref([]);
 const page = ref(1)
@@ -26,10 +26,11 @@ const page_count = ref()
 
 async function del_meme(meme_id) {
     var req_data = {
-        meme_id: meme_id,
+        source_type: "memes",
+        source_id: meme_id,
         method: "del"
     }
-    await api_meme(req_data).then((res) => {
+    await api_source(req_data).then((res) => {
     if (res.code == 200) {
         get_meme()
     } else {
@@ -39,8 +40,7 @@ async function del_meme(meme_id) {
 }
 
 async function get_meme() {
-    var req_data = {page: page.value}
-    await api_get_meme(req_data).then((res) => {
+    await api_get_memes({page: page.value}).then((res) => {
     if (res.code == 200) {
         memes.value = res.data;
         page_count.value = res.page_count

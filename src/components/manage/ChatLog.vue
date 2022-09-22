@@ -93,7 +93,7 @@ import {
   useMessage
 } from "naive-ui";
 import { ref } from "vue";
-import { get_chat_log, api_meme } from "@/utils/api";
+import { get_chat_log, api_source } from "@/utils/api";
 
 const message = useMessage();
 
@@ -169,10 +169,11 @@ function railStyle({ focused, checked }) {
 
 async function add_meme(meme_url) {
     var req_data = {
-        meme_url: meme_url,
+        source_type: "memes",
+        content: meme_url,
         method: "add"
     }
-    await api_meme(req_data).then((res) => {
+    await api_source(req_data).then((res) => {
     if (res.code == 200) {
         message.success(res.msg)
     } else {

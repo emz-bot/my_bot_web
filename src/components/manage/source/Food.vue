@@ -18,12 +18,12 @@
         show-quick-jumper
     />
     <br>
-    <n-tag class="tag" v-for="i in food" :key="i.id" closable @close="del_food(i._id)"> {{i._id}} </n-tag>
+    <n-tag class="tag" v-for="i in food" :key="i.id" closable @close="del_food(i._id)"> {{i.content}} </n-tag>
 </template>
 
 <script setup>
 import { NTag, NInput, NPagination, NButton, useMessage } from "naive-ui";
-import { api_get_food, api_food } from "@/utils/api";
+import { api_get_food, api_source } from "@/utils/api";
 import { ref } from "vue";
 
 const message = useMessage();
@@ -35,10 +35,11 @@ const page_count = ref()
 
 const add_food = () => {
     var req_data = {
+        source_type: "food",
         content: content.value,
         method: "add"
     }
-    api_food(req_data).then((res) => {
+    api_source(req_data).then((res) => {
         if (res.code == 200) {
             content.value = ""
             get_food()
@@ -54,10 +55,11 @@ const add_food = () => {
 async function del_food(food_id) {
 
     var req_data = {
-        food_id: food_id,
+        source_type: "food",
+        source_id: food_id,
         method: "del"
     }
-    await api_food(req_data).then((res) => {
+    await api_source(req_data).then((res) => {
     if (res.code == 200) {
         get_food()
     } else {

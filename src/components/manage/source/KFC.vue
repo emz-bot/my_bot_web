@@ -35,7 +35,7 @@
 
 <script setup>
 import { NCard, NList, NListItem, NThing, NSpace, NPagination, NButton, NModal, NInput } from "naive-ui";
-import { api_get_kfc, api_kfc } from "@/utils/api";
+import { api_get_kfc, api_source } from "@/utils/api";
 import { ref } from "vue";
 const kfcs = ref([]);
 const page = ref(1)
@@ -44,10 +44,11 @@ const page_count = ref()
 
 async function del_kfc(kfc_id) {
     var req_data = {
-        kfc_id: kfc_id,
+        source_type: "kfc",
+        source_id: kfc_id,
         method: "del"
     }
-    await api_kfc(req_data).then((res) => {
+    await api_source(req_data).then((res) => {
     if (res.code == 200) {
         get_kfc()
     } else {
@@ -58,10 +59,11 @@ async function del_kfc(kfc_id) {
 
 async function add_kfc() {
     var req_data = {
+        source_type: "kfc",
         content: content.value,
         method: "add"
     }
-    await api_kfc(req_data).then((res) => {
+    await api_source(req_data).then((res) => {
     if (res.code == 200) {
         content.value = ""
         get_kfc()
