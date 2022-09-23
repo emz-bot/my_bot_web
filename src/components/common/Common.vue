@@ -45,9 +45,8 @@
       </n-layout>
     </n-layout>
     <n-layout-footer
-      bordered
       position="absolute"
-      style="height: 10px; padding: 22px"
+      style="height: 64px; padding: 24px"
     >
       <a id="record" href="https://beian.miit.gov.cn"> 陕ICP备2022002093号 </a>
     </n-layout-footer>

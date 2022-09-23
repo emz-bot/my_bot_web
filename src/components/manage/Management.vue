@@ -51,7 +51,6 @@
       </n-layout>
     </n-layout>
     <n-layout-footer
-      bordered
       position="absolute"
       style="height: 64px; padding: 24px"
     >
