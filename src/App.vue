@@ -41,22 +41,23 @@ body {
   color: #434649b9;
   display: block;
   text-align: center;
-  margin-top: 200px;
 }
 /* 设置滚动条的样式 */
 ::-webkit-scrollbar {
-    width: 12px;
+  width: 12px;
 }
 /* 滚动槽 */
 ::-webkit-scrollbar-track {
-    box-shadow: inset006pxrgba(0, 0, 0, 0.3);
-    border-radius: 10px;
+  box-shadow: inset006pxrgba(0, 0, 0, 0.3);
+  border-radius: 10px;
 }
 /* 滚动条滑块 */
 ::-webkit-scrollbar-thumb {
-    border-radius: 10px;
-    background: rgba(0, 0, 0, 0.1);
-    box-shadow: inset006pxrgba(0, 0, 0, 0.5);
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.1);
+  box-shadow: inset006pxrgba(0, 0, 0, 0.5);
 }
-
+.n-layout-header{
+  padding: 1px 15px;
+}
 </style>

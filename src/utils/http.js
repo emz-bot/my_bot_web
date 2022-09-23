@@ -3,14 +3,18 @@ import axios from 'axios'
 axios.defaults.timeout = 20000
 axios.defaults.baseURL = window.gurl.SERVICE_CONTEXT_PATH;
 
+// json格式请求头
+const headerJSON = {
+  "Content-Type": "application/json"
+};
+
 axios.interceptors.request.use(
   config => {
-    config.data = JSON.stringify(config.data)
     config.headers = {
-        'Content-Type': 'application/x-www-form-urlencoded'
+        'Content-Type': 'application/json'
     }
     if (localStorage.token) {
-        config.headers.Authorization = localStorage.token
+        config.headers.authorization = localStorage.token
     }
     return config
   },
@@ -97,14 +101,16 @@ export function get (url, params = {}) {
  * @returns {Promise}
  */
 
- export function post (url, data = {}) {
+ export function post (url, data) {
    return new Promise((resolve, reject) => {
-     axios.post(url, data)
-          .then(response => {
-            resolve(response.data)
-          }, err => {
-            reject(err)
-          })
+      axios.post(url, data, {
+        headers: headerJSON
+      })
+      .then(response => {
+        resolve(response.data)
+      }, err => {
+        reject(err)
+      })
    })
  }
 

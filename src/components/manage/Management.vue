@@ -1,66 +1,103 @@
 <template>
-  <n-card style="margin-bottom: 16px" v-if="user_permission >= 3">
-    <n-space justify="space-between">
-      <h2>二猫子管理</h2>
-      <n-button quaternary circle @click="logout">
-        <template #icon>
-          <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 32 32"><path d="M6 30h12a2.002 2.002 0 0 0 2-2v-3h-2v3H6V4h12v3h2V4a2.002 2.002 0 0 0-2-2H6a2.002 2.002 0 0 0-2 2v24a2.002 2.002 0 0 0 2 2z" fill="currentColor"></path><path d="M20.586 20.586L24.172 17H10v-2h14.172l-3.586-3.586L22 10l6 6l-6 6l-1.414-1.414z" fill="currentColor"></path></svg>
-        </template>
-      </n-button>
-    </n-space>
-    <n-tabs type="line">
-      <n-tab-pane name="机器人管理" tab="机器人管理">
-        <BotManage/>
-      </n-tab-pane>
-      <n-tab-pane name="黑名单管理" tab="黑名单管理">
-        <BlackList/>
-      </n-tab-pane>
-      <n-tab-pane name="聊天记录" tab="聊天记录" v-if="user_permission >= 5">
-        <ChatLog/>
-      </n-tab-pane>
-      <n-tab-pane name="资源" tab="资源" v-if="user_permission >= 5">
-        <Source/>
-      </n-tab-pane>
-    </n-tabs>
-  </n-card>
+  <n-layout position="absolute">
+    <n-layout-header bordered>
+      <n-space justify="space-between">
+        <n-space>
+          <n-space>
+            <n-space>
+              <img @click="router.push({ path: '/' })" style="height:65px; color:#fff" src="@/assets/logo.svg">
+            </n-space>
+            <n-space vertical size="small">
+              <n-text>
+                <h2>二猫子管理</h2>
+              </n-text>
+            </n-space>
+          </n-space>
+          <n-space style="padding:23px 70px">
+              <n-button text @click="router.push({ path: '/management/botmanage' })">
+                机器人管理
+              </n-button>
+              <n-button text @click="router.push({ path: '/management/blacklist' })">
+                黑名单管理
+              </n-button>
+              <n-button text @click="router.push({ path: '/management/chatlog' })" v-if="user_permission >= 5">
+                聊天记录
+              </n-button>
+              <n-button text @click="router.push({ path: '/management/source' })">
+                资源
+              </n-button>
+          </n-space>
+        </n-space>
+        <n-space style="padding:15px">
+          <n-button quaternary circle @click="router.push({ path: '/common' })">
+              <n-icon size="22">
+                <PersonCircle />
+              </n-icon>
+          </n-button>
+          <n-button quaternary circle @click="logout">
+              <n-icon size="22">
+                <LogInOutline />
+              </n-icon>
+          </n-button>
+        </n-space>
+      </n-space>
+    </n-layout-header>
+    <n-layout has-sider position="absolute" style="top: 64px; bottom: 64px">
+      <n-layout-sider bordered content-style="padding: 24px;"> </n-layout-sider>
+      <n-layout content-style="padding: 24px;">
+        <n-card style="margin-bottom: 16px" v-if="user_permission >= 3">
+          <router-view />
+        </n-card>
+      </n-layout>
+    </n-layout>
+    <n-layout-footer
+      position="absolute"
+      style="height: 64px; padding: 24px"
+    >
+      <a id="record" href="https://beian.miit.gov.cn"> 陕ICP备2022002093号 </a>
+    </n-layout-footer>
+  </n-layout>
 </template>
 
 <script setup>
+import { PersonCircle, LogInOutline } from '@vicons/ionicons5'
 import {
+  NIcon,
   NTabs,
   NTabPane,
   NCard,
   NButton,
   NSpace,
-  useMessage
+  NText,
+  useMessage,
+  NLayout,
+  NLayoutHeader,
+  NLayoutFooter,
+  NLayoutContent,
 } from "naive-ui";
-import Source from './Source.vue'
-import ChatLog from './ChatLog.vue'
-import BotManage from './BotManage.vue'
-import BlackList from './BlackList.vue'
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 
-var user_permission = ref(localStorage.user_permission)
+var user_permission = ref(localStorage.user_permission);
 
 const router = useRouter();
 const message = useMessage();
 
-function logout(){
-  message.success("登出成功")
-  localStorage.token = 0
-  localStorage.user_permission = 0
+function logout() {
+  message.success("登出成功");
+  localStorage.token = 0;
+  localStorage.user_permission = 0;
   router.push({ path: "/" });
 }
 
-function check_permission(){
-  if (user_permission.value < 3){
-    message.warning("地址不存在")
-    router.push({ path: "/login" })
+function check_permission() {
+  if (user_permission.value < 3) {
+    message.warning("地址不存在");
+    router.push({ path: "/login" });
   }
 }
-check_permission()
-
+router.push({ path: "/management/botmanage" })
+check_permission();
 </script>
 <style>
 .n-card--bordered {

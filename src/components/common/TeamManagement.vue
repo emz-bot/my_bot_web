@@ -34,7 +34,7 @@
         <div>{{ teamDetailInfo.info.server }}</div>
         <div>集合时间：{{ teamDetailInfo.info.meeting_time }}</div>
         <div>团队公告：{{ teamDetailInfo.info.team_announcements }}</div>
-        <!-- <div>人数（20/{{ teamDetailInfo.info.team_configuration["人数"] }}）</div> -->
+        <div>人数（20/{{ teamDetailInfo.info.team_configuration["人数"] }}）</div>
       </div>
       <div class="bodyinfo">
         <div  style="width: 50px" class="bodyinfo_teamitem">
@@ -80,10 +80,14 @@
 import { ref, reactive } from "vue";
 import { NSpace, NDivider, NCard, NModal, NButton } from "naive-ui";
 import { api_j3_team } from "@/utils/api";
+import { useRouter } from "vue-router"
 const teamList = ref([]); // 原始数据
 
+const router = useRouter()
+var router_params = router.currentRoute.value.params
+
 async function get_all_j3_team(){
-    await api_j3_team({action: "get", data: {team_id: 0}}).then((res) => {
+    await api_j3_team({action: "get", params: {team_id: router_params.team_id}}).then((res) => {
     if (res.code == 200) {
       teamList.value = res.data;
     }
@@ -158,7 +162,7 @@ const drop = function (ev) {
 
   teamDetailInfo.info.team_members[movedomIndex][movedomSIndex] = replaceItem; // 给移动的对象赋值 被替换的对象
   teamDetailInfo.info.team_members[replacedomIndex][replacedomSIndex] = moveItem; // 给被替换的对象 复制 移动的对象
-  api_j3_team({action: "set", data: teamDetailInfo}).then((res) => {
+  api_j3_team({action: "set", params: teamDetailInfo}).then((res) => {
     if (res.code == 200) {
       return true
     } else {
