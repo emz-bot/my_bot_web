@@ -87,6 +87,7 @@ function logout() {
   message.success("登出成功");
   localStorage.token = 0;
   localStorage.user_permission = 0;
+  localStorage.beforeRouter = null;
   router.push({ path: "/" });
 }
 

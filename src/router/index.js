@@ -35,6 +35,9 @@ const router = createRouter({
 router.beforeEach((to, from) => {
     // 获取到token状态
     const isLogin = localStorage.token;
+    if (to.path != "/login"){
+      localStorage.setItem("beforeRouter", to.path)
+    }
     if (!isLogin && to.path != "/login") {
         debugger
         return { path: "/login" };
