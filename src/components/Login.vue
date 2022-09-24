@@ -108,13 +108,14 @@ async function start_login() {
     reqData.username = login_data.value.user;
     reqData.password = login_data.value.password;
     await login(reqData).then((res) => {
-        console.log(res)
         if (res.code == 200) {
             message.success(res.msg, { duration: 5e3 });
             localStorage.setItem("token", res.data.token);
             localStorage.setItem("username", res.data.username);
             localStorage.setItem("user_permission", res.data.user_permission);
-            if (res.data.user_permission >= 3) {
+            if (localStorage.beforeRouter && localStorage.beforeRouter != "/" ) {
+                router.push({ path: localStorage.beforeRouter });
+            } else if (res.data.user_permission >= 3) {
                 router.push({ path: "/management" });
             } else {
                 router.push({ path: "/common" });
