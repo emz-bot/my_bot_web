@@ -224,8 +224,14 @@ async function start() {
   await get_bot_list({page: resData.value.page, filter: filter}).then((res) => {
     if (res.code == 200) {
       resData.value = res;
-      console.log(res);
+      if (res.token) {
+        localStorage.token = res.token
+      }
     } else {
+      message.error("账号未登录, 前往登录页面..", { duration: 5e3 });
+      setTimeout(() => {
+        router.push({ path: "/login" });
+      }, 1000);
       message.error(res.msg, { duration: 5e3 });
     }
   });
