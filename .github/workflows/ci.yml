@@ -37,14 +37,26 @@ jobs:
           npm install
           npm run build-server
       - name: 创建GitHub Release
+        if: ${{ env.build != 'qiniu' }}
         id: create_release
         uses: actions/create-release@latest
         env:
           GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
         with:
-          tag_name: v${{steps.version.outputs.value}}
-          release_name: v${{steps.version.outputs.value}}
-          body: ${{steps.description.outputs.content}}
+          tag_name: latest
+          release_name: latest
+          body: 管理面板前端
           draft: false
-          prerelease: fals
+          prerelease: false
+      - name: 上传包到GitHub Release
+        if: ${{ env.build != 'qiniu' }}
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+          asset_path: ./dist.zip
+          asset_name: dist.zip
+          asset_content_type: application/zip
 
