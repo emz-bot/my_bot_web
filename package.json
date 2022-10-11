@@ -5,15 +5,18 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "build-qiniu": "vue-cli-service build && node ./qiniu.js ",
+    "build-qiniu": "vue-cli-service build && node ./build_qiniu.js",
+    "build-server": "npm run build && node ./build_server.js",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
     "@vicons/ionicons5": "^0.12.0",
     "axios": "^0.26.0",
+    "compressing": "^1.6.2",
     "core-js": "^3.6.5",
     "qiniu": "^7.6.1",
     "qs": "^6.11.0",
+    "ssh2": "^1.11.0",
     "vue": "^3.0.0",
     "vue-router": "^4.0.14"
   },

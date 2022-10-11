@@ -9,7 +9,8 @@ on:
       - main
 
 jobs:
-  build:
+  build-qiniu:
+    if: ${{ secrets.build == 'qiniu' }}
     runs-on: ubuntu-latest
     env:
         prefixhost: ${{ secrets.PREFIXHOST }}
@@ -26,3 +27,22 @@ jobs:
         run: |
           npm install
           npm run build-qiniu
+  build-server:
+    if: ${{ secrets.build != 'qiniu' }}
+    runs-on: ubuntu-latest
+    env:
+        host: ${{secrets.host}}
+        username: ${{secrets.username}}
+        password: ${{secrets.password}}
+        port: ${{secrets.port}}
+        remote_path: ${{secrets.remote_path}}
+        end_cmd: ${{secrets.end_cmd}}
+    steps:
+      # 拉取代码
+      - name: Check Out Repo
+        uses: actions/checkout@v2
+
+      - name: Build
+        run: |
+          npm install
+          npm run build-server
