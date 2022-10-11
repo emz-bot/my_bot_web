@@ -10,7 +10,7 @@ on:
 
 jobs:
   build-qiniu:
-    if: ${{secrets.build}} == 'qiniu'
+    if: secrets.build == 'qiniu'
     runs-on: ubuntu-latest
     env:
         prefixhost: ${{ secrets.PREFIXHOST }}
@@ -28,7 +28,7 @@ jobs:
           npm install
           npm run build-qiniu
   build-server:
-    if: ${{secrets.build}} != 'qiniu'
+    if: secrets.build != 'qiniu'
     runs-on: ubuntu-latest
     env:
         host: ${{secrets.host}}
