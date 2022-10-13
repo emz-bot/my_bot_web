@@ -11,6 +11,7 @@ export const api_source = data => post('/api/source', data)
 export const api_get_memes = data => get('/api/source/memes/all', data)
 export const api_get_kfc = data => get('/api/source/kfc/all', data)
 export const api_get_food = data => get('/api/source/food/all', data)
+export const api_get_drink = data => get('/api/source/drink/all', data)
 
 export const login = data => post('/api/login', data)
 export const register = data => post('/api/register', data)
