@@ -9,6 +9,9 @@
       <n-tab-pane name="吃什么" tab="吃什么">
         <Food/>
       </n-tab-pane>
+      <n-tab-pane name="喝什么" tab="喝什么">
+        <Drink/>
+      </n-tab-pane>
     </n-tabs>
 </template>
 
@@ -23,6 +26,7 @@ import {
 import MemesManage from './source/MemesManage.vue'
 import KFC from './source/KFC.vue'
 import Food from './source/Food.vue'
+import Drink from "./source/Drink.vue";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 
