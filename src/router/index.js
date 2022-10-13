@@ -13,6 +13,7 @@ const router = createRouter({
                 {path: 'blacklist', component: () => import("@/components/manage/BlackList.vue"),},
                 {path: 'chatlog', component: () => import("@/components/manage/ChatLog.vue"),},
                 {path: 'source', component: () => import("@/components/manage/Source.vue"),},
+                {path: 'configmanage', component: () => import("@/components/manage/ConfigManage.vue"),},
             ]
         },
         { path: "/common/",

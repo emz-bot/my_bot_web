@@ -23,3 +23,7 @@ export const post_black_list = data => post('/api/black_list', data)
 export const get_river_lantern = data => get('/api/get_river_lantern', data)
 
 export const api_j3_team = data => post('/api/j3_team', data)
+
+export const api_get_config = data => get('/api/config', data)
+export const api_set_config = data => post('/api/config', data)
+export const api_test_mail = data => post('/api/test_mail', data)

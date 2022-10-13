@@ -26,6 +26,9 @@
               <n-button text @click="router.push({ path: '/management/source' })">
                 资源
               </n-button>
+              <n-button text @click="router.push({ path: '/management/configmanage' })" v-if="user_permission >= 100">
+                配置管理
+              </n-button>
           </n-space>
         </n-space>
         <n-space style="padding:15px">
@@ -97,7 +100,9 @@ function check_permission() {
     router.push({ path: "/login" });
   }
 }
-router.push({ path: "/management/botmanage" })
+if (router.currentRoute.value.path == "/management"){
+  router.push({ path: "/management/botmanage" })
+}
 check_permission();
 </script>
 <style>
