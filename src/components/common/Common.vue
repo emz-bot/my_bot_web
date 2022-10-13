@@ -93,6 +93,10 @@ function check_permission() {
   }
 }
 check_permission();
+
+if (router.currentRoute.value.path == "/common"){
+  router.push({ path: "/common/botmanage" })
+}
 </script>
 <style>
 .n-card--bordered {
