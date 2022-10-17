@@ -1,4 +1,18 @@
 <template>
+<n-input-group style="width: 380px;text-align:center">
+<n-input-group-label>还剩 <strong>{{ re_data.time_left }}</strong> 天可分配</n-input-group-label>
+<n-input-number v-model:value="purchase_quantity" min=1 max=12 :show-button="false" :bordered="false" placeholder="1 到 12" disabled=true>
+  <template #prefix>
+    再冲它
+  </template>
+  <template #suffix>
+    个月
+  </template>
+</n-input-number>
+<n-button @click="buy" disabled=true>充值</n-button>
+</n-input-group>
+<br>
+<br>
 <n-space v-if="user_permission >= 3">
   <n-button quaternary circle @click="start">
     <n-icon size="22">
@@ -70,20 +84,14 @@
         </td>
         <td>{{ i.login_data }}</td>
         <td>
-          <n-switch
-            v-model:value="i.work_stat"
-            @update:value="manipulate('set_status', i._id)"
-          >
-            <template #checked-icon> 🙃 </template>
-            <template #unchecked-icon> 🙂 </template>
-          </n-switch>
+          <n-button quaternary type="error" @click="manipulate('del', i._id)">删除</n-button>
         </td>
         <td v-if="user_permission >= 1">
           <n-button
             quaternary
             circle
             :type="is_enable[i.enable]"
-            @click="open_modal(i)"
+            @click="open_modal(i._id)"
           >
             <n-icon size="22">
               <EllipsisHorizontal />
@@ -93,6 +101,7 @@
       </tr>
     </tbody>
     <n-modal
+      id="bot_conf"
       v-model:show="showModal"
       preset="dialog"
       title="机器人配置"
@@ -101,23 +110,65 @@
       <br>
       <div>
         <n-input-group>
-          允许使用
-        <n-switch v-model:value="enable" />
+          <n-button
+            v-model:value="bot_data[cur_bot_id].enable"
+            :type="isOK[bot_data[cur_bot_id].enable]"
+            @click="bot_data[cur_bot_id].enable=!bot_data[cur_bot_id].enable"
+          >
+            {{ enable_stat[bot_data[cur_bot_id].enable] }}
+          </n-button>
+          <n-input-group-label>主人QQ</n-input-group-label>
+          <n-input-number v-model:value="bot_data[cur_bot_id].master" :show-button="false" />
+          <n-button tertiary @click="set_bot_info">确定</n-button>
         </n-input-group>
       </div>
       <br>
-      <div>
-        <n-input-group>
-          <n-input-group-label>主人QQ</n-input-group-label>
-          <n-input-number v-model:value="master" :show-button="false" />
-        </n-input-group>
-      </div>
-      <template #action>
-        <div>
-          <n-button style="margin: 10px" type="error" @click="manipulate('del')">删除</n-button>
-          <n-button @click="set_bot_info">确定</n-button>
-        </div>
-      </template>
+      <n-table :bordered="false" :single-line="false">
+        <thead>
+          <tr>
+            <th style="width: 250px">群</th>
+            <th>群开关</th>
+            <th>服务器</th>
+            <th>活跃值</th>
+            <th>最后发言</th>
+            <th>到期时间</th>
+            <th>续费</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="i in group_list" :key="i.id">
+            <td>
+              <n-space>
+                <n-space>
+                  <n-avatar
+                    size="large"
+                    :src="`http://p.qlogo.cn/gh/${i._id}/${i._id}/100/`"
+                  />
+                </n-space>
+                <n-space vertical size="small">
+                  <div>{{ i._id }}</div>
+                  <div>{{ i.group_name }}</div>
+                </n-space>
+              </n-space>
+            </td>
+            <td>{{i.group_switch}}</td>
+            <td>{{i.server}}</td>
+            <td>{{i.robot_active}}</td>
+            <td>{{i.last_sent}}</td>
+            <td>{{i.expire_date}}</td>
+            <td>
+              <n-input-group>
+                <n-input-number v-model:value="renewal_num[i._id]" :show-button="false" :bordered="false">
+                  <template #suffix>
+                    天
+                  </template>
+                </n-input-number>
+                <n-button @click="renewal(i.bot_id, i._id)">续费</n-button>
+              </n-input-group>
+            </td>
+          </tr>
+        </tbody>
+      </n-table>
     </n-modal>
     <n-modal
       v-model:show="addModal"
@@ -136,7 +187,7 @@
       <div>
         <n-input-group>
           <n-input-group-label>机器人QQ</n-input-group-label>
-          <n-input-number v-model:value="bot_id" :show-button="false" />
+          <n-input-number v-model:value="input_bot_id" :show-button="false" />
         </n-input-group>
       </div>
       <template #action>
@@ -146,6 +197,17 @@
       </template>
     </n-modal>
   </n-table>
+  <n-modal
+    id="paying"
+    v-model:show="paying"
+    title="打钱"
+    preset="dialog"
+  >
+    <template #header-extra />
+    <h4>你要给我打 {{pay_data.total_amount}} 块钱</h4>
+    <h5>打完钱自己刷新一下页面就 OK 了</h5>
+    <img :src="`data:image/png;base64, ${pay_data.rqcode_str}`"/>
+  </n-modal>
 </template>
 <script setup>
 import { Add, EllipsisHorizontal, Reload } from '@vicons/ionicons5'
@@ -169,6 +231,9 @@ import { ref } from "vue";
 import {
   get_bot_list,
   manipulate_bot,
+  api_get_group_list,
+  api_renewal,
+  api_pay
 } from "@/utils/api";
 import { useRouter } from "vue-router";
 
@@ -183,21 +248,30 @@ const is_enable = ref({
   true: "info",
   false: "warning",
 });
+
+const enable_stat = ref({
+  true: "正在使用",
+  false: "已停用",
+});
+
 const router = useRouter();
 const resData = ref([]);
 const message = useMessage();
 
-const showModal = ref();
-const enable = ref();
-const master = ref(747761541);
-const bot_id = ref();
+const purchase_quantity = ref()
+const pay_data = ref({})
 
-function open_modal(data) {
-  bot_id.value = data._id;
-  enable.value = data.enable;
-  master.value = data.master;
-  showModal.value = true;
-}
+const showModal = ref();
+const paying = ref();
+
+const bot_data = ref({});
+
+const input_bot_id = ref();
+
+const cur_bot_id = ref();
+
+const group_list = ref([])
+const renewal_num = ref({})
 
 const addModal = ref(false);
 
@@ -205,6 +279,52 @@ function add_bot() {
   bot_id.value = null;
   master.value = null;
   addModal.value = true;
+}
+
+async function open_modal(bot_id) {
+  showModal.value = true;
+  cur_bot_id.value = bot_id;
+  console.log(cur_bot_id.value)
+  await api_get_group_list({bot_id: bot_id}).then((res) => {
+    if (res.code == 200) {
+      group_list.value = res.data
+    } else {
+      message.error("账号未登录, 前往登录页面..");
+      setTimeout(() => {
+        router.push({ path: "/login" });
+      }, 1000);
+      message.error(res.msg);
+    }
+  });
+}
+
+async function renewal(bot_id, group_id){
+  console.log(bot_id, group_id, renewal_num.value[group_id])
+  if (!renewal_num.value[group_id]){
+    message.warning("输入具体时间!");
+    return
+  }
+  await api_renewal({bot_id: bot_id, group_id: group_id, renewal_day: renewal_num.value[group_id]}).then((res) => {
+    if (res.code == 200) {
+      open_modal(bot_id);
+      message.success(res.msg);
+    } else {
+      message.error(res.msg);
+    }
+  });
+}
+async function buy(){
+  await api_pay({subject: "机器人", num: purchase_quantity.value}).then((res) => {
+    console.log(res)
+    if (res.code == 200) {
+      pay_data.value["rqcode_str"] = res.img_base64
+      pay_data.value["total_amount"] = res.total_amount
+      paying.value = true
+      message.success(res.msg);
+    } else {
+      message.error(res.msg);
+    }
+  });
 }
 
 async function start() {
@@ -224,6 +344,17 @@ async function start() {
   await get_bot_list({page: resData.value.page, filter: filter}).then((res) => {
     if (res.code == 200) {
       resData.value = res;
+      console.log(resData.value)
+      for (var i=0;i<res.data.length;i++)
+      {
+        let bot_id = res.data[i]["_id"]
+          let master = res.data[i]["master"]
+          let enable = res.data[i]["enable"]
+          bot_data.value[bot_id] = {
+            "master": master,
+            "enable": enable
+          };
+      }
       if (res.token) {
         localStorage.token = res.token
       }
@@ -242,9 +373,9 @@ async function set_bot_info() {
   var req_data = {
     action: "set_info",
     data: {
-      bot_id: bot_id.value,
-      enable: enable.value,
-      master: master.value,
+      bot_id: cur_bot_id.value,
+      enable: bot_data.value[cur_bot_id.value].enable,
+      master: bot_data.value[cur_bot_id.value].master,
     },
   };
   await manipulate_bot(req_data).then((res) => {
@@ -252,6 +383,7 @@ async function set_bot_info() {
       message.success(res.msg, { duration: 5e3 });
       addModal.value = false;
       showModal.value = false;
+      open_modal(cur_bot_id.value);
       start();
     } else {
       message.error(res.msg, { duration: 5e3 });
@@ -260,9 +392,6 @@ async function set_bot_info() {
 }
 
 async function manipulate(action, ac_bot_id, node_name) {
-  if (action == "del") {
-    ac_bot_id = bot_id.value;
-  }
   var req_data = {
     action: action,
     data: {
@@ -299,3 +428,13 @@ async function set_group_num(bot_id, access_group_num) {
 }
 var re_data = resData;
 </script>
+<style>
+#bot_conf {
+    width: 1200px;
+    max-width: calc(100vw - 32px);
+}
+#paying {
+    width: 470px;
+    max-width: calc(100vw - 32px);
+}
+</style>
