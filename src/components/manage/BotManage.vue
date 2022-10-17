@@ -1,6 +1,10 @@
 <template>
-<n-input-group>
-<n-input-number v-model:value="purchase_quantity" :show-button="false" :bordered="false">
+<n-input-group style="width: 380px;text-align:center">
+<n-input-group-label>还剩 <strong>{{ re_data.time_left }}</strong> 天可分配</n-input-group-label>
+<n-input-number v-model:value="purchase_quantity" min=1 max=12 :show-button="false" :bordered="false" placeholder="1 到 12">
+  <template #prefix>
+    再冲它
+  </template>
   <template #suffix>
     个月
   </template>
@@ -254,7 +258,7 @@ const router = useRouter();
 const resData = ref([]);
 const message = useMessage();
 
-const purchase_quantity = ref(0)
+const purchase_quantity = ref()
 const pay_data = ref({})
 
 const showModal = ref();
@@ -284,7 +288,6 @@ async function open_modal(bot_id) {
   await api_get_group_list({bot_id: bot_id}).then((res) => {
     if (res.code == 200) {
       group_list.value = res.data
-      console.log(group_list.value)
     } else {
       message.error("账号未登录, 前往登录页面..");
       setTimeout(() => {
@@ -341,6 +344,7 @@ async function start() {
   await get_bot_list({page: resData.value.page, filter: filter}).then((res) => {
     if (res.code == 200) {
       resData.value = res;
+      console.log(resData.value)
       for (var i=0;i<res.data.length;i++)
       {
         let bot_id = res.data[i]["_id"]
