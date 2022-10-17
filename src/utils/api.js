@@ -31,3 +31,4 @@ export const api_test_mail = data => post('/api/test_mail', data)
 
 export const api_get_group_list = data => get('/api/get_group_list', data)
 export const api_renewal = data => post('/api/renewal', data)
+export const api_pay = data => get('/api/pay', data)

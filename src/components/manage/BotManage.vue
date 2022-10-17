@@ -1,4 +1,14 @@
 <template>
+<n-input-group>
+<n-input-number v-model:value="purchase_quantity" :show-button="false" :bordered="false">
+  <template #suffix>
+    个月
+  </template>
+</n-input-number>
+<n-button @click="buy">充值</n-button>
+</n-input-group>
+<br>
+<br>
 <n-space v-if="user_permission >= 3">
   <n-button quaternary circle @click="start">
     <n-icon size="22">
@@ -87,6 +97,7 @@
       </tr>
     </tbody>
     <n-modal
+      id="bot_conf"
       v-model:show="showModal"
       preset="dialog"
       title="机器人配置"
@@ -182,6 +193,17 @@
       </template>
     </n-modal>
   </n-table>
+  <n-modal
+    id="paying"
+    v-model:show="paying"
+    title="打钱"
+    preset="dialog"
+  >
+    <template #header-extra />
+    <h4>你要给我打 {{pay_data.total_amount}} 块钱</h4>
+    <h5>打完钱自己刷新一下页面就 OK 了</h5>
+    <img :src="`data:image/png;base64, ${pay_data.rqcode_str}`"/>
+  </n-modal>
 </template>
 <script setup>
 import { Add, EllipsisHorizontal, Reload } from '@vicons/ionicons5'
@@ -206,7 +228,8 @@ import {
   get_bot_list,
   manipulate_bot,
   api_get_group_list,
-  api_renewal
+  api_renewal,
+  api_pay
 } from "@/utils/api";
 import { useRouter } from "vue-router";
 
@@ -231,7 +254,11 @@ const router = useRouter();
 const resData = ref([]);
 const message = useMessage();
 
+const purchase_quantity = ref(0)
+const pay_data = ref({})
+
 const showModal = ref();
+const paying = ref();
 
 const bot_data = ref({});
 
@@ -277,6 +304,19 @@ async function renewal(bot_id, group_id){
   await api_renewal({bot_id: bot_id, group_id: group_id, renewal_day: renewal_num.value[group_id]}).then((res) => {
     if (res.code == 200) {
       open_modal(bot_id);
+      message.success(res.msg);
+    } else {
+      message.error(res.msg);
+    }
+  });
+}
+async function buy(){
+  await api_pay({subject: "机器人", num: purchase_quantity.value}).then((res) => {
+    console.log(res)
+    if (res.code == 200) {
+      pay_data.value["rqcode_str"] = res.img_base64
+      pay_data.value["total_amount"] = res.total_amount
+      paying.value = true
       message.success(res.msg);
     } else {
       message.error(res.msg);
@@ -385,8 +425,12 @@ async function set_group_num(bot_id, access_group_num) {
 var re_data = resData;
 </script>
 <style>
-.n-dialog.n-modal {
+#bot_conf {
     width: 1200px;
+    max-width: calc(100vw - 32px);
+}
+#paying {
+    width: 470px;
     max-width: calc(100vw - 32px);
 }
 </style>

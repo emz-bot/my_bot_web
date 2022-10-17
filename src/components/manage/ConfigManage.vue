@@ -118,6 +118,21 @@
             腾讯自然语言密钥：
         </template>
     </n-input>
+    <n-input placeholder="nlp_secretKey" type="password" v-model:value="data.alipay_app_id" size="small">
+        <template #prefix>
+            阿里当面付 app_id：
+        </template>
+    </n-input>
+    <n-input placeholder="nlp_secretKey" type="password" v-model:value="data.alipay_app_private_key" size="small">
+        <template #prefix>
+            阿里当面付 app 私钥：
+        </template>
+    </n-input>
+    <n-input placeholder="nlp_secretKey" type="password" v-model:value="data.alipay_public_key" size="small">
+        <template #prefix>
+            阿里当面付公钥：
+        </template>
+    </n-input>
     <n-button
         type="primary"
         block
