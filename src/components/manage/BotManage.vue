@@ -1,7 +1,7 @@
 <template>
 <n-input-group style="width: 380px;text-align:center">
 <n-input-group-label>还剩 <strong>{{ re_data.time_left }}</strong> 天可分配</n-input-group-label>
-<n-input-number v-model:value="purchase_quantity" min=1 max=12 :show-button="false" :bordered="false" placeholder="1 到 12">
+<n-input-number v-model:value="purchase_quantity" min=1 max=12 :show-button="false" :bordered="false" placeholder="1 到 12" disabled=true>
   <template #prefix>
     再冲它
   </template>
@@ -9,7 +9,7 @@
     个月
   </template>
 </n-input-number>
-<n-button @click="buy">充值</n-button>
+<n-button @click="buy" disabled=true>充值</n-button>
 </n-input-group>
 <br>
 <br>
