@@ -1,7 +1,7 @@
 <template>
 <n-input-group style="width: 380px;text-align:center">
 <n-input-group-label>还剩 <strong>{{ re_data.time_left }}</strong> 天可分配</n-input-group-label>
-<n-input-number v-model:value="purchase_quantity" min=1 max=12 :show-button="false" :bordered="false" placeholder="1 到 12" disabled=true>
+<n-input-number v-model:value="purchase_quantity" min=1 :max="max" :show-button="false" :bordered="false" :placeholder="`1 到 ${max} 个月`">
   <template #prefix>
     再冲它
   </template>
@@ -9,7 +9,7 @@
     个月
   </template>
 </n-input-number>
-<n-button @click="buy" disabled=true>充值</n-button>
+<n-button @click="buy">冲！</n-button>
 </n-input-group>
 <br>
 <br>
@@ -204,9 +204,11 @@
     preset="dialog"
   >
     <template #header-extra />
-    <h4>你要给我打 {{pay_data.total_amount}} 块钱</h4>
-    <h5>打完钱自己刷新一下页面就 OK 了</h5>
+    <div v-for="i in pay_data.msg" :key="i.id">
+      <h4>{{i}}</h4>
+    </div>
     <img :src="`data:image/png;base64, ${pay_data.rqcode_str}`"/>
+    <n-button @click="cancel_order(pay_data.order_id)">取消订单</n-button>
   </n-modal>
 </template>
 <script setup>
@@ -233,7 +235,8 @@ import {
   manipulate_bot,
   api_get_group_list,
   api_renewal,
-  api_pay
+  api_pay,
+  api_cancel_order
 } from "@/utils/api";
 import { useRouter } from "vue-router";
 
@@ -253,6 +256,8 @@ const enable_stat = ref({
   true: "正在使用",
   false: "已停用",
 });
+
+const max = ref(12)
 
 const router = useRouter();
 const resData = ref([]);
@@ -314,17 +319,32 @@ async function renewal(bot_id, group_id){
   });
 }
 async function buy(){
+  if (!purchase_quantity.value) {
+    message.warning("你得写上冲几个月吧")
+    retuen
+  }
   await api_pay({subject: "机器人", num: purchase_quantity.value}).then((res) => {
-    console.log(res)
     if (res.code == 200) {
       pay_data.value["rqcode_str"] = res.img_base64
-      pay_data.value["total_amount"] = res.total_amount
+      pay_data.value["msg"] = res.msg
+      pay_data.value["order_id"] = res.order_id
       paying.value = true
-      message.success(res.msg);
+      // message.success(res.msg);
     } else {
       message.error(res.msg);
     }
   });
+}
+
+async function cancel_order(order_id){
+  await api_cancel_order({order_id: order_id}).then((res) => {
+      if (res.code == 200) {
+        message.success(res.msg);
+        paying.value = false
+      } else {
+        message.error(res.msg);
+      }
+    });
 }
 
 async function start() {
@@ -344,6 +364,7 @@ async function start() {
   await get_bot_list({page: resData.value.page, filter: filter}).then((res) => {
     if (res.code == 200) {
       resData.value = res;
+      max.value -= parseInt(res.time_left / 31)
       console.log(resData.value)
       for (var i=0;i<res.data.length;i++)
       {
