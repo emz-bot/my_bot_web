@@ -42,7 +42,7 @@
         <th>节点名称</th>
         <th style="width: 120px">加群</th>
         <th style="width: 160px">登陆时间</th>
-        <th>是否公开</th>
+        <th>删除</th>
         <th v-if="user_permission >= 1">更多</th>
       </tr>
     </thead>
@@ -84,7 +84,7 @@
         </td>
         <td>{{ i.login_data }}</td>
         <td>
-          <n-button quaternary type="error" @click="manipulate('del', i._id)">删除</n-button>
+          <n-button quaternary type="error" @click="del_bot(i._id)">删除</n-button>
         </td>
         <td v-if="user_permission >= 1">
           <n-button
@@ -132,6 +132,7 @@
             <th>活跃值</th>
             <th>最后发言</th>
             <th>到期时间</th>
+            <th>退群</th>
             <th>续费</th>
           </tr>
         </thead>
@@ -155,7 +156,8 @@
             <td>{{i.server}}</td>
             <td>{{i.robot_active}}</td>
             <td>{{i.last_sent}}</td>
-            <td>{{i.expire_date}}</td>
+            <td>{{i.expire_date}}({{i.expire_days}})</td>
+            <td><n-button type="error" quaternary @click="exit_group(i.bot_id, i._id)">退群</n-button></td>
             <td>
               <n-input-group>
                 <n-input-number v-model:value="renewal_num[i._id]" :show-button="false" :bordered="false">
@@ -171,28 +173,19 @@
       </n-table>
     </n-modal>
     <n-modal
-      v-model:show="addModal"
+      v-model:show="delbot"
       title="添加机器人"
       preset="dialog"
     >
       <template #header-extra />
       <br>
+      确定删除 {{delbot_id}} ?
       <div>
-        <n-input-group>
-          <n-input-group-label>主人QQ</n-input-group-label>
-          <n-input-number v-model:value="master" :show-button="false" />
-        </n-input-group>
-      </div>
-      <br>
-      <div>
-        <n-input-group>
-          <n-input-group-label>机器人QQ</n-input-group-label>
-          <n-input-number v-model:value="input_bot_id" :show-button="false" />
-        </n-input-group>
+        <n-input-number :status="del_stat" @input="check_del_bot" v-model:value="cur_delbot_id" placeholder="重复输入上面的QQ" :show-button="false"></n-input-number>
       </div>
       <template #action>
         <div>
-          <n-button @click="set_bot_info">确定</n-button>
+          <n-button type="error" :disabled="del_btn" @click="manipulate('del', cur_delbot_id)">删除</n-button>
         </div>
       </template>
     </n-modal>
@@ -236,6 +229,7 @@ import {
   api_get_group_list,
   api_renewal,
   api_pay,
+  api_exit_group,
   api_cancel_order
 } from "@/utils/api";
 import { useRouter } from "vue-router";
@@ -271,19 +265,31 @@ const paying = ref();
 
 const bot_data = ref({});
 
-const input_bot_id = ref();
-
 const cur_bot_id = ref();
 
 const group_list = ref([])
 const renewal_num = ref({})
 
-const addModal = ref(false);
+const delbot = ref(false);
+const delbot_id = ref();
+const cur_delbot_id = ref();
+const del_stat = ref()
+const del_btn = ref(true)
 
-function add_bot() {
-  bot_id.value = null;
-  master.value = null;
-  addModal.value = true;
+async function del_bot(bot_id){
+  delbot_id.value = bot_id
+  delbot.value = true
+  cur_delbot_id.value = null
+  del_btn.value = true
+}
+async function check_del_bot(){
+  if (cur_delbot_id.value == delbot_id.value){
+    del_stat.value = "success"
+    del_btn.value = false
+  } else {
+    del_stat.value = "error"
+    del_btn.value = true
+  }
 }
 
 async function open_modal(bot_id) {
@@ -318,6 +324,20 @@ async function renewal(bot_id, group_id){
     }
   });
 }
+
+
+async function exit_group(bot_id, group_id){
+  await api_exit_group({bot_id: bot_id, group_id: group_id}).then((res) => {
+    if (res.code == 200) {
+      open_modal(bot_id);
+      message.success(res.msg);
+    } else {
+      message.error(res.msg);
+    }
+  });
+}
+
+
 async function buy(){
   if (!purchase_quantity.value) {
     message.warning("你得写上冲几个月吧")
