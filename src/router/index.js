@@ -43,11 +43,9 @@ router.beforeEach((to, from) => {
     if (to.path != "/login"){
       localStorage.setItem("beforeRouter", to.path)
     }
-    if (!isLogin && to.path != "/login") {
-        debugger
+    if (!isLogin && to.path != "/login" & to.path.substring(0,12) != "/common/sand") {
         return { path: "/login" };
     }
-
     return true;
 });
 
