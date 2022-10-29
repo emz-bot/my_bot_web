@@ -20,12 +20,16 @@ const router = createRouter({
           component: () => import("@/components/common/Common.vue"),
           children: [
             {
+              path: 'botmanage',
+              component: () => import("@/components/manage/BotManage.vue"),
+            },
+            {
               path: 'j3team/:team_id',
               component: () => import("@/components/common/TeamManagement.vue"),
             },
             {
-              path: 'botmanage',
-              component: () => import("@/components/manage/BotManage.vue"),
+              path: 'sand/:server',
+              component: () => import("@/components/common/Sand.vue"),
             },
           ],
         },
