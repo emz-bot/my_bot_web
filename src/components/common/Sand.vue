@@ -1,6 +1,6 @@
 <template>
-    <n-space vertical size="medium">
-        <div id="server">
+    <n-space vertical size="medium" id="sand">
+        <div class="server">
             <h1 class="text" :text="sand_data.server">{{sand_data.server}}</h1>
         </div>
         <div class="sand_map" style="position: relative;left: -82px;top: 8px;transform: scale(0.85);">
@@ -235,7 +235,7 @@ onBeforeRouteUpdate((to) => {
     text-shadow: 1px 1px 1px #000;
 }
 
-#server {
+.server {
     font-family: xingkai;
     position: absolute;
     max-width: 100%;
