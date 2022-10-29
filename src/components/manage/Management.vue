@@ -107,7 +107,7 @@ check_permission();
 </script>
 <style>
 .n-card--bordered {
-  width: 800px;
+  width: 1150px;
   margin: 0 auto;
 }
 </style>
