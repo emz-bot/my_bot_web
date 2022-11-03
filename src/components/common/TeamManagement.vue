@@ -59,7 +59,7 @@
               {{ role_num }}{{
                 teamDetailInfo.info.team_configuration[role]
                   ? "/" + teamDetailInfo.info.team_configuration[role]
-                  : "-"
+                  : ""
               }}
               <template #avatar>
                 <n-avatar :src="require(`@/assets/sect/${role}.png`)" />
@@ -71,9 +71,9 @@
           <template :key="pro_num" v-for="(pro_num, pro) in teamDetailInfo.info.profession_num">
             <n-tag checkable v-if="pro_num!=0 || teamDetailInfo.info.team_configuration[pro]">
               {{ pro_num }}{{
-                "/" + teamDetailInfo.info.team_configuration[pro]
-                  ? teamDetailInfo.info.team_configuration[pro]
-                  : "-"
+                teamDetailInfo.info.team_configuration[pro]
+                  ? "/" + teamDetailInfo.info.team_configuration[pro]
+                  : ""
               }}
               <template #avatar>
                 <n-avatar :src="require(`@/assets/sect/${pro}.png`)" />
