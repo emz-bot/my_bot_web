@@ -7,8 +7,7 @@
           <div>团队编号：{{ item._id }}</div>
           <div>团长名称：{{ item.team_leader_name }}</div>
           <div>团队区服：{{ item.server }}</div>
-          <div>团长 QQ：{{ item.user_id }}</div>
-          <div>团队限制: {{ item.team_configuration }}</div>
+          <div>团队公告：{{ item.team_announcements }}</div>
         </div>
         <div class="teambutton">
           <n-button @click="showDetail(item._id)">查看详情</n-button>
@@ -30,10 +29,22 @@
         <n-button @click="closeDetail">X</n-button>
       </template>
       <div class="headerinfo">
-        <div>团长：{{ teamDetailInfo.info.team_leader_name }}</div>
-        <div>服务器：{{ teamDetailInfo.info.server }}</div>
-        <div>集合时间：{{ teamDetailInfo.info.meeting_time }}</div>
-        <div>团队公告：{{ teamDetailInfo.info.team_announcements }}</div>
+        <h2>{{ teamDetailInfo.info.team_leader_name }}（{{teamDetailInfo.info.user_id}}）</h2>
+        <n-input-group>
+          <n-input-group-label>服务器</n-input-group-label>
+          <n-select :style="{ width: '33%' }" v-model:value="teamDetailInfo.info.server" :options="selectOptions" @update:value="set_j3_team"/>
+          <n-input-group-label>集合时间</n-input-group-label>
+          <n-date-picker v-model:value="teamDetailInfo.info.meeting_time" type="datetime" clearable @confirm="set_j3_team"/>
+        </n-input-group>
+        <br>
+        <h3>团队公告</h3>
+        <n-input
+        v-model:value="teamDetailInfo.info.team_announcements"
+        type="textarea"
+        placeholder="公告"
+        @blur="set_j3_team"
+      />
+      <br>
         <div>
           <n-tag checkable>
             {{ teamDetailInfo.info.team_members_num }}/{{
@@ -43,13 +54,11 @@
               <n-avatar :src="require(`@/assets/sect/人数.png`)" />
             </template>
           </n-tag>
-        </div>
-        <div>
           <template :key="role" v-for="(role_num, role) in teamDetailInfo.info.role_num">
-            <n-tag checkable v-if="role_num!=0 && !teamDetailInfo.info.team_configuration[role]">
-              {{ role_num }}/{{
+            <n-tag checkable v-if="role_num!=0 || teamDetailInfo.info.team_configuration[role]">
+              {{ role_num }}{{
                 teamDetailInfo.info.team_configuration[role]
-                  ? teamDetailInfo.info.team_configuration[role]
+                  ? "/" + teamDetailInfo.info.team_configuration[role]
                   : "-"
               }}
               <template #avatar>
@@ -60,9 +69,9 @@
         </div>
         <div>
           <template :key="pro_num" v-for="(pro_num, pro) in teamDetailInfo.info.profession_num">
-            <n-tag checkable v-if="pro_num!=0 && !teamDetailInfo.info.team_configuration[pro]">
-              {{ pro_num }}/{{
-                teamDetailInfo.info.team_configuration[pro]
+            <n-tag checkable v-if="pro_num!=0 || teamDetailInfo.info.team_configuration[pro]">
+              {{ pro_num }}{{
+                "/" + teamDetailInfo.info.team_configuration[pro]
                   ? teamDetailInfo.info.team_configuration[pro]
                   : "-"
               }}
@@ -146,6 +155,11 @@ import {
   NTag,
   NAvatar,
   NDropdown,
+  NInput,
+  NInputGroup,
+  NSelect,
+  NInputGroupLabel,
+  NDatePicker,
   useMessage
 } from "naive-ui";
 import { api_j3_team } from "@/utils/api";
@@ -153,6 +167,23 @@ import { useRouter } from "vue-router";
 const teamList = ref([]); // 原始数据
 
 const message = useMessage();
+
+const selectOptions = ref([
+  {label: "破阵子", value: "破阵子"},
+  {label: "唯我独尊", value: "唯我独尊"},
+  {label: "天鹅坪", value: "天鹅坪"},
+  {label: "梦江南", value: "梦江南"},
+  {label: "斗转星移", value: "斗转星移"},
+  {label: "幽月轮", value: "幽月轮"},
+  {label: "绝代天骄", value: "绝代天骄"},
+  {label: "龙争虎斗", value: "龙争虎斗"},
+  {label: "蝶恋花", value: "蝶恋花"},
+  {label: "长安城", value: "长安城"},
+  {label: "剑胆琴心", value: "剑胆琴心"},
+  {label: "乾坤一掷", value: "乾坤一掷"},
+  {label: "飞龙在天", value: "飞龙在天"},
+  {label: "青梅煮酒", value: "青梅煮酒"},
+])
 
 const showDropdownRef = ref(false);
 const xRef = ref(0);
@@ -173,6 +204,16 @@ const options = ref([
 
 const router = useRouter();
 var router_params = router.currentRoute.value.params;
+
+async function set_j3_team() {
+  api_j3_team({ action: "set", params: teamDetailInfo}).then((res) => {
+    if (res.code == 200) {
+      message.success("修改成功")
+    } else {
+      message.error(res.data)
+    }
+  });
+}
 
 async function get_all_j3_team() {
   await api_j3_team({
@@ -322,7 +363,7 @@ const drop = function (ev) {
 }
 
 .bodyinfo {
-  width: 100%;
+  width: 117%;
   margin-top: 15px;
   display: flex;
 }
