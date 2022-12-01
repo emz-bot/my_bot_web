@@ -24,8 +24,10 @@
       <Add />
     </n-icon>
   </n-button>
-  <n-input type="text" v-model:value="re_data.bot_id" placeholder="机器人QQ" clearable @input="start"/>
-  <n-input type="text" v-model:value="re_data.master" placeholder="主人QQ" clearable @input="start"/>
+  <n-input type="text" v-model:value="re_data.bot_id" placeholder="机器人QQ" clearable/>
+  <n-input type="text" v-model:value="re_data.bot_name" placeholder="机器人名称" clearable/>
+  <n-input type="text" v-model:value="re_data.master" placeholder="主人QQ" clearable/>
+  <n-button @click="start">搜索</n-button>
 </n-space>
 <br>
   <n-pagination
@@ -174,7 +176,7 @@
     </n-modal>
     <n-modal
       v-model:show="delbot"
-      title="添加机器人"
+      title="删除机器人"
       preset="dialog"
     >
       <template #header-extra />
@@ -368,6 +370,7 @@ async function cancel_order(order_id){
 }
 
 async function start() {
+  delbot.value = false
   if (!localStorage.token) {
     message.error("账号未登录, 前往登录页面..", { duration: 5e3 });
     setTimeout(() => {
@@ -377,6 +380,9 @@ async function start() {
   let filter = {}
   if (resData.value.bot_id){
     filter._id = Number(resData.value.bot_id)
+  }
+  if (resData.value.bot_name){
+    filter.bot_name = resData.value.bot_name
   }
   if (resData.value.master){
     filter.master = Number(resData.value.master)
