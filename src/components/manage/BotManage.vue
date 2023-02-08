@@ -1,7 +1,7 @@
 <template>
 <n-input-group style="width: 380px;text-align:center">
 <n-input-group-label>还剩 <strong>{{ re_data.time_left }}</strong> 天可分配</n-input-group-label>
-<n-input-number v-model:value="purchase_quantity" min=1 :max="max - parseInt(re_data.time_left / 31)" :show-button="false" :bordered="false" :placeholder="`1 到 ${max - parseInt(re_data.time_left / 31)} 个月`">
+<n-input-number v-model:value="purchase_quantity" min=1 :max="max - parseInt(re_data.time_left / 31)" :show-button="false" :bordered="false" :placeholder="`1 到 ${max - parseInt(re_data.time_left / 31)}`">
   <template #prefix>
     再冲它
   </template>
