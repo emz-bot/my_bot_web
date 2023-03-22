@@ -20,6 +20,10 @@ const router = createRouter({
           component: () => import("@/components/common/Common.vue"),
           children: [
             {
+              path: 'shop',
+              component: () => import("@/components/common/shop/Shop.vue"),
+            },
+            {
               path: 'botmanage',
               component: () => import("@/components/manage/BotManage.vue"),
             },
@@ -43,7 +47,7 @@ router.beforeEach((to, from) => {
     if (to.path != "/login"){
       localStorage.setItem("beforeRouter", to.path)
     }
-    if (!isLogin && to.path != "/login" & to.path.substring(0,12) != "/common/sand") {
+    if (!isLogin && to.path != "/login" & to.path != "/common/shop" & to.path.substring(0,12) != "/common/sand") {
         return { path: "/login" };
     }
     return true;

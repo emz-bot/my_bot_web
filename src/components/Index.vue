@@ -1,8 +1,8 @@
 <template>
     <div id="home">
         <img src="@/assets/logo.svg" @click="login">
-        <h1>老月唱花<span style="color: #336f87;">相</span>尽酒</h1>
-        <h2>日暮<span style="color: #336f87;">江湖</span>满杯楼</h2>
+        <h1>谓言挂席<span style="color: #336f87;">度</span>沧海</h1>
+        <h2>却来<span style="color: #336f87;">应是</span>无长风</h2>
     </div>
 </template>
 <script setup>

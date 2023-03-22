@@ -9,7 +9,7 @@
             </n-space>
             <n-space vertical size="small">
               <n-text>
-                <h2>二猫子管理</h2>
+                <h2>二猫子机器人</h2>
               </n-text>
             </n-space>
           </n-space>
@@ -25,6 +25,9 @@
                   沙盘
                 </n-button>
               </n-dropdown>
+              <n-button text @click="router.push({ path: '/common/shop' })">
+                商店
+              </n-button>
           </n-space>
         </n-space>
         <n-space style="padding:15px">
@@ -44,7 +47,7 @@
     <n-layout has-sider position="absolute" style="top: 64px; bottom: 64px">
       <n-layout-sider bordered content-style="padding: 24px;"> </n-layout-sider>
       <n-layout content-style="padding: 24px;">
-        <n-card style="margin-bottom: 16px">
+        <n-card style="margin-bottom: 16px;width: 1150px;margin: 0 auto;">
           <router-view />
         </n-card>
       </n-layout>
@@ -118,8 +121,4 @@ if (router.currentRoute.value.path == "/common"){
 }
 </script>
 <style>
-.n-card--bordered {
-  width: 1150px;
-  margin: 0 auto;
-}
 </style>
