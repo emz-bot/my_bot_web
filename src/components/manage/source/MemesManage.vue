@@ -9,7 +9,7 @@
   <n-image-group>
     <n-space>
       <div class="memes" v-for="i in memes" :key="i.id">
-        <n-image height="100" :src="i.content" />
+        <n-image height="100" :src="i.content" :fallback-src="require(`@/assets/img/图片无法加载.svg`)" />
         <n-button class="delete" type="error" round @click="del_meme(i._id)">x</n-button>
         </div>
     </n-space>
