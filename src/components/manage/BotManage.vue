@@ -61,7 +61,13 @@
             <n-space vertical size="small">
               <n-text :type="isOK[i.online_status]">
                 <div>{{ i._id }}</div>
-                <div>{{ i.bot_name }}</div>
+                <div>
+                  <n-input
+                    size="tiny"
+                    v-model:value="i.bot_name"
+                    @blur="set_bot_name(i._id, i.bot_name)"
+                  />
+                </div>
               </n-text>
             </n-space>
           </n-space>
@@ -460,6 +466,22 @@ async function set_group_num(bot_id, access_group_num) {
     action: "set_access_group_num",
     data: {
       access_group_num: access_group_num,
+      bot_id: bot_id,
+    },
+  };
+  await manipulate_bot(req_data).then((res) => {
+    if (res.code == 200) {
+      message.success(res.msg, { duration: 5e3 });
+    } else {
+      message.error(res.msg, { duration: 5e3 });
+    }
+  });
+}
+async function set_bot_name(bot_id, bot_name) {
+  var req_data = {
+    action: "set_bot_name",
+    data: {
+      bot_name: bot_name,
       bot_id: bot_id,
     },
   };

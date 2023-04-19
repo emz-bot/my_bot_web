@@ -64,7 +64,11 @@
     <n-space>
         <n-input placeholder="管理群" size="small" v-model:value="data.manage_group[index]" v-for="(item, index) in data.manage_group" :key="index" />
     </n-space>
-
+    <n-input placeholder="免费机器人广告内容" v-model:value="data.ad_content" size="small">
+        <template #prefix>
+            免费机器人广告内容：
+        </template>
+    </n-input>
     剑三相关
     <n-input placeholder="jx3_url" v-model:value="data.jx3_url" size="small">
         <template #prefix>
@@ -84,16 +88,6 @@
     <n-input placeholder="ws_token" type="password" v-model:value="data.ws_token" size="small">
         <template #prefix>
             WS Token：
-        </template>
-    </n-input>
-    <n-input placeholder="account" v-model:value="data.account" size="small">
-        <template #prefix>
-            沙盘用户：
-        </template>
-    </n-input>
-    <n-input placeholder="password" type="password" v-model:value="data.password" size="small">
-        <template #prefix>
-            沙盘密码：
         </template>
     </n-input>
 
@@ -168,12 +162,11 @@ const show = ref(false)
 
 const data = ref({
     secret_key: "",
+    ad_content: "",
     ws_path: "wss://socket.nicemoe.cn",
     ws_token: "",
     jx3_url: "https://www.jx3api.com",
     jx3_token: "",
-    account: "",
-    password: "",
     sender: "",
     default_host: "",
     default_pord: 465,

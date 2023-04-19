@@ -20,16 +20,27 @@
             />
           </n-form-item-row>
         </n-form>
-        <n-button
-          id="login_button"
-          type="primary"
-          block
-          secondary
-          strong
-          @click="start_login"
-        >
-          登录
-        </n-button>
+        <n-space justify="space-between">
+          <n-button
+            id="login_button"
+            type="primary"
+            block
+            secondary
+            strong
+            @click="start_login"
+            style="width:260px"
+          >
+            登录
+          </n-button>
+          <!-- <n-button
+            block
+            secondary
+            strong
+            @click="router.push({ path: '/common/shop' })"
+          >
+            登个锤子，直接购买！
+          </n-button> -->
+        </n-space>
       </n-tab-pane>
       <n-tab-pane name="signup" tab="注册/修改密码">
         <n-form>
@@ -76,6 +87,7 @@
 <script setup>
 import {
   NTabs,
+  NSpace,
   NTabPane,
   NButton,
   NCard,
@@ -182,7 +194,7 @@ function buttonDisabledCountDown() {
 </script>
 <style>
 #login {
-  width: 30%;
+  width: 500px;
   margin: 0 auto;
 }
 .n-divider__title {

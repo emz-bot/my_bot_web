@@ -1,6 +1,7 @@
 # Logs
 logs
 *.log
+dist.zip
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
