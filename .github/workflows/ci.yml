@@ -30,6 +30,8 @@ jobs:
       - name: build-qiniu
         if: ${{ env.build == 'qiniu' }}
         run: |
+          NODE_OPTIONS=--openssl-legacy-provider
+          npm start
           npm install
           npm run build-qiniu
       - name: build-server
