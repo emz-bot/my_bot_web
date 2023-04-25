@@ -6,7 +6,7 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "build-qiniu": "vue-cli-service build && node ./build_qiniu.js",
-    "build-server": "npm run build && node ./build_server.js",
+    "build-server": "npm run build && node --openssl-legacy-provider ./build_server.js",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
