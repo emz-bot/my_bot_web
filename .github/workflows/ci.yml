@@ -9,7 +9,6 @@ jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
     env:
-        NODE_OPTIONS: "--openssl-legacy-provider"
         build: ${{ secrets.build }}
         prefixhost: ${{ secrets.PREFIXHOST }}
         accessKey: ${{ secrets.ACCESSKEY }}
@@ -30,6 +29,8 @@ jobs:
       - name: build-qiniu
         if: ${{ env.build == 'qiniu' }}
         run: |
+          NODE_OPTIONS=--openssl-legacy-provider
+          npm start
           npm install
           npm run build-qiniu
       - name: build-server
