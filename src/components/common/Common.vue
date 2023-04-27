@@ -25,9 +25,9 @@
                   沙盘
                 </n-button>
               </n-dropdown>
-              <n-button text @click="router.push({ path: '/common/shop' })">
+              <!-- <n-button text @click="router.push({ path: '/common/shop' })">
                 商店
-              </n-button>
+              </n-button> -->
           </n-space>
         </n-space>
         <n-space style="padding:15px">
