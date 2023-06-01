@@ -23,6 +23,9 @@
               <n-button text @click="router.push({ path: '/management/chatlog' })" v-if="user_permission >= 5">
                 聊天记录
               </n-button>
+              <n-button text @click="router.push({ path: '/management/data_conf' })">
+                数据管理
+              </n-button>
               <n-button text @click="router.push({ path: '/management/source' })">
                 资源
               </n-button>
