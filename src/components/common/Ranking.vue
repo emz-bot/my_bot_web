@@ -3,7 +3,7 @@
     <h1>
         {{Data.server}}战功榜
     </h1>
-    <n-table :bordered="false" :single-line="false">
+    <n-table striped size="small">
     <thead>
       <tr>
         <th>排名</th>
@@ -31,14 +31,14 @@
 
         <td>{{i.castle}}</td>
         <td>{{i.nMemberCount}}/{{i.nMaxMemberCount}}</td>
-        <td>{{i.szMasterName}}</td>
-        <td>{{i.szTongName}}</td>
+        <td class="tong_text">{{i.szMasterName}}</td>
+        <td class="tong_text">{{i.szTongName}}</td>
         <td>{{i.nTitlePoint}}</td>
         <td v-if="i.nTitlePoint>Data.h[index].nTitlePoint" style="color: #f51212;">恶</td>
         <td v-else style="color: #1292f5;">浩</td>
         <td>{{Data.h[index].nTitlePoint}}</td>
-        <td>{{Data.h[index].szTongName}}</td>
-        <td>{{Data.h[index].szMasterName}}</td>
+        <td class="tong_text">{{Data.h[index].szTongName}}</td>
+        <td class="tong_text">{{Data.h[index].szMasterName}}</td>
         <td>{{Data.h[index].nMemberCount}}/{{Data.h[index].nMaxMemberCount}}</td>
         <td>{{Data.h[index].castle}}</td>
         <td>{{index + 1}}
@@ -86,7 +86,11 @@ onBeforeRouteUpdate(to => {
 </script>
 
 <style>
-#ranking {
-  width: 1200px;
+#ranking{
+    display: inline-block;
+    white-space: nowrap;
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 </style>
