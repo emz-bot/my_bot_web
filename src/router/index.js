@@ -36,6 +36,10 @@ const router = createRouter({
               path: 'sand/:server',
               component: () => import("@/components/common/Sand.vue"),
             },
+            {
+              path: 'ranking/:server',
+              component: () => import("@/components/common/Ranking.vue"),
+            },
           ],
         },
     ],

@@ -20,9 +20,14 @@
               <n-button text @click="router.push({ path: '/common/j3team/0' })" v-if="user_permission >= 1">
                 团队大厅
               </n-button>
-              <n-dropdown trigger="hover" :options="options" @select="handleSelect">
+              <n-dropdown trigger="hover" :options="options" @select="sandHandleSelect">
                 <n-button text @click="router.push({ path: '/common/sand/破阵子' })">
                   沙盘
+                </n-button>
+              </n-dropdown>
+              <n-dropdown trigger="hover" :options="options" @select="rankingHandleSelect">
+                <n-button text @click="router.push({ path: '/common/ranking/破阵子' })">
+                  战功榜
                 </n-button>
               </n-dropdown>
               <!-- <n-button text @click="router.push({ path: '/common/shop' })">
@@ -104,8 +109,12 @@ const options = ref([
   {label: "青梅煮酒", key: "青梅煮酒"},
 ])
 
-function handleSelect(key) {
+function sandHandleSelect(key) {
   router.push({ path: '/common/sand/'+key })
+}
+
+function rankingHandleSelect(key) {
+  router.push({ path: '/common/ranking/'+key })
 }
 
 function logout() {

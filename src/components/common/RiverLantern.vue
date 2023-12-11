@@ -18,7 +18,6 @@
 import { NSpace, NAvatar, NDivider } from "naive-ui";
 import { ref } from "vue";
 import { get_river_lantern } from "@/utils/api";
-var reqData = {};
 const resData = ref([]);
 async function start() {
   await get_river_lantern(reqData).then((res) => {
