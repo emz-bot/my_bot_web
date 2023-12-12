@@ -8,7 +8,7 @@
         striped
         :columns="columns"
         scroll-x="1000"
-        :max-height="500"
+        :max-height="650"
         :row-class-name="rowClassName"
       >
         <!-- <thead>
