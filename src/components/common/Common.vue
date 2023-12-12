@@ -52,7 +52,7 @@
     <n-layout has-sider position="absolute" style="top: 64px; bottom: 64px">
       <n-layout-sider bordered content-style="padding: 24px;"> </n-layout-sider>
       <n-layout content-style="padding: 24px;">
-        <n-card style="margin-bottom: 16px;width: 1150px;margin: 0 auto;">
+        <n-card style="margin-bottom: 16px;margin: 0 auto;">
           <router-view />
         </n-card>
       </n-layout>
@@ -130,4 +130,13 @@ if (router.currentRoute.value.path == "/common"){
 }
 </script>
 <style>
+.n-card--bordered {
+  width: 1150px;
+  margin: 0 auto;
+}
+@media screen and (max-width: 800px) {
+  .n-card--bordered {
+    width: 100%;
+  }
+}
 </style>
