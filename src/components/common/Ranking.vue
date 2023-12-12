@@ -8,52 +8,9 @@
         striped
         :columns="columns"
         scroll-x="1000"
-        :max-height="650"
+        :max-height="table_height"
         :row-class-name="rowClassName"
       >
-        <!-- <thead>
-            <tr>
-                <th>排名</th>
-                <th>据点</th>
-                <th>人数</th>
-                <th>帮主</th>
-                <th>帮会</th>
-                <th>战功</th>
-                <th>优势</th>
-                <th>战功</th>
-                <th>帮会</th>
-                <th>帮主</th>
-                <th>人数</th>
-                <th>据点</th>
-                <th>排名</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr v-for="(i, index) in Data.e" :key="i.id">
-                <td>
-                    <span v-if="i.rankingChanges > 0" style="color:#2a830f;">{{i.rankingChanges}}<img src="@/assets/img/向上.svg" width="10" height="10"></span>
-                    <span v-if="i.rankingChanges < 0" style="color:#8f1313;">{{-i.rankingChanges}}<img src="@/assets/img/向下.svg" width="10" height="10"></span>
-                    {{index + 1}}
-                </td>
-
-                <td>{{i.castle}}</td>
-                <td>{{i.nMemberCount}}/{{i.nMaxMemberCount}}</td>
-                <td>{{i.szMasterName}}</td>
-                <td>{{i.szTongName}}</td>
-                <td>{{i.nTitlePoint}}</td>
-                <td v-if="i.nTitlePoint>Data.h[index].nTitlePoint" style="color: #f51212;">恶</td>
-                <td v-else style="color: #1292f5;">浩</td>
-                <td>{{Data.h[index].nTitlePoint}}</td>
-                <td>{{Data.h[index].szTongName}}</td>
-                <td>{{Data.h[index].szMasterName}}</td>
-                <td>{{Data.h[index].nMemberCount}}/{{Data.h[index].nMaxMemberCount}}</td>
-                <td>{{Data.h[index].castle}}</td>
-                <td>{{index + 1}}
-                    <span v-if="Data.h[index].rankingChanges > 0" style="color:#2a830f;"><img src="@/assets/img/向上.svg" width="10" height="10">{{Data.h[index].rankingChanges}}</span>
-                    <span v-if="Data.h[index].rankingChanges < 0" style="color:#8f1313;"><img src="@/assets/img/向下.svg" width="10" height="10">{{-Data.h[index].rankingChanges}}</span>
-                </td>
-            </tr>
-            </tbody> -->
       </n-data-table>
     </div>
   </n-space>
@@ -65,6 +22,8 @@ import { NSpace, NDataTable } from "naive-ui";
 import { get } from "@/utils/http";
 
 const router = useRouter();
+
+const table_height = ref(window.innerHeight * 0.65);
 
 const Data = ref({
   server: "",
