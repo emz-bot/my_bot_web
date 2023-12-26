@@ -23,7 +23,7 @@ import { get } from "@/utils/http";
 
 const router = useRouter();
 
-const table_height = ref(window.innerHeight * 0.65);
+const table_height = ref(window.innerHeight - 330);
 
 const Data = ref({
   server: "",

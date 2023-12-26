@@ -1,16 +1,19 @@
 <template>
     <n-space vertical size="medium" id="sand">
         <img
-            style="max-width: 100%"
-            :src="'https://www.ermaozi.cn/api/v1/jx3/sand/'+router.currentRoute.value.params.server+'?img=1'"
+            style="max-width: 150%"
+            :src="base_url+'/api/v1/jx3/sand/'+router.currentRoute.value.params.server+'?img=1'"
         />
     </n-space>
 </template>
 <script setup>
 import { useRouter, onBeforeRouteUpdate } from "vue-router";
 import { NSpace } from "naive-ui";
+import { ref } from "vue";
 
 const router = useRouter();
+
+const base_url = ref(window.gurl.SERVICE_CONTEXT_PATH);
 
 </script>
 
