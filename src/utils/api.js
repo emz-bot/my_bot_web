@@ -25,6 +25,7 @@ export const get_river_lantern = data => get('/api/get_river_lantern', data)
 
 export const api_j3_team = data => post('/api/j3_team', data)
 export const api_get_lankeshan = data => get('/api/v1/jx3/lankeshan/', {})
+export const api_get_role_online = data => post('/api/v1/jx3/role_online/', data)
 export const api_set_lankeshan = data => post('/api/manage/lankeshan_config', data)
 
 export const api_get_config = data => get('/api/config', data)

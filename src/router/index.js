@@ -40,6 +40,10 @@ const router = createRouter({
               path: 'ranking/:server',
               component: () => import("@/components/common/Ranking.vue"),
             },
+            {
+              path: 'role_online',
+              component: () => import("@/components/common/RoleOnline.vue"),
+            }
           ],
         },
     ],
