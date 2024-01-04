@@ -1,7 +1,7 @@
 <template>
 <n-input-group style="width: 380px;text-align:center">
 <n-input-group-label>还剩 <strong>{{ re_data.time_left }}</strong> 天可分配</n-input-group-label>
-<n-input-number v-model:value="purchase_quantity" min=6 :max="max - parseInt(re_data.time_left / 31)" :show-button="false" :bordered="false" :placeholder="`6 到 ${max - parseInt(re_data.time_left / 31)}`">
+<n-input-number v-model:value="purchase_quantity" min=1 :max="max - parseInt(re_data.time_left / 31)" :show-button="false" :bordered="false" :placeholder="`1 到 ${max - parseInt(re_data.time_left / 31)}`">
   <template #prefix>
     再冲它
   </template>
@@ -259,7 +259,7 @@ const enable_stat = ref({
   false: "已停用",
 });
 
-const max = ref(24)
+const max = ref(6)
 
 const router = useRouter();
 const resData = ref([]);

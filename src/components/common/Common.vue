@@ -134,7 +134,7 @@ if (router.currentRoute.value.path == "/common"){
 </script>
 <style>
 .n-card--bordered {
-  width: 1150px;
+  width: 1220px;
   margin: 0 auto;
 }
 @media screen and (max-width: 1000px) {
