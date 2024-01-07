@@ -120,7 +120,7 @@ function start() {
     clearInterval(intervalId);
   }
   if (auto_update.value) {
-    intervalId = setInterval(request, 60000);
+    intervalId = setInterval(request, 5000);
   } else {
     request();
   }
