@@ -12,8 +12,8 @@ const router = createRouter({
                 {path: 'botmanage', component: () => import("@/components/manage/BotManage.vue"),},
                 {path: 'blacklist', component: () => import("@/components/manage/BlackList.vue"),},
                 {path: 'chatlog', component: () => import("@/components/manage/ChatLog.vue"),},
-                {path: 'source', component: () => import("@/components/manage/Source.vue"),},
-                {path: 'data_conf', component: () => import("@/components/manage/DataConf.vue"),},
+                {path: 'source', component: () => import("@/components/manage/SourceManage/main.vue"),},
+                {path: 'usermanage', component: () => import("@/components/manage/UserManage/main.vue"),},
                 {path: 'configmanage', component: () => import("@/components/manage/ConfigManage.vue"),},
             ]
         },

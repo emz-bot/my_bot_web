@@ -23,10 +23,10 @@ import {
   NSpace,
   useMessage
 } from "naive-ui";
-import MemesManage from './source/MemesManage.vue'
-import KFC from './source/KFC.vue'
-import Food from './source/Food.vue'
-import Drink from "./source/Drink.vue";
+import MemesManage from './MemesManage.vue'
+import KFC from './KFC.vue'
+import Food from './Food.vue'
+import Drink from "./Drink.vue";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 

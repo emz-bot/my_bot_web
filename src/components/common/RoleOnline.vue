@@ -3,14 +3,8 @@
     <n-select v-model:value="server" :options="options" :consistent-menu-width="false" />
     <n-input v-model:value="names_str"/>
     <n-button @click="input">批量导入</n-button>
-  </n-space>
-  <br>
-  <n-space>
-    <n-dynamic-tags v-model:value="names" />
-  </n-space>
-  <br>
-  <n-space>
-    <n-switch v-model:value="auto_update" @update:value="start">
+    <n-button @click="start" :loading="loading">查询</n-button>
+    <n-switch size="large" v-model:value="auto_update" @update:value="start">
       <template #checked>
         自动刷新
       </template>
@@ -18,7 +12,10 @@
         停止刷新
       </template>
     </n-switch>
-    <n-button @click="start" :loading="loading">查询</n-button>
+  </n-space>
+  <br>
+  <n-space>
+    <n-dynamic-tags v-model:value="names" />
   </n-space>
   <br>
   <n-space vertical size="medium">
@@ -84,6 +81,17 @@ const columns = ref([
     title: "位置",
     key: "map",
     width: 70,
+    sorter: 'default',
+    defaultFilterOptionValues: ['离线'],
+    filterOptions: [
+      {
+        label: '不显示离线',
+        value: '离线'
+      },
+    ],
+    filter (value, row) {
+      return row.map != value
+    }
   },
   ]);
 
@@ -103,7 +111,7 @@ function request() {
 }
 
 function input() {
-  names.value = [...names.value, ...names_str.value.split(/\s+/)];
+  names.value = Array.from(new Set([...names.value, ...names_str.value.split(/\s+/)]))
 }
 
 function start() {
