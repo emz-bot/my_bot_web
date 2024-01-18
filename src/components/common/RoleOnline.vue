@@ -78,6 +78,11 @@ const columns = ref([
     width: 70,
   },
   {
+    title: "帮会",
+    key: "tong",
+    width: 70,
+  },
+  {
     title: "位置",
     key: "map",
     width: 70,
