@@ -17,6 +17,7 @@
               v-model:value="login_data.password"
               placeholder="密码"
               clearable
+              @keyup.enter="start_login"
             />
           </n-form-item-row>
         </n-form>
@@ -32,14 +33,6 @@
           >
             登录
           </n-button>
-          <!-- <n-button
-            block
-            secondary
-            strong
-            @click="router.push({ path: '/common/shop' })"
-          >
-            登个锤子，直接购买！
-          </n-button> -->
         </n-space>
       </n-tab-pane>
       <n-tab-pane name="signup" tab="注册/修改密码">

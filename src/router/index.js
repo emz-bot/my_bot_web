@@ -25,6 +25,10 @@ const router = createRouter({
               component: () => import("@/components/common/shop/Shop.vue"),
             },
             {
+              path: 'chat',
+              component: () => import("@/components/common/chat/Chat.vue"),
+            },
+            {
               path: 'botmanage',
               component: () => import("@/components/manage/BotManage.vue"),
             },
