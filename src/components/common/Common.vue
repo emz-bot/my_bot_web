@@ -93,16 +93,16 @@ import WebSocketService from '@/utils/websocket';
 
 const wsService = ref(null);
 wsService.value = new WebSocketService();
-const messages = ref([]);
+const user_message = ref([]);
 onMounted(() => {
   wsService.value.socket.onmessage = (event) => {
     const messageJson = JSON.parse(event.data);
-    console.log(event.data);
-    messages.value.push(`[${messageJson.time}] ${messageJson.username}: ${messageJson.message}`);
-    message.success(`[${messageJson.time}] ${messageJson.username}: ${messageJson.message}`);
+    if (messageJson.type == "user_message") {
+      user_message.value.push(event.data);
+    }
   };
 });
-provide('messages', messages);
+provide('user_message', user_message);
 
 var user_permission = ref(localStorage.user_permission);
 
