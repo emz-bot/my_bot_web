@@ -93,16 +93,17 @@ import WebSocketService from '@/utils/websocket';
 
 const wsService = ref(null);
 wsService.value = new WebSocketService();
-const user_message = ref([]);
+const chat_room_message = ref([]);
 onMounted(() => {
   wsService.value.socket.onmessage = (event) => {
     const messageJson = JSON.parse(event.data);
-    if (messageJson.type == "user_message") {
-      user_message.value.push(event.data);
+    if (messageJson.type == "chat_room_message") {
+      chat_room_message.value.push(event.data);
     }
   };
 });
-provide('user_message', user_message);
+
+provide('chat_room_message', chat_room_message);
 
 var user_permission = ref(localStorage.user_permission);
 

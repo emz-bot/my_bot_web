@@ -14,19 +14,25 @@
 </template>
 
 <script setup>
-import { ref, inject } from 'vue';
+import { ref, inject, onMounted } from 'vue';
 import WebSocketService from '@/utils/websocket';
 import { NInput, NButton } from "naive-ui";
 
 const wsService = ref(null);
 const message_content = ref('');
 
-const messages = inject('messages');
+const messages = inject('chat_room_message');
 
 wsService.value = new WebSocketService();
 
+const init = () => {
+  wsService.value.send({ message: "", type: ''});
+};
+
+init()
+
 const sendMessage = () => {
-  wsService.value.send({ message: message_content.value });
+  wsService.value.send({ message: message_content.value, type: 'chat_room_message', "chat_room_id": 1});
   message_content.value = '';
 };
 </script>
