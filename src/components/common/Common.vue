@@ -98,7 +98,7 @@ onMounted(() => {
   wsService.value.socket.onmessage = (event) => {
     const messageJson = JSON.parse(event.data);
     if (messageJson.type == "chat_room_message") {
-      chat_room_message.value.push(event.data);
+      chat_room_message.value.push(messageJson);
     }
   };
 });
