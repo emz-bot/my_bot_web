@@ -39,16 +39,23 @@
           </n-space>
         </n-space>
         <n-space style="padding:15px">
-          <n-button quaternary circle @click="router.push({ path: '/management' })" v-if="user_permission >= 3">
+          <n-dropdown trigger="hover" :options="user_options" @select="handleSelect">
+            <n-avatar
+              round
+              size="medium"
+              src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg"
+            />
+          </n-dropdown>
+          <!-- <n-button quaternary circle @click="router.push({ path: '/management' })" v-if="user_permission >= 3">
               <n-icon size="22">
                 <PersonCircleOutline />
               </n-icon>
-          </n-button>
-          <n-button quaternary circle @click="logout" v-if="user_permission >= 1">
+          </n-button> -->
+          <!-- <n-button quaternary circle @click="logout" v-if="user_permission >= 1">
               <n-icon size="22">
                 <LogInOutline />
               </n-icon>
-          </n-button>
+          </n-button> -->
         </n-space>
       </n-space>
     </n-layout-header>
@@ -72,6 +79,7 @@
 <script setup>
 import { PersonCircleOutline, LogInOutline } from '@vicons/ionicons5'
 import {
+  NAvatar,
   NDropdown,
   NIcon,
   NTabs,
@@ -109,6 +117,10 @@ var user_permission = ref(localStorage.user_permission);
 
 const router = useRouter();
 const message = useMessage();
+const user_options = ref([
+  {label: "个人中心", key: "个人中心", icon: renderIcon(PersonCircleOutline)},
+  {label: "退出登录", key: "退出登录", icon: renderIcon(LogInOutline)},
+]);
 
 const options = ref([
   {label: "破阵子", key: "破阵子"},
@@ -134,6 +146,14 @@ function sandHandleSelect(key) {
 function rankingHandleSelect(key) {
   router.push({ path: '/common/ranking/'+key })
 }
+
+const renderIcon = (icon) => {
+  return () => {
+    return h(NIcon, null, {
+      default: () => h(icon)
+    });
+  };
+};
 
 function logout() {
   message.success("登出成功");
