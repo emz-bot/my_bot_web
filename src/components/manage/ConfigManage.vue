@@ -102,14 +102,24 @@
             百度违禁词密钥：
         </template>
     </n-input>
-    <n-input placeholder="nlp_secretId" v-model:value="data.nlp_secretId" size="small">
+    <n-input placeholder="secret_id" v-model:value="data.secret_id" size="small">
         <template #prefix>
-            腾讯自然语言 ID：
+            腾讯对象存储 ID：
         </template>
     </n-input>
-    <n-input placeholder="nlp_secretKey" type="password" v-model:value="data.nlp_secretKey" size="small">
+    <n-input placeholder="secret_key" type="password" v-model:value="data.secret_key" size="small">
         <template #prefix>
-            腾讯自然语言密钥：
+            腾讯对象存储密钥：
+        </template>
+    </n-input>
+    <n-input placeholder="region" v-model:value="data.region" size="small">
+        <template #prefix>
+            腾讯对象存储region：
+        </template>
+    </n-input>
+    <n-input placeholder="bucket" v-model:value="data.bucket" size="small">
+        <template #prefix>
+            腾讯对象存储桶名：
         </template>
     </n-input>
     <n-input placeholder="nlp_secretKey" type="password" v-model:value="data.alipay_app_id" size="small">

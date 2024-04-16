@@ -89,7 +89,7 @@ import WebSocketService from '@/utils/websocket';
 const wsService = ref(null);
 wsService.value = new WebSocketService();
 const chat_room_message = ref([]);
-const vatar_url = ref(`${window.gurl.OSS_BASE_URL}/jianghu/avatar/${localStorage.user_id}.png`)
+const vatar_url = ref(`${window.gurl.OSS_BASE_URL}jianghu/avatar/${localStorage.user_id}.webp`)
 
 onMounted(() => {
   wsService.value.socket.onmessage = (event) => {

@@ -28,7 +28,7 @@ import { NAvatar, NButton, NModal, NIcon, NCard } from "naive-ui";
 import { CreateOutline, EyeOutline } from '@vicons/ionicons5'
 import { upload_avatar } from "@/utils/jianghu_api";
 
-let avatarUrl = ref(`${window.gurl.OSS_BASE_URL}/jianghu/avatar/${localStorage.user_id}.png`);
+let avatarUrl = ref(`${window.gurl.OSS_BASE_URL}jianghu/avatar/${localStorage.user_id}.webp`);
 let fileInput = ref(null);
 let showDialog = ref(false);
 
@@ -40,11 +40,12 @@ const handleFileUpload = (event) => {
         return;
     }
     // 检查文件大小，限制为 2MB
-    if (file.size > 100 * 1024 * 1024) {
-        alert('文件大小不能超过 100MB');
+    if (file.size > 2 * 1024 * 1024) {
+        alert('文件大小不能超过 2MB');
         return;
     }
     uploadFile(file).then();
+    window.location.reload();
 };
 
 const uploadFile = async (file) => {
