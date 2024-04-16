@@ -72,8 +72,6 @@ import {
   NAvatar,
   NDropdown,
   NIcon,
-  NTabs,
-  NTabPane,
   NCard,
   NButton,
   NSpace,
@@ -82,7 +80,6 @@ import {
   NLayout,
   NLayoutHeader,
   NLayoutFooter,
-  NLayoutContent,
 } from "naive-ui";
 
 import { ref, onMounted, provide, h } from "vue";
