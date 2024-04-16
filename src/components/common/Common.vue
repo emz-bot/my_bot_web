@@ -39,23 +39,13 @@
           </n-space>
         </n-space>
         <n-space style="padding:15px">
-          <n-dropdown trigger="hover" :options="user_options" @select="handleSelect">
+          <n-dropdown trigger="hover" :options="user_options" @select="userHandleSelect">
             <n-avatar
               round
               size="medium"
               src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg"
             />
           </n-dropdown>
-          <!-- <n-button quaternary circle @click="router.push({ path: '/management' })" v-if="user_permission >= 3">
-              <n-icon size="22">
-                <PersonCircleOutline />
-              </n-icon>
-          </n-button> -->
-          <!-- <n-button quaternary circle @click="logout" v-if="user_permission >= 1">
-              <n-icon size="22">
-                <LogInOutline />
-              </n-icon>
-          </n-button> -->
         </n-space>
       </n-space>
     </n-layout-header>
@@ -95,13 +85,14 @@ import {
   NLayoutContent,
 } from "naive-ui";
 
-import { ref, onMounted, provide } from "vue";
+import { ref, onMounted, provide, h } from "vue";
 import { useRouter } from "vue-router";
 import WebSocketService from '@/utils/websocket';
 
 const wsService = ref(null);
 wsService.value = new WebSocketService();
 const chat_room_message = ref([]);
+
 onMounted(() => {
   wsService.value.socket.onmessage = (event) => {
     const messageJson = JSON.parse(event.data);
@@ -147,7 +138,15 @@ function rankingHandleSelect(key) {
   router.push({ path: '/common/ranking/'+key })
 }
 
-const renderIcon = (icon) => {
+function userHandleSelect(key) {
+  if (key == "退出登录") {
+    logout();
+  } else if (key == "个人中心") {
+    router.push({ path: '/common/user' })
+  }
+}
+
+function renderIcon(icon) {
   return () => {
     return h(NIcon, null, {
       default: () => h(icon)

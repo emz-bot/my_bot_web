@@ -1,7 +1,9 @@
 <template>
   <div ref="messageContainer" style="height: 500px; overflow: auto;">
     <n-space vertical size="medium" v-for="i in messages" :key="i.id">
-      <span style="color: aquamarine;">{{ i.time }} {{ i.nickname }}</span>
+      <div>
+        <span style="color: aquamarine;">{{ i.nickname }}</span><span style="color:cadetblue;margin-left: 10px;"> {{ i.time }}</span>
+      </div>
       <div style="padding-left: 20px;">
         <span v-html="formatMessage(i.message)"></span>
       </div>

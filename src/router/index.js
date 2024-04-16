@@ -21,6 +21,16 @@ const router = createRouter({
           component: () => import("@/components/common/Common.vue"),
           children: [
             {
+              path: 'user',
+              component: () => import("@/components/common/user/UserCente.vue"),
+              children: [
+                {
+                  path: 'user_cente', 
+                  component: () => import("@/components/common/user/UserCente.vue")
+                },
+              ]
+            },
+            {
               path: 'shop',
               component: () => import("@/components/common/shop/Shop.vue"),
             },
