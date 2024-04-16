@@ -43,7 +43,7 @@
             <n-avatar
               round
               size="medium"
-              src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg"
+              :src="vatar_url"
             />
           </n-dropdown>
         </n-space>
@@ -89,6 +89,7 @@ import WebSocketService from '@/utils/websocket';
 const wsService = ref(null);
 wsService.value = new WebSocketService();
 const chat_room_message = ref([]);
+const vatar_url = ref(`${window.gurl.OSS_BASE_URL}/jianghu/avatar/${localStorage.user_id}.png`)
 
 onMounted(() => {
   wsService.value.socket.onmessage = (event) => {

@@ -118,6 +118,7 @@ async function start_login() {
       localStorage.setItem("token", res.data.token);
       localStorage.setItem("username", res.data.username);
       localStorage.setItem("user_permission", res.data.user_permission);
+      localStorage.setItem("user_id", res.data.id);
       if (localStorage.beforeRouter && localStorage.beforeRouter != "/") {
         router.push({ path: localStorage.beforeRouter });
       } else if (res.data.user_permission >= 3) {

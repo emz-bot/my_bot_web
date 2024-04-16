@@ -28,21 +28,30 @@ import { NAvatar, NButton, NModal, NIcon, NCard } from "naive-ui";
 import { CreateOutline, EyeOutline } from '@vicons/ionicons5'
 import { upload_avatar } from "@/utils/jianghu_api";
 
-let avatarUrl = ref("https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg");
+let avatarUrl = ref(`${window.gurl.OSS_BASE_URL}/jianghu/avatar/${localStorage.user_id}.png`);
 let fileInput = ref(null);
 let showDialog = ref(false);
 
 const handleFileUpload = (event) => {
     const file = event.target.files[0];
-    uploadFile(file).then(url => {
-        avatarUrl.value = url;
-    });
+    // 检查文件类型
+    if (!file.type.startsWith('image/')) {
+        alert('只能上传图片文件');
+        return;
+    }
+    // 检查文件大小，限制为 2MB
+    if (file.size > 100 * 1024 * 1024) {
+        alert('文件大小不能超过 100MB');
+        return;
+    }
+    uploadFile(file).then();
 };
 
 const uploadFile = async (file) => {
     await upload_avatar(file).then((res) => {
     if (res.code == 200) {
-      console.log(res.data);
+        console.log(res.data.avatar_url);
+        avatarUrl.value = res.data.avatar_url
     }
   });
 };
