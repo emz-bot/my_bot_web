@@ -5,25 +5,28 @@
         <div class="avatar-buttons">
             <n-button class="avatar-button" text @click="fileInputClick">
                 <n-icon size="22px">
-                    <PersonCircleOutline />
+                    <CreateOutline />
                 </n-icon>
             </n-button>
             <n-button class="avatar-button" text @click="openDialog">
                 <n-icon size="22px">
-                    <LogInOutline />
+                    <EyeOutline />
                 </n-icon>
             </n-button>
         </div>
-        <n-dialog v-model:visible="showDialog">
-            <img :src="avatarUrl" alt="Avatar" style="width: 100%; height: auto;">
-        </n-dialog>
+        <n-modal v-model:show="showDialog">
+            <n-card style="width: 445px; text-align: center;">
+                <img :src="avatarUrl" alt="Avatar" style="width: 400px; height: auto;">
+            </n-card>
+        </n-modal>
     </div>
 </template>
 
 <script setup>
 import { ref } from 'vue';
-import { NAvatar, NButton, NDialog, NIcon } from "naive-ui";
-import { PersonCircleOutline, LogInOutline } from '@vicons/ionicons5'
+import { NAvatar, NButton, NModal, NIcon, NCard } from "naive-ui";
+import { CreateOutline, EyeOutline } from '@vicons/ionicons5'
+import { upload_avatar } from "@/utils/jianghu_api";
 
 let avatarUrl = ref("https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg");
 let fileInput = ref(null);
@@ -36,13 +39,12 @@ const handleFileUpload = (event) => {
     });
 };
 
-const uploadFile = (file) => {
-    // 这里是一个示例，你需要替换为实际的上传代码
-    return new Promise(resolve => {
-        setTimeout(() => {
-            resolve(URL.createObjectURL(file));
-        }, 1000);
-    });
+const uploadFile = async (file) => {
+    await upload_avatar(file).then((res) => {
+    if (res.code == 200) {
+      console.log(res.data);
+    }
+  });
 };
 
 const fileInputClick = () => {

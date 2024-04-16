@@ -167,3 +167,30 @@ export function put (url, data = {}) {
            })
     })
   }
+
+/**
+ * 封装文件上传方法
+ * @param url
+ * @param file
+ * @returns {Promise}
+ */
+export function uploadFile(url, file) {
+  return new Promise((resolve, reject) => {
+      const formData = new FormData();
+      formData.append('file', file);
+
+      axios.post(url, formData, {
+          headers: {
+              'Content-Type': 'multipart/form-data'
+          }
+      }).then(response => {
+          if (response.status === 200) {
+              resolve(response.data);
+          } else {
+              reject(`Upload failed with status code ${response.status}`);
+          }
+      }).catch(error => {
+          reject(error);
+      });
+  });
+}
