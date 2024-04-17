@@ -35,8 +35,14 @@ const router = createRouter({
               component: () => import("@/components/common/shop/Shop.vue"),
             },
             {
-              path: 'chat',
-              component: () => import("@/components/common/chat/Chat.vue"),
+              path: 'chat_room',
+              component: () => import("@/components/common/chat/ChatRoom.vue"),
+              children: [
+                {
+                  path: 'chat/:chat_room_id', 
+                  component: () => import("@/components/common/chat/Chat.vue")
+                },
+              ]
             },
             {
               path: 'botmanage',
@@ -72,6 +78,11 @@ router.beforeEach((to, from) => {
     }
     if (!isLogin && to.path != "/login" & to.path != "/common/shop" & to.path.substring(0,12) != "/common/sand" & to.path.substring(0,15) != "/common/ranking") {
         return { path: "/login" };
+    }
+    if (to.params.chat_room_id !== undefined) {
+      console.log(111111, to.params.chat_room_id);
+      to.params.chat_room_id = Number(to.params.chat_room_id);
+      console.log(22222222, to.params.chat_room_id);
     }
     return true;
 });
