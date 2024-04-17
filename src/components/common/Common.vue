@@ -94,13 +94,11 @@ const vatar_url = ref(`${window.gurl.OSS_BASE_URL}jianghu/avatar/${localStorage.
 onMounted(() => {
   wsService.value.socket.onmessage = (event) => {
     const messageJson = JSON.parse(event.data);
-    console.log(messageJson);
     if (messageJson.type == "chat_room_message") {
       if (!chat_room_message.value[messageJson.chat_room_id]){
         chat_room_message.value[messageJson.chat_room_id] = []
       }
       chat_room_message.value[messageJson.chat_room_id].push(messageJson)
-      console.log(chat_room_message);
     }
   };
 });

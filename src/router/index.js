@@ -37,12 +37,6 @@ const router = createRouter({
             {
               path: 'chat_room',
               component: () => import("@/components/common/chat/ChatRoom.vue"),
-              children: [
-                {
-                  path: 'chat/:chat_room_id', 
-                  component: () => import("@/components/common/chat/Chat.vue")
-                },
-              ]
             },
             {
               path: 'botmanage',
