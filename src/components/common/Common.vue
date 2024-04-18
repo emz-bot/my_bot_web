@@ -88,22 +88,22 @@ import WebSocketService from '@/utils/websocket';
 
 const wsService = ref(null);
 wsService.value = new WebSocketService();
-const chat_room_message = ref({});
+const channel_message = ref({});
 const vatar_url = ref(`${window.gurl.OSS_BASE_URL}jianghu/avatar/${localStorage.user_id}.webp`)
 
 onMounted(() => {
   wsService.value.socket.onmessage = (event) => {
     const messageJson = JSON.parse(event.data);
-    if (messageJson.type == "chat_room_message") {
-      if (!chat_room_message.value[messageJson.chat_room_id]){
-        chat_room_message.value[messageJson.chat_room_id] = []
+    if (messageJson.type == "channel_message") {
+      if (!channel_message.value[messageJson.channel_id]){
+        channel_message.value[messageJson.channel_id] = []
       }
-      chat_room_message.value[messageJson.chat_room_id].push(messageJson)
+      channel_message.value[messageJson.channel_id].push(messageJson)
     }
   };
 });
 
-provide('chat_room_message', chat_room_message);
+provide('channel_message', channel_message);
 
 var user_permission = ref(localStorage.user_permission);
 

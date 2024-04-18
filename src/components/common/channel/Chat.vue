@@ -33,7 +33,7 @@ let messageContainer = ref(null);
 let message_history = ref([]);
 let current_history_index = ref(-1);
 
-const messages = inject('chat_room_message');
+const messages = inject('channel_message');
 const inputRef = ref(null);
 const props = defineProps({
   chatRoomId: Number
@@ -48,7 +48,7 @@ const sendMessage = () => {
     message_history.value.push(message_content.value);
   }
   current_history_index.value = message_history.value.length;
-  wsService.value.send({ message: message_content.value, type: 'chat_room_message', "chat_room_id": props.chatRoomId});
+  wsService.value.send({ message: message_content.value, type: 'channel_message', "channel_id": props.chatRoomId});
   message_content.value = '';
 };
 
