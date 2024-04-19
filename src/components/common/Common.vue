@@ -80,6 +80,7 @@ import {
   NLayout,
   NLayoutHeader,
   NLayoutFooter,
+  NLayoutSider,
 } from "naive-ui";
 
 import { ref, onMounted, provide, h } from "vue";

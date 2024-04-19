@@ -80,6 +80,7 @@ import {
   NLayoutHeader,
   NLayoutFooter,
   NLayoutContent,
+  NLayoutSider,
 } from "naive-ui";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
