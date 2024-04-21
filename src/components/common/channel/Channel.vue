@@ -32,9 +32,9 @@
         <n-space vertical>
           <div v-for="(panel, index) in panelsRef" :key="index" class="panel-button"
             style="display: flex; align-items: center; position: relative;">
-            <n-button @click="handleClick(panel)" :class="{ 'active-button': selectedPanel === panel }"
-              style="width: 100%; text-overflow: ellipsis; white-space: nowrap;">{{ panel }}</n-button>
-            <n-button class="close-button" @click="handleClose(panel)" text
+            <n-button @click="handleClick(panel.channel_id)" :class="{ 'active-button': selectedPanel === panel.channel_id }"
+              style="width: 100%; text-overflow: ellipsis; white-space: nowrap;">{{ panel.channel_name }}</n-button>
+            <n-button class="close-button" @click="handleClose(panel.channel_id)" text
               style="padding: 5px; visibility: hidden; position: absolute; right: 0; top: 50%; transform: translateY(-50%);">
               <n-icon>
                 <CloseOutline />
@@ -66,7 +66,7 @@ import { ref, inject, watch, onMounted } from 'vue';
 import Chat from "./Chat.vue";
 import { useMessage, NButton, NSpace, NScrollbar, NIcon, NCard, NModal, NInput, NSpin, NTooltip } from "naive-ui";
 import { CloseOutline } from '@vicons/ionicons5'
-import { create_channel } from '@/utils/jianghu_api';
+import { create_channel, get_channel_list } from '@/utils/jianghu_api';
 
 
 
@@ -76,7 +76,7 @@ const channelName = ref('')
 const nameRef = ref(1)
 const message = useMessage()
 const selectedPanel = ref(null)
-const panelsRef = ref([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15])
+const panelsRef = ref([])
 const isLoading = ref(false)
 const searchTerm = ref('');
 
@@ -124,7 +124,18 @@ function handleKeyDown(event) {
   }
 }
 
+const fetchChannelList = async () => {
+      const res = await get_channel_list()
+      if (res.code === 200) {
+        console.log(res.data)
+        panelsRef.value = res.data
+      } else {
+        console.log(res.msg)
+      }
+    }
+
 onMounted(() => {
+  fetchChannelList()
   if (panelsRef.value.length === 0) {
     message.error('没有频道')
     return
