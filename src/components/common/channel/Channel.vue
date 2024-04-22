@@ -131,15 +131,16 @@ async function api_create_channel() {
 }
 
 
-function search() {
+async function search() {
   const res = await fetchChannelList()
-  const searchValue = Number(searchTerm.value);
+  console.log('search', res);
+  const searchValue = searchTerm.value;
   console.log('searchValue', searchValue);
-  const panel = res.value.find(p => p === searchValue);
-  console.log(panelsRef.value);
+  const panel = res.find(p => p.channel_name === searchValue);
+  console.log(panel);
   if (panel) {
     console.log('panel', panel);
-    handleClick(panel);
+    handleClick(panel.channel_id);
   } else {
     message.error('未找到匹配的聊天室');
   }
