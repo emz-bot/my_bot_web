@@ -2,7 +2,7 @@
   <div ref="messageContainer" style="height: 500px; overflow: auto;">
     <n-space vertical size="medium" v-for="i in messages[props.chatRoomId]" :key="i.id">
       <div>
-        <span style="color: aquamarine;">{{ i.nickname }}</span><span style="color:cadetblue;margin-left: 10px;"> {{ i.time }}</span>
+        <span style="color: aquamarine;">{{ i.user_info.nickname }}({{ i.user_info.id }})</span><span style="color:cadetblue;margin-left: 10px;"> {{ i.time }}</span>
       </div>
       <div style="padding-left: 20px;">
         <span v-html="formatMessage(i.message)"></span>
@@ -48,6 +48,7 @@ const sendMessage = () => {
     message_history.value.push(message_content.value);
   }
   current_history_index.value = message_history.value.length;
+  console.log('send message', message_content.value);
   wsService.value.send({ message: message_content.value, type: 'channel_message', "channel_id": props.chatRoomId});
   message_content.value = '';
 };

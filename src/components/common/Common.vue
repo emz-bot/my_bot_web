@@ -30,17 +30,14 @@
                 战功榜
               </n-button>
             </n-dropdown>
-            <n-button text @click="router.push({ path: '/common/role_online' })" v-if="user_permission >= 2">
-              角色位置
+            <n-button text @click="router.push({ path: '/common/channel' })">
+              频道
             </n-button>
-            <!-- <n-button text @click="router.push({ path: '/common/shop' })">
-                商店
-              </n-button> -->
           </n-space>
         </n-space>
         <n-space style="padding:15px">
           <n-dropdown trigger="hover" :options="user_options" @select="userHandleSelect">
-            <n-badge :value="sys_message.length" :max="99">
+            <n-badge :value="sys_message_count" :max="99">
               <n-avatar round size="medium" :src="vatar_url" />
             </n-badge>
           </n-dropdown>
@@ -61,6 +58,7 @@
   </n-layout>
   <n-modal
       v-model:show="sys_message_show"
+      @after-leave="get_sys_message"
       title="系统消息"
       preset="dialog"
     >
@@ -71,7 +69,7 @@
 </template>
 
 <script setup>
-import { PersonCircleOutline, LogInOutline, MagnetSharp } from '@vicons/ionicons5'
+import { PersonCircleOutline, LogInOutline } from '@vicons/ionicons5'
 import {
   NModal,
   NBadge,
@@ -95,13 +93,17 @@ import WebSocketService from '@/utils/websocket';
 import { get_sys_msg } from '@/utils/jianghu_api';
 import SysMsg from "./channel/SysMsg.vue";
 
-var sys_message = ref([]);
 
+const vatar_url = ref(`${window.gurl.OSS_BASE_URL}jianghu/avatar/${localStorage.user_id}.webp`)
+
+var sys_message = ref([]);
+var sys_message_count = ref(0);
 const sys_message_show = ref(false);
+
+const channel_message = ref({});
 const wsService = ref(null);
 wsService.value = new WebSocketService();
-const channel_message = ref({});
-const vatar_url = ref(`${window.gurl.OSS_BASE_URL}jianghu/avatar/${localStorage.user_id}.webp`)
+provide('channel_message', channel_message);
 
 onMounted(() => {
   wsService.value.socket.onmessage = (event) => {
@@ -115,7 +117,6 @@ onMounted(() => {
   };
 });
 
-provide('channel_message', channel_message);
 
 var user_permission = ref(localStorage.user_permission);
 
@@ -125,7 +126,7 @@ const message = useMessage();
 const user_options = ref([
   { label: "个人中心", key: "个人中心", icon: renderIcon(PersonCircleOutline) },
   { label: "退出登录", key: "退出登录", icon: renderIcon(LogInOutline) },
-  { label: `消息 (${sys_message.value.length})`, key: "消息", icon: renderIcon(LogInOutline) }
+  { label: `消息 (${sys_message_count.value})`, key: "消息", icon: renderIcon(LogInOutline) }
 ]);
 
 const options = ref([
@@ -164,7 +165,7 @@ function userHandleSelect(key) {
 }
 
 function show_sys_message() {
-  sys_message_show.value = true;
+    sys_message_show.value = true;
 }
 
 function renderIcon(icon) {
@@ -179,6 +180,8 @@ function get_sys_message() {
   get_sys_msg().then(res => {
     if (res.code == 200) {
       sys_message.value = res.data
+      sys_message_count.value = res.data.filter(item => item.is_read == false).length
+      console.log(sys_message_count.value)
     }
   })
 }

@@ -1,36 +1,57 @@
 <template>
-    <div class="avatar-container">
-        <n-avatar :size="100" :src="avatarUrl" class="avatar" />
-        <input type="file" ref="fileInput" @change="handleFileUpload" style="display: none">
-        <div class="avatar-buttons">
-            <n-button class="avatar-button" text @click="fileInputClick">
-                <n-icon size="22px">
-                    <CreateOutline />
-                </n-icon>
+    <n-space>
+        <n-space class="avatar-container">
+            <n-avatar :size="100" :src="avatarUrl" class="avatar" />
+            <input type="file" ref="fileInput" @change="handleFileUpload" style="display: none">
+            <div class="avatar-buttons">
+                <n-button class="avatar-button" text @click="fileInputClick">
+                    <n-icon size="22px">
+                        <CreateOutline />
+                    </n-icon>
+                </n-button>
+                <n-button class="avatar-button" text @click="openDialog">
+                    <n-icon size="22px">
+                        <EyeOutline />
+                    </n-icon>
+                </n-button>
+            </div>
+            <n-modal v-model:show="showDialog">
+                <n-card style="width: 445px; text-align: center;">
+                    <img :src="avatarUrl" alt="Avatar" style="width: 400px; height: auto;">
+                </n-card>
+            </n-modal>
+        </n-space>
+        <n-space>
+            <n-input-group>
+            <n-input :style="{ width: '50%' }" v-model:value="nickname" />
+            <n-button type="primary" ghost @click="updateUserInfo">
+                更新
             </n-button>
-            <n-button class="avatar-button" text @click="openDialog">
-                <n-icon size="22px">
-                    <EyeOutline />
-                </n-icon>
-            </n-button>
-        </div>
-        <n-modal v-model:show="showDialog">
-            <n-card style="width: 445px; text-align: center;">
-                <img :src="avatarUrl" alt="Avatar" style="width: 400px; height: auto;">
-            </n-card>
-        </n-modal>
-    </div>
+            </n-input-group>
+        </n-space>
+    </n-space>
 </template>
 
 <script setup>
 import { ref } from 'vue';
-import { NAvatar, NButton, NModal, NIcon, NCard } from "naive-ui";
+import { NSpace, NInputGroup, NInput, NAvatar, NButton, NModal, NIcon, NCard } from "naive-ui";
 import { CreateOutline, EyeOutline } from '@vicons/ionicons5'
-import { upload_avatar } from "@/utils/jianghu_api";
+import { upload_avatar, set_user_info } from "@/utils/jianghu_api";
 
 let avatarUrl = ref(`${window.gurl.OSS_BASE_URL}jianghu/avatar/${localStorage.user_id}.webp`);
 let fileInput = ref(null);
 let showDialog = ref(false);
+
+let nickname = ref(localStorage.nickname);
+
+function updateUserInfo() {
+    set_user_info({nickname: nickname.value}).then((res) => {
+        if (res.code == 200) {
+            console.log('更新成功');
+            localStorage.nickname = nickname.value;
+        }
+    });
+}
 
 const handleFileUpload = (event) => {
     const file = event.target.files[0];
