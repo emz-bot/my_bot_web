@@ -9,11 +9,16 @@
     <n-modal v-model:show="showModal">
       <div style="position: relative;">
         <n-card style="width: 600px" title="创建或加入频道" :bordered="false" size="huge" role="dialog" aria-modal="true">
-          <n-radio-group v-model:value="channelAction">
-            <n-radio :label="'create'">创建频道</n-radio>
-            <n-radio :label="'join'">加入频道</n-radio>
-          </n-radio-group>
-          <n-input v-model:value="channelName" :placeholder="placeholderText"></n-input>
+          <n-radio value="join" :default-checked="true" :checked="channelAction === 'join'"
+            @change="channelAction = 'join'">
+            加入频道
+          </n-radio>
+          <n-radio value="create" :checked="channelAction === 'create'" @change="channelAction = 'create'">
+            创建频道
+          </n-radio>
+
+          <n-input v-model:value="channelName" :placeholder="placeholderText" @keyup.enter="handleChannelAction"
+            @keyup.esc="handleCancel"></n-input>
           <template #footer>
             <div style="display: flex; justify-content: flex-end;">
               <n-space>
@@ -36,7 +41,10 @@
             style="display: flex; align-items: center; position: relative;">
             <n-button @click="handleClick(panel.channel_id)"
               :class="{ 'active-button': selectedPanel === panel.channel_id }"
-              style="width: 100%; text-overflow: ellipsis; white-space: nowrap;">{{ panel.channel_name }}</n-button>
+              style="width: 100%; text-overflow: ellipsis; white-space: nowrap;"
+              @contextmenu.prevent="handleRightClick(panel.channel_id)"> 
+              {{ panel.channel_name }}
+            </n-button>
             <n-button class="close-button" @click="handleClose(panel.channel_id)" text
               style="padding: 5px; visibility: hidden; position: absolute; right: 0; top: 50%; transform: translateY(-50%);">
               <n-icon>
@@ -73,7 +81,7 @@ import { create_channel, get_channel_list, join_channel } from '@/utils/jianghu_
 
 
 
-const channelAction = ref('');
+const channelAction = ref('join');
 
 const messages = inject('channel_message');
 const showModal = ref(false)
@@ -84,11 +92,18 @@ const selectedPanel = ref(null)
 const panelsRef = ref([])
 const isLoading = ref(false)
 const searchTerm = ref('');
+const closedChannels = ref([]);
 
+
+
+function handleRightClick(channelId) {
+  showModal.value = true; 
+  channelName.value = channelId; 
+  console.log('channelId', channelId);
+}
 
 async function handleChannelAction() {
   if (channelAction.value === 'create') {
-    console.log(channelAction.value)
     await api_create_channel()
   } else if (channelAction.value === 'join') {
     await api_join_channel()
@@ -99,7 +114,7 @@ async function api_join_channel() {
   isLoading.value = true
   try {
     const channelId = parseInt(channelName.value, 10);
-    const res = await join_channel({ "channel_id": channelId, "user_id": localStorage.user_id});
+    const res = await join_channel({ "channel_id": channelId, "user_id": localStorage.user_id });
     if (res.code == 200) {
       message.success('加入成功')
       showModal.value = false
@@ -172,8 +187,8 @@ const fetchChannelList = async () => {
   const res = await get_channel_list()
   if (res.code === 200) {
     // console.log(res.data)
-    panelsRef.value = res.data
-    return res.data
+    panelsRef.value = res.data.filter(panel => !closedChannels.value.includes(panel.channel_id)); //过滤掉已关闭的频道
+    return panelsRef.value
   } else {
     message.error(res.msg)
   }
@@ -208,6 +223,7 @@ function handleClose(name) {
     message.error('最后一个了')
     return
   }
+  closedChannels.value.push(name);
   // message.info('关掉 ' + name)
   const index = panels.findIndex((v) => name === v)
   panels.splice(index, 1)
