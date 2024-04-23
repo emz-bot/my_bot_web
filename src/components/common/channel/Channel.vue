@@ -192,13 +192,9 @@ async function api_create_channel() {
 //搜索
 async function search() {
   const res = await fetchChannelList()
-  console.log('search', res);
   const searchValue = searchTerm.value;
-  console.log('searchValue', searchValue);
   const panel = res.find(p => p.channel_name === searchValue);
-  console.log(panel);
   if (panel) {
-    console.log('panel', panel);
     handleClick(panel.channel_id);
   } else {
     message.error('未找到匹配的聊天室');
@@ -219,7 +215,6 @@ function handleClick(panel) {
 const fetchChannelList = async () => {
   const res = await get_channel_list()
   if (res.code === 200) {
-    // console.log(res.data)
     panelsRef.value = res.data.filter(panel => !closedChannels.value.includes(panel.channel_id)); //过滤掉已关闭的频道
     return panelsRef.value
   } else {

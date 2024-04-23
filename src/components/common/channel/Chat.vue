@@ -48,7 +48,6 @@ const sendMessage = () => {
     message_history.value.push(message_content.value);
   }
   current_history_index.value = message_history.value.length;
-  console.log('send message', message_content.value);
   wsService.value.send({ message: message_content.value, type: 'channel_message', "channel_id": props.chatRoomId});
   message_content.value = '';
 };
