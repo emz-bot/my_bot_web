@@ -4,8 +4,13 @@
         <n-space v-for="msg in unread_msg" :key="msg.id">
             <n-card :bordered="false" v-if="msg.type == 'channel_apply'">
                 用户 {{ msg.user_id }} 申请加入频道 {{ msg.channel_id }}
-                <n-button quaternary type="primary" @click="acceptChannelApply(msg)">同意</n-button>
-                <n-button quaternary type="error" @click="rejectChannelApply(msg)">拒绝</n-button>
+                <span v-if="msg.status == '已同意' || msg.status == '已拒绝'">
+                    <n-button quaternary disabled>{{ msg.status }}</n-button>
+                </span>
+                <span v-else>
+                    <n-button quaternary type="primary" @click="acceptChannelApply(msg)">同意</n-button>
+                    <n-button quaternary type="error" @click="rejectChannelApply(msg)">拒绝</n-button>
+                </span>
                 <p class="msg_datetime">{{formatDate(msg.create_time)}}</p>
             </n-card>
             <n-card :bordered="false" v-if="msg.type == 'channel_reject'">
@@ -18,9 +23,13 @@
         <n-space v-for="msg in read_msg" :key="msg.id">
             <n-card :bordered="false" v-if="msg.type == 'channel_apply'">
                 用户 {{ msg.user_id }} 申请加入频道 {{ msg.channel_id }}
-                <n-button quaternary type="primary" @click="acceptChannelApply(msg)">同意</n-button>
-                <n-button quaternary type="error" @click="rejectChannelApply(msg)">拒绝</n-button>
-                <p class="msg_datetime">{{formatDate(msg.create_time)}}</p>
+                <span v-if="msg.status == '已同意' || msg.status == '已拒绝'">
+                    <n-button quaternary disabled>{{ msg.status }}</n-button>
+                </span>
+                <span v-else>
+                    <n-button quaternary type="primary" @click="acceptChannelApply(msg)">同意</n-button>
+                    <n-button quaternary type="error" @click="rejectChannelApply(msg)">拒绝</n-button>
+                </span>
             </n-card>
             <n-card :bordered="false" v-if="msg.type == 'channel_reject'">
                 管理员 {{ msg.user_id }} 拒绝了您加入频道 {{ msg.channel_id }} 的申请
@@ -66,6 +75,7 @@ async function acceptChannelApply(msg) {
     const res = await accept_channel_apply({ "channel_id": msg.channel_id, "user_id": msg.user_id });
     if (res.code == 200) {
         message.success('已同意')
+        msg.status = '已同意'
     } else {
         message.error(res.msg)
     }
@@ -75,6 +85,7 @@ async function rejectChannelApply(msg) {
     const res = await reject_channel_apply({ "channel_id": msg.channel_id, "user_id": msg.user_id });
     if (res.code == 200) {
         message.success('已拒绝')
+        msg.status = '已拒绝'
     } else {
         message.error(res.msg)
     }

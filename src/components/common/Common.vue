@@ -69,7 +69,7 @@
 </template>
 
 <script setup>
-import { PersonCircleOutline, LogInOutline } from '@vicons/ionicons5'
+import { PersonCircleOutline, LogInOutline, NotificationsOutline } from '@vicons/ionicons5'
 import {
   NModal,
   NBadge,
@@ -87,7 +87,7 @@ import {
   NLayoutSider,
 } from "naive-ui";
 
-import { ref, onMounted, provide, h } from "vue";
+import { ref, onMounted, provide, h, computed, watchEffect } from "vue";
 import { useRouter } from "vue-router";
 import WebSocketService from '@/utils/websocket';
 import { get_sys_msg } from '@/utils/jianghu_api';
@@ -123,10 +123,24 @@ var user_permission = ref(localStorage.user_permission);
 const router = useRouter();
 const message = useMessage();
 
+const computedMessageCount = ref("");
+
+watchEffect(() => {
+  computedMessageCount.value = computed(() => {
+    if (sys_message_count.value === 0) {
+      return '消息';
+    } else if (sys_message_count.value > 99) {
+      return '消息 (99+)';
+    } else {
+      return `消息 (${sys_message_count.value})`;
+    }
+  });
+});
+
 const user_options = ref([
   { label: "个人中心", key: "个人中心", icon: renderIcon(PersonCircleOutline) },
   { label: "退出登录", key: "退出登录", icon: renderIcon(LogInOutline) },
-  { label: `消息 (${sys_message_count.value})`, key: "消息", icon: renderIcon(LogInOutline) }
+  { label: computedMessageCount.value, key: "消息", icon: renderIcon(NotificationsOutline) }
 ]);
 
 const options = ref([
@@ -181,7 +195,7 @@ function get_sys_message() {
     if (res.code == 200) {
       sys_message.value = res.data
       sys_message_count.value = res.data.filter(item => item.is_read == false).length
-      console.log(sys_message_count.value)
+      console.log(sys_message.value)
     }
   })
 }

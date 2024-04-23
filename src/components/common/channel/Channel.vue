@@ -97,7 +97,7 @@ async function api_join_channel() {
   isLoading.value = true
   try {
     const channelId = parseInt(channelName.value, 10);
-    const res = await join_channel({ "channel_id": channelId});
+    const res = await join_channel({ "channel_id": channelId, "user_id": localStorage.user_id});
     if (res.code == 200) {
       message.success('加入成功')
       showModal.value = false
