@@ -95,13 +95,19 @@ const searchTerm = ref('');
 const closedChannels = ref([]);
 
 
-
+//右键点击
 function handleRightClick(channelId) {
   showModal.value = true; 
   channelName.value = channelId; 
   console.log('channelId', channelId);
 }
+//提示文字
+const placeholderText = computed(() => {
+  const text = channelAction.value === 'create' ? '请输入频道名称' : '请输入频道id';
+  return text;
+});
 
+//加号单选卡
 async function handleChannelAction() {
   if (channelAction.value === 'create') {
     await api_create_channel()
@@ -109,14 +115,14 @@ async function handleChannelAction() {
     await api_join_channel()
   }
 }
-
+//加入频道
 async function api_join_channel() {
   isLoading.value = true
   try {
     const channelId = parseInt(channelName.value, 10);
     const res = await join_channel({ "channel_id": channelId, "user_id": localStorage.user_id });
     if (res.code == 200) {
-      message.success('加入成功')
+      message.success('申请成功')
       showModal.value = false
       await fetchChannelList();
     } else {
@@ -128,7 +134,7 @@ async function api_join_channel() {
     isLoading.value = false
   }
 }
-
+//创建频道
 async function api_create_channel() {
   isLoading.value = true
   try {
@@ -147,7 +153,7 @@ async function api_create_channel() {
   }
 }
 
-
+//搜索
 async function search() {
   const res = await fetchChannelList()
   console.log('search', res);
@@ -163,15 +169,12 @@ async function search() {
   }
 }
 
-const placeholderText = computed(() => {
-  const text = channelAction.value === 'create' ? '请输入频道名称' : '请输入频道id';
-  return text;
-});
-
+//关闭单选卡
 function handleCancel() {
   showModal.value = false
 }
 
+//点击频道列表
 function handleClick(panel) {
   selectedPanel.value = panel
 }
@@ -183,6 +186,7 @@ function handleKeyDown(event) {
   }
 }
 
+//刷新频道列表
 const fetchChannelList = async () => {
   const res = await get_channel_list()
   if (res.code === 200) {
@@ -194,6 +198,7 @@ const fetchChannelList = async () => {
   }
 }
 
+//页面钩子
 onMounted(() => {
   var a = fetchChannelList()
   if (a.length === 0) {
@@ -204,6 +209,7 @@ onMounted(() => {
   selectedPanel.value = panelsRef.value[0]
 })
 
+//切换频道
 function switchTab(isShiftKey) {
   const { value: panels } = panelsRef;
   const currentIndex = panels.indexOf(nameRef.value);
@@ -213,10 +219,8 @@ function switchTab(isShiftKey) {
   nameRef.value = panels[nextIndex];
 }
 
-// watch(messages.value, () => {
-//   console.log('messages.value', messages.value[selectedPanel.value])
-// });
 
+//关闭频道
 function handleClose(name) {
   const { value: panels } = panelsRef
   if (panels.length === 1) {
