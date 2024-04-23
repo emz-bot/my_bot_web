@@ -1,65 +1,63 @@
 <template>
   <n-space>
-    <n-input type="text" v-model:value="searchTerm" @keyup.enter="search" placeholder="搜索..." style="width: 50px;" />
+    <n-input type="text" v-model:value="searchTerm" @keyup.enter="search" placeholder="搜索..." style="width: 150px;" />
     <n-button type="success" quaternary circle @click="showModal = true" style="margin-bottom: 10px;">
       <n-icon size="22">
         <Add />
       </n-icon>
     </n-button>
-    <n-modal v-model:show="showModal">
-      <div style="position: relative;">
-        <n-card style="width: 600px" title="创建或加入频道" :bordered="false" size="huge" role="dialog" aria-modal="true">
-          <n-radio value="join" :default-checked="true" :checked="channelAction === 'join'"
-            @change="channelAction = 'join'">
-            加入频道
-          </n-radio>
-          <n-radio value="create" :checked="channelAction === 'create'" @change="channelAction = 'create'">
-            创建频道
-          </n-radio>
-
-          <n-input v-model:value="channelName" :placeholder="placeholderText" @keyup.enter="handleChannelAction"
-            @keyup.esc="handleCancel"></n-input>
-          <template #footer>
-            <div style="display: flex; justify-content: flex-end;">
-              <n-space>
-                <n-button @click="handleChannelAction">确定</n-button>
-                <n-button @click="handleCancel">取消</n-button>
-              </n-space>
-            </div>
-          </template>
-        </n-card>
-        <n-spin v-if="isLoading"
-          style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);"></n-spin>
-      </div>
-    </n-modal>
   </n-space>
-  <n-space style="di1splay: flex;">
-    <n-scrollbar style="max-height: 600px">
-      <div style="width: 100px;">
-        <n-space vertical>
-          <div v-for="(panel, index) in panelsRef" :key="index" class="panel-button"
-            style="display: flex; align-items: center; position: relative;">
-            <n-button @click="handleClick(panel.channel_id)"
-              :class="{ 'active-button': selectedPanel === panel.channel_id }"
-              style="width: 100%; text-overflow: ellipsis; white-space: nowrap;" @contextmenu="handleContextMenu(panel.channel_id,$event)">
-              {{ panel.channel_name }}
-            </n-button>
-            <n-button class="close-button" @click="handleClose(panel.channel_id)" text
-              style="padding: 5px; visibility: hidden; position: absolute; right: 0; top: 50%; transform: translateY(-50%);">
-              <n-icon>
-                <CloseOutline />
-              </n-icon>
-            </n-button>
-          </div>
-          <n-dropdown placement="bottom-start" trigger="manual" :x="xRef" :y="yRef" :options="options"
-            :show="showDropdownRef" :on-clickoutside="onClickoutside " @select="handleSelect" />
-        </n-space>
-      </div>
-    </n-scrollbar>
+  <n-space style="display: flex;">
+    <div style="width: 200px;">
+      <n-space vertical>
+        <div v-for="(panel, index) in panelsRef" :key="index" class="panel-button"
+          style="display: flex; align-items: center; position: relative;">
+          <n-button @click="handleClick(panel.channel_id)"
+            :class="{ 'active-button': selectedPanel === panel.channel_id }"
+            style="width: 100%; text-overflow: ellipsis; white-space: nowrap;" @contextmenu="handleContextMenu(panel.channel_id,$event)">
+            {{ panel.channel_name }}
+          </n-button>
+          <n-button class="close-button" @click="handleClose(panel.channel_id)" text
+            style="padding: 5px; visibility: hidden; position: absolute; right: 0; top: 50%; transform: translateY(-50%);">
+            <n-icon>
+              <CloseOutline />
+            </n-icon>
+          </n-button>
+        </div>
+        <n-dropdown placement="bottom-start" trigger="manual" :x="xRef" :y="yRef" :options="options"
+          :show="showDropdownRef" :on-clickoutside="onClickoutside " @select="handleSelect" />
+      </n-space>
+    </div>
     <div style="width: 400px;">
       <Chat :chatRoomId="selectedPanel" />
     </div>
   </n-space>
+  <n-modal v-model:show="showModal">
+    <div style="position: relative;">
+      <n-card style="width: 600px" title="创建或加入频道" :bordered="false" size="huge" role="dialog" aria-modal="true">
+        <n-radio value="join" :default-checked="true" :checked="channelAction === 'join'"
+          @change="channelAction = 'join'">
+          加入频道
+        </n-radio>
+        <n-radio value="create" :checked="channelAction === 'create'" @change="channelAction = 'create'">
+          创建频道
+        </n-radio>
+
+        <n-input v-model:value="channelName" :placeholder="placeholderText" @keyup.enter="handleChannelAction"
+          @keyup.esc="handleCancel"></n-input>
+        <template #footer>
+          <div style="display: flex; justify-content: flex-end;">
+            <n-space>
+              <n-button @click="handleChannelAction">确定</n-button>
+              <n-button @click="handleCancel">取消</n-button>
+            </n-space>
+          </div>
+        </template>
+      </n-card>
+      <n-spin v-if="isLoading"
+        style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);"></n-spin>
+    </div>
+  </n-modal>
 </template>
 
 <style scoped>
@@ -74,7 +72,7 @@
 
 <script setup>
 import { Add } from '@vicons/ionicons5'
-import { ref, inject,onMounted, computed, nextTick } from 'vue';
+import { ref,onMounted, computed, nextTick } from 'vue';
 import Chat from "./Chat.vue";
 import { useMessage, NButton, NSpace, NScrollbar, NIcon, NCard, NModal, NInput, NSpin, NRadio, NDropdown } from "naive-ui";
 import { CloseOutline } from '@vicons/ionicons5'
@@ -84,7 +82,6 @@ import { create_channel, get_channel_list, join_channel,leave_channel } from '@/
 
 const channelAction = ref('join');
 
-const messages = inject('channel_message');
 const showModal = ref(false)
 const channelName = ref('')
 const nameRef = ref(1)
@@ -154,7 +151,7 @@ async function api_join_channel() {
   isLoading.value = true
   try {
     const channelId = parseInt(channelName.value, 10);
-    const res = await join_channel({ "channel_id": channelId, "user_id": localStorage.user_id });
+    const res = await join_channel({ "channel_id": channelId, "user_id": localStorage.userid });
     if (res.code == 200) {
       message.success('申请成功')
       showModal.value = false
@@ -213,13 +210,6 @@ function handleClick(panel) {
   selectedPanel.value = panel
 }
 
-function handleKeyDown(event) {
-  if (event.key === 'Tab') {
-    event.preventDefault(); // 阻止默认的Tab键行为
-    switchTab(event.shiftKey);
-  }
-}
-
 //刷新频道列表
 const fetchChannelList = async () => {
   const res = await get_channel_list()
@@ -231,17 +221,22 @@ const fetchChannelList = async () => {
     message.error(res.msg)
   }
 }
-
-//页面钩子
-onMounted(() => {
-  var a = fetchChannelList()
-  if (a.length === 0) {
-    message.error('没有频道')
-    console.log(panelsRef.value.length)
-    return
+onMounted(async () => {
+  const channels = await fetchChannelList();
+  if (channels.length === 0) {
+    message.error('没有频道');
+  } else {
+    // 设置第一个频道为当前频道
+    selectedPanel.value = channels[0].channel_id;
   }
-  selectedPanel.value = panelsRef.value[0]
-})
+});
+
+function handleKeyDown(event) {
+  if (event.key === 'Tab') {
+    event.preventDefault(); // 阻止默认的Tab键行为
+    switchTab(event.shiftKey);
+  }
+}
 
 //切换频道
 function switchTab(isShiftKey) {

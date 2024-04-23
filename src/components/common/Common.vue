@@ -45,7 +45,6 @@
       </n-space>
     </n-layout-header>
     <n-layout has-sider position="absolute" style="top: 64px; bottom: 64px">
-      <n-layout-sider bordered content-style="padding: 24px;"> </n-layout-sider>
       <n-layout content-style="padding: 24px;">
         <n-card style="margin-bottom: 16px;margin: 0 auto;">
           <router-view />
@@ -65,7 +64,7 @@
       <template #action>
         <SysMsg :sys_message="sys_message"/>
       </template>
-    </n-modal>
+  </n-modal>
 </template>
 
 <script setup>
@@ -84,7 +83,6 @@ import {
   NLayout,
   NLayoutHeader,
   NLayoutFooter,
-  NLayoutSider,
 } from "naive-ui";
 
 import { ref, onMounted, provide, h, computed, watchEffect } from "vue";

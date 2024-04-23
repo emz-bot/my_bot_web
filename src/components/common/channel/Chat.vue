@@ -2,7 +2,7 @@
   <div ref="messageContainer" style="height: 500px; overflow: auto;">
     <n-space vertical size="medium" v-for="i in messages[props.chatRoomId]" :key="i.id">
       <div>
-        <span style="color: aquamarine;">{{ i.user_info.nickname }}({{ i.user_info.id }})</span><span style="color:cadetblue;margin-left: 10px;"> {{ i.time }}</span>
+        <span style="color: aquamarine;">{{ i.user_info.nickname }}({{ i.user_info._id }})</span><span style="color:cadetblue;margin-left: 10px;"> {{ i.time }}</span>
       </div>
       <div style="padding-left: 20px;">
         <span v-html="formatMessage(i.message)"></span>
