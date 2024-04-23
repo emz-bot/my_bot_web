@@ -1,7 +1,7 @@
 <template>
     <n-tabs type="line" animated class="limited-height-tabs">
       <n-tab-pane name="未读" tab="未读">
-        <n-space v-for="msg in unread_msg" :key="msg.id">
+        <n-space v-if="unread_msg.length != 0" v-for="msg in unread_msg" :key="msg.id">
             <n-card :bordered="false" v-if="msg.type == 'channel_apply'">
                 用户 {{ msg.user_id }} 申请加入频道 {{ msg.channel_id }}
                 <span v-if="msg.status == '已同意' || msg.status == '已拒绝'">
@@ -18,9 +18,10 @@
                 <p class="msg_datetime">{{formatDate(msg.create_time)}}</p>
             </n-card>
         </n-space>
+        <n-empty v-else size="large" description="牛逼，你没有消息！" />
       </n-tab-pane>
       <n-tab-pane name="已读" tab="已读">
-        <n-space v-for="msg in read_msg" :key="msg.id">
+        <n-space v-if="read_msg.length != 0" v-for="msg in read_msg" :key="msg.id">
             <n-card :bordered="false" v-if="msg.type == 'channel_apply'">
                 用户 {{ msg.user_id }} 申请加入频道 {{ msg.channel_id }}
                 <span v-if="msg.status == '已同意' || msg.status == '已拒绝'">
@@ -36,6 +37,13 @@
                 <p class="msg_datetime">{{formatDate(msg.create_time)}}</p>
             </n-card>
         </n-space>
+        <n-empty v-else description="你什么也找不到">
+            <template #extra>
+                <n-button size="small">
+                    看看别的
+                </n-button>
+            </template>
+        </n-empty>
       </n-tab-pane>
     </n-tabs>
 </template>
@@ -43,7 +51,7 @@
 <script setup>
 import { ref } from 'vue';
 import { accept_channel_apply, reject_channel_apply, read_sys_msg } from '@/utils/jianghu_api';
-import { useMessage, NButton, NTabs, NTabPane, NSpace, NCard } from "naive-ui";
+import { useMessage, NButton, NTabs, NTabPane, NSpace, NCard, NEmpty } from "naive-ui";
 
 const props = defineProps({sys_message: Array})
 const message = useMessage()
