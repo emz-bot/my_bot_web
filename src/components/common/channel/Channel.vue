@@ -106,12 +106,17 @@ const options = [
   },
 ]
 
-//右键菜单点击
+//右键菜单点击(退出频道)
 async function handleSelect() {
   showDropdownRef.value = false
   try {
-    await leave_channel({ "channel_id": channel_id.value })
-    message.info(channel_id.value)
+    const res = await leave_channel({ "channel_id": channel_id.value , "user_id": localStorage.userid})
+    if (res.code == 200) {
+      message.success('退出成功')
+      await fetchChannelList();
+    } else {
+      message.error(res.msg)
+    }
   } catch (error) {
     console.error('Error leaving channel:', error)
   }
@@ -169,7 +174,7 @@ async function api_join_channel() {
 async function api_create_channel() {
   isLoading.value = true
   try {
-    const res = await create_channel({ "channel_name": channelName.value });
+    const res = await create_channel({ "channel_name": channelName.value, "user_id": localStorage.userid});
     if (res.code == 200) {
       message.success('创建成功')
       showModal.value = false
