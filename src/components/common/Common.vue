@@ -91,8 +91,7 @@ import { ref, onMounted, provide, h, computed, watchEffect } from "vue";
 import { useRouter } from "vue-router";
 import WebSocketService from '@/utils/websocket';
 import { get_sys_msg } from '@/utils/jianghu_api';
-import SysMsg from "./channel/SysMsg.vue";
-
+import SysMsg from "./channel/sysmsg/SysMsg.vue";
 
 const vatar_url = ref(`${window.gurl.OSS_BASE_URL}jianghu/avatar/${localStorage.user_id}.webp`)
 
