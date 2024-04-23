@@ -2,7 +2,7 @@
     <n-space v-if="sys_msg_list.length != 0">
         <template v-for="msg in sys_msg_list" :key="msg.id">
             <n-card :bordered="false" v-if="msg.type == 'channel_apply'">
-                用户 {{ msg.user_id }} 申请加入频道 {{ msg.channel_id }}
+                用户 {{ msg.apply_user }} 申请加入频道 {{ msg.channel_id }}
                 <span v-if="msg.status == '已同意' || msg.status == '已拒绝'">
                     <n-button quaternary disabled>{{ msg.status }}</n-button>
                 </span>
@@ -31,7 +31,7 @@ const message = useMessage()
 const sys_msg_list = ref(props.sys_msg_list)
 
 async function acceptChannelApply(msg) {
-    const res = await accept_channel_apply({ "channel_id": msg.channel_id, "user_id": msg.user_id });
+    const res = await accept_channel_apply({ "channel_id": msg.channel_id, "user_id": msg.apply_user });
     if (res.code == 200) {
         message.success('已同意')
         msg.status = '已同意'
@@ -41,7 +41,7 @@ async function acceptChannelApply(msg) {
 }
 
 async function rejectChannelApply(msg) {
-    const res = await reject_channel_apply({ "channel_id": msg.channel_id, "user_id": msg.user_id });
+    const res = await reject_channel_apply({ "channel_id": msg.channel_id, "user_id": msg.apply_user });
     if (res.code == 200) {
         message.success('已拒绝')
         msg.status = '已拒绝'
