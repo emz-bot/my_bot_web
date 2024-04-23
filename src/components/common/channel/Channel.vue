@@ -41,8 +41,7 @@
             style="display: flex; align-items: center; position: relative;">
             <n-button @click="handleClick(panel.channel_id)"
               :class="{ 'active-button': selectedPanel === panel.channel_id }"
-              style="width: 100%; text-overflow: ellipsis; white-space: nowrap;"
-              @contextmenu.prevent="handleRightClick(panel.channel_id)"> 
+              style="width: 100%; text-overflow: ellipsis; white-space: nowrap;" @contextmenu="handleContextMenu(panel.channel_id,$event)">
               {{ panel.channel_name }}
             </n-button>
             <n-button class="close-button" @click="handleClose(panel.channel_id)" text
@@ -52,6 +51,8 @@
               </n-icon>
             </n-button>
           </div>
+          <n-dropdown placement="bottom-start" trigger="manual" :x="xRef" :y="yRef" :options="options"
+            :show="showDropdownRef" :on-clickoutside="onClickoutside " @select="handleSelect" />
         </n-space>
       </div>
     </n-scrollbar>
@@ -73,11 +74,11 @@
 
 <script setup>
 import { Add } from '@vicons/ionicons5'
-import { ref, inject, watch, onMounted, computed } from 'vue';
+import { ref, inject,onMounted, computed, nextTick } from 'vue';
 import Chat from "./Chat.vue";
-import { useMessage, NButton, NSpace, NScrollbar, NIcon, NCard, NModal, NInput, NSpin, NRadio, NRadioGroup } from "naive-ui";
+import { useMessage, NButton, NSpace, NScrollbar, NIcon, NCard, NModal, NInput, NSpin, NRadio, NDropdown } from "naive-ui";
 import { CloseOutline } from '@vicons/ionicons5'
-import { create_channel, get_channel_list, join_channel } from '@/utils/jianghu_api';
+import { create_channel, get_channel_list, join_channel,leave_channel } from '@/utils/jianghu_api';
 
 
 
@@ -96,11 +97,44 @@ const closedChannels = ref([]);
 
 
 //右键点击
-function handleRightClick(channelId) {
-  showModal.value = true; 
-  channelName.value = channelId; 
-  console.log('channelId', channelId);
+const xRef = ref(0)
+const yRef = ref(0)
+const showDropdownRef = ref(false)
+const channel_id = ref(0)
+
+const options = [
+  {
+    label: '退出频道',
+    key: 'key1', 
+  },
+]
+
+//右键菜单点击
+async function handleSelect() {
+  showDropdownRef.value = false
+  try {
+    await leave_channel({ "channel_id": channel_id.value })
+    message.info(channel_id.value)
+  } catch (error) {
+    console.error('Error leaving channel:', error)
+  }
 }
+//右键菜单
+function handleContextMenu(channelId,e) {
+  e.preventDefault()
+  showDropdownRef.value = false
+  nextTick().then(() => {
+    showDropdownRef.value = true
+    channel_id.value = channelId
+    xRef.value = e.clientX
+    yRef.value = e.clientY
+  })
+}
+//右键菜单点击外部
+function onClickoutside() {
+  showDropdownRef.value = false
+}
+
 //提示文字
 const placeholderText = computed(() => {
   const text = channelAction.value === 'create' ? '请输入频道名称' : '请输入频道id';
