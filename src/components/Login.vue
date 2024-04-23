@@ -6,7 +6,7 @@
           <n-form-item-row label="用户名">
             <n-input
               type="text"
-              v-model:value="login_data.user"
+              v-model:value="login_data.email"
               placeholder="用户名"
               clearable
             />
@@ -40,8 +40,16 @@
           <n-form-item-row label="邮箱">
             <n-input
               type="text"
-              v-model:value="register_data.user"
+              v-model:value="register_data.email"
               placeholder="邮箱"
+              clearable
+            />
+          </n-form-item-row>
+          <n-form-item-row label="昵称">
+            <n-input
+              type="text"
+              v-model:value="register_data.nickname"
+              placeholder="昵称"
               clearable
             />
           </n-form-item-row>
@@ -99,26 +107,27 @@ var reqData = {};
 let tabValue = ref("signin");
 
 var login_data = ref({
-  user: "",
+  email: "",
   password: "",
 });
 
 var register_data = ref({
-  user: "",
+  email: "",
+  nickname: "",
   password: "",
   verifycode: "",
 });
 
 async function start_login() {
-  reqData.username = login_data.value.user;
+  reqData.email = login_data.value.email;
   reqData.password = login_data.value.password;
   await login(reqData).then((res) => {
     if (res.code == 200) {
       message.success(res.msg, { duration: 5e3 });
       localStorage.setItem("token", res.data.token);
-      localStorage.setItem("username", res.data.username);
+      localStorage.setItem("email", res.data.email);
       localStorage.setItem("user_permission", res.data.user_permission);
-      localStorage.setItem("user_id", res.data.id);
+      localStorage.setItem("userid", res.data.userid);
       if (localStorage.beforeRouter && localStorage.beforeRouter != "/") {
         router.push({ path: localStorage.beforeRouter });
       } else if (res.data.user_permission >= 3) {
@@ -133,16 +142,14 @@ async function start_login() {
 }
 
 async function start_register() {
-  reqData.username = register_data.value.user;
-  reqData.password = register_data.value.password;
-  reqData.verifycode = register_data.value.verifycode;
-  await register(reqData).then((res) => {
+  await register(register_data.value).then((res) => {
     if (res.code == 200) {
       message.success(res.msg, { duration: 5e3 });
       // 赋值为空，并且跳转到登录
-      register_data.value.username = "";
+      register_data.value.email = "";
       register_data.value.password = "";
       register_data.value.verifycode = "";
+      register_data.value.nickname = "";
       tabValue.value = "signin";
     } else {
       message.error(res.msg, { duration: 5e3 });
@@ -156,12 +163,12 @@ let time = null;
 let times = 0;
 
 async function send_verification_code() {
-  if (!register_data.value.user) {
+  if (!register_data.value.email) {
     message.error("请填写邮箱");
   } else {
     buttonDisabled.value = true;
     buttonDisabledCountDown();
-    await api_verification_code({ user: register_data.value.user }).then(
+    await api_verification_code({ email: register_data.value.email }).then(
       (res) => {
         if (res.code == 200) {
           message.success("验证码发送成功");

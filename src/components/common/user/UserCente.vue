@@ -38,7 +38,7 @@ import { NSpace, NInputGroup, NInput, NAvatar, NButton, NModal, NIcon, NCard } f
 import { CreateOutline, EyeOutline } from '@vicons/ionicons5'
 import { upload_avatar, set_user_info } from "@/utils/jianghu_api";
 
-let avatarUrl = ref(`${window.gurl.OSS_BASE_URL}jianghu/avatar/${localStorage.user_id}.webp`);
+let avatarUrl = ref(`${window.gurl.OSS_BASE_URL}jianghu/avatar/${localStorage.userid}.webp`);
 let fileInput = ref(null);
 let showDialog = ref(false);
 

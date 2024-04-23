@@ -93,7 +93,7 @@ import WebSocketService from '@/utils/websocket';
 import { get_sys_msg } from '@/utils/jianghu_api';
 import SysMsg from "./channel/sysmsg/SysMsg.vue";
 
-const vatar_url = ref(`${window.gurl.OSS_BASE_URL}jianghu/avatar/${localStorage.user_id}.webp`)
+const vatar_url = ref(`${window.gurl.OSS_BASE_URL}jianghu/avatar/${localStorage.userid}.webp`)
 
 var sys_message = ref([]);
 var sys_message_count = ref(0);
