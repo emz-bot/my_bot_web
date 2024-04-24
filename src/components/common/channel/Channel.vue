@@ -112,7 +112,7 @@ import { ref,onMounted, computed, nextTick } from 'vue';
 import Chat from "./Chat.vue";
 import { useMessage, NButton, NSpace, NIcon, NCard, NModal, NInput, NSpin, NRadio, NDropdown } from "naive-ui";
 import { CloseOutline } from '@vicons/ionicons5'
-import { create_channel, get_channel_list, join_channel,leave_channel } from '@/utils/jianghu_api';
+import { create_channel, get_channel_list, join_channel,leave_channel,delete_channel } from '@/utils/jianghu_api';
 
 
 
@@ -136,6 +136,7 @@ const xRef = ref(0)
 const yRef = ref(0)
 const showDropdownRef = ref(false)
 const channel_id = ref(0)
+
 //右键菜单选项
 const options = [
   {
@@ -173,6 +174,25 @@ async function confirmLeaveChannel() {
     console.error('Error leaving channel:', error)
   }
 }
+//删除频道
+async function deleteChannel() {
+  showDetailsModal.value = false
+  try {
+    const res = await delete_channel({ "channel_id": channel_id.value , "user_id": localStorage.userid})
+    if (res.code == 200) {
+      message.success('删除成功')
+      await fetchChannelList();
+    } else {
+      message.error(res.msg)
+    }
+  } catch (error) {
+    console.error('Error leaving channel:', error)
+  }
+}
+
+
+
+
 //取消退出频道
 function cancelLeaveChannel() {
   showConfirmModal.value = false
