@@ -1,4 +1,5 @@
 <template>
+  <!-- 搜索和创建频道按钮 -->
   <n-space>
     <n-input type="text" v-model:value="searchTerm" @keyup.enter="search" placeholder="搜索..." style="width: 150px;" />
     <n-button type="success" quaternary circle @click="showModal = true" style="margin-bottom: 10px;">
@@ -7,6 +8,7 @@
       </n-icon>
     </n-button>
   </n-space>
+  <!-- 频道列表 -->
   <n-space style="display: flex;">
     <div style="width: 200px;">
       <n-space vertical>
@@ -17,6 +19,7 @@
             style="width: 100%; text-overflow: ellipsis; white-space: nowrap;" @contextmenu="handleContextMenu(panel.channel_id,$event)">
             {{ panel.channel_name }}
           </n-button>
+          <!-- 关闭按钮 -->
           <n-button class="close-button" @click="handleClose(panel.channel_id)" text
             style="padding: 5px; visibility: hidden; position: absolute; right: 0; top: 50%; transform: translateY(-50%);">
             <n-icon>
@@ -24,6 +27,7 @@
             </n-icon>
           </n-button>
         </div>
+        <!-- 右键菜单 -->
         <n-dropdown placement="bottom-start" trigger="manual" :x="xRef" :y="yRef" :options="options"
           :show="showDropdownRef" :on-clickoutside="onClickoutside " @select="handleSelect" />
       </n-space>
@@ -32,6 +36,7 @@
       <Chat :chatRoomId="selectedPanel" />
     </div>
   </n-space>
+  <!-- 创建或加入频道模态框模块 -->
   <n-modal v-model:show="showModal">
     <div style="position: relative;">
       <n-card style="width: 600px" title="创建或加入频道" :bordered="false" size="huge" role="dialog" aria-modal="true">
@@ -42,7 +47,6 @@
         <n-radio value="create" :checked="channelAction === 'create'" @change="channelAction = 'create'">
           创建频道
         </n-radio>
-
         <n-input v-model:value="channelName" :placeholder="placeholderText" @keyup.enter="handleChannelAction"
           @keyup.esc="handleCancel"></n-input>
         <template #footer>
@@ -58,6 +62,7 @@
         style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);"></n-spin>
       </div>
   </n-modal>
+  <!-- 退出频道模态框模块 -->
   <n-modal v-model:show="showConfirmModal">
     <div style="position: relative;">
       <n-card style="width: 600px" title="确认退出频道" :bordered="false" size="huge" role="dialog" aria-modal="true">
@@ -73,6 +78,7 @@
       </n-card>
     </div>
   </n-modal>
+<!-- 频道详情模态框模块 -->
   <n-modal v-model:show="showDetailsModal">
     <div style="position: relative;">
       <n-card style="width: 600px" title="频道详情" :bordered="false" size="huge" role="dialog" aria-modal="true">
@@ -90,6 +96,7 @@
 </template>
 
 <style scoped>
+ 
 .active-button {
   background-color: rgb(51, 56, 53) !important;
 }
@@ -129,7 +136,7 @@ const xRef = ref(0)
 const yRef = ref(0)
 const showDropdownRef = ref(false)
 const channel_id = ref(0)
-
+//右键菜单选项
 const options = [
   {
     label: '退出频道',
@@ -166,16 +173,16 @@ async function confirmLeaveChannel() {
     console.error('Error leaving channel:', error)
   }
 }
-
+//取消退出频道
 function cancelLeaveChannel() {
   showConfirmModal.value = false
 }
-
+//显示频道详情
 async function showChannelDetails() {
   currentChannelId.value = channel_id.value
   showDetailsModal.value = true
 }
-
+//关闭频道详情
 function closeDetailsModal() {
   showDetailsModal.value = false
 }
