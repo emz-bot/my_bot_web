@@ -73,6 +73,20 @@
       </n-card>
     </div>
   </n-modal>
+  <n-modal v-model:show="showDetailsModal">
+    <div style="position: relative;">
+      <n-card style="width: 600px" title="频道详情" :bordered="false" size="huge" role="dialog" aria-modal="true">
+        <p>频道 ID: {{ currentChannelId }}</p>
+        <template #footer>
+          <div style="display: flex; justify-content: flex-end;">
+            <n-space>
+              <n-button @click="closeDetailsModal">关闭</n-button>
+            </n-space>
+          </div>
+        </template>
+      </n-card>
+    </div>
+  </n-modal>
 </template>
 
 <style scoped>
@@ -106,6 +120,8 @@ const panelsRef = ref([])
 const isLoading = ref(false)
 const searchTerm = ref('');
 const closedChannels = ref([]);
+const showDetailsModal = ref(false)
+const currentChannelId = ref('')
 
 
 //右键点击
@@ -119,12 +135,20 @@ const options = [
     label: '退出频道',
     key: 'key1', 
   },
+  {
+    label: '频道详情',
+    key: 'key2',
+  },
 ]
 
 //右键菜单点击(退出频道)
-function handleSelect() {
+function handleSelect(key) {
   showDropdownRef.value = false
-  showConfirmModal.value = true
+  if (key === 'key1') {
+    showConfirmModal.value = true
+  } else if (key === 'key2') {
+    showChannelDetails()
+  }
 }
 
 //退出频道
@@ -147,7 +171,14 @@ function cancelLeaveChannel() {
   showConfirmModal.value = false
 }
 
+async function showChannelDetails() {
+  currentChannelId.value = channel_id.value
+  showDetailsModal.value = true
+}
 
+function closeDetailsModal() {
+  showDetailsModal.value = false
+}
 
 //右键菜单
 function handleContextMenu(channelId,e) {
