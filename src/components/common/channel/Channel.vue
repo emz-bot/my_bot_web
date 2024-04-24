@@ -63,7 +63,7 @@
       </div>
   </n-modal>
   <!-- 退出频道模态框模块 -->
-  <n-modal v-model:show="showConfirmModal">
+  <n-modal v-model:show="showLeaveModal">
     <div style="position: relative;">
       <n-card style="width: 600px" title="确认退出频道" :bordered="false" size="huge" role="dialog" aria-modal="true">
         <p>您确定要退出此频道吗？</p>
@@ -72,6 +72,21 @@
             <n-space>
               <n-button @click="confirmLeaveChannel">确定</n-button>
               <n-button @click="cancelLeaveChannel">取消</n-button>
+            </n-space>
+          </div>
+        </template>
+      </n-card>
+    </div>
+  </n-modal>
+  <n-modal v-model:show="showdeleteModal">
+    <div style="position: relative;">
+      <n-card style="width: 600px" title="确认删除频道" :bordered="false" size="huge" role="dialog" aria-modal="true">
+        <p>您确定要删除此频道吗？</p>
+        <template #footer>
+          <div style="display: flex; justify-content: flex-end;">
+            <n-space>
+              <n-button @click="deleteChannel">确定</n-button>
+              <n-button @click="canceldeleteChannel">取消</n-button>
             </n-space>
           </div>
         </template>
@@ -117,8 +132,6 @@ import { create_channel, get_channel_list, join_channel,leave_channel,delete_cha
 
 
 const channelAction = ref('join');
-const showConfirmModal = ref(false)
-const showModal = ref(false)
 const channelName = ref('')
 const nameRef = ref(1)
 const message = useMessage()
@@ -127,7 +140,10 @@ const panelsRef = ref([])
 const isLoading = ref(false)
 const searchTerm = ref('');
 const closedChannels = ref([]);
+const showLeaveModal = ref(false)
+const showModal = ref(false)
 const showDetailsModal = ref(false)
+const showdeleteModal = ref(false)
 const currentChannelId = ref('')
 
 
@@ -147,21 +163,28 @@ const options = [
     label: '频道详情',
     key: 'key2',
   },
+  {
+    label: '删除频道',
+    key: 'key3',
+  },
 ]
 
 //右键菜单点击(退出频道)
 function handleSelect(key) {
+  isLoading.value = true
   showDropdownRef.value = false
   if (key === 'key1') {
-    showConfirmModal.value = true
+    showLeaveModal.value = true
   } else if (key === 'key2') {
-    showChannelDetails()
+    showDetailsModal.value = true
+  } else if (key === 'key3') {
+    showdeleteModal.value = true
   }
 }
 
 //退出频道
 async function confirmLeaveChannel() {
-  showConfirmModal.value = false
+  showLeaveModal.value = false
   try {
     const res = await leave_channel({ "channel_id": channel_id.value , "user_id": localStorage.userid})
     if (res.code == 200) {
@@ -172,11 +195,13 @@ async function confirmLeaveChannel() {
     }
   } catch (error) {
     console.error('Error leaving channel:', error)
-  }
+  } 
 }
+
 //删除频道
 async function deleteChannel() {
-  showDetailsModal.value = false
+  isLoading.value = true
+  showdeleteModal.value = false
   try {
     const res = await delete_channel({ "channel_id": channel_id.value , "user_id": localStorage.userid})
     if (res.code == 200) {
@@ -195,12 +220,11 @@ async function deleteChannel() {
 
 //取消退出频道
 function cancelLeaveChannel() {
-  showConfirmModal.value = false
+  showLeaveModal.value = false
 }
-//显示频道详情
-async function showChannelDetails() {
-  currentChannelId.value = channel_id.value
-  showDetailsModal.value = true
+//取消删除频道
+function canceldeleteChannel() {
+  showdeleteModal.value = false
 }
 //关闭频道详情
 function closeDetailsModal() {
