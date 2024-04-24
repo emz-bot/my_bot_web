@@ -47,8 +47,7 @@
         <n-radio value="create" :checked="channelAction === 'create'" @change="channelAction = 'create'">
           创建频道
         </n-radio>
-        <n-input v-model:value="channelName" :placeholder="placeholderText" @keyup.enter="handleChannelAction"
-          @keyup.esc="handleCancel"></n-input>
+        <n-input v-model:value="channelName" :placeholder="placeholderText" ></n-input>
         <template #footer>
           <div style="display: flex; justify-content: flex-end;">
             <n-space>
@@ -58,6 +57,7 @@
           </div>
         </template>
       </n-card>
+      <!-- 加载中 -->
       <n-spin v-if="isLoading"
         style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);"></n-spin>
       </div>
@@ -65,6 +65,8 @@
   <!-- 退出频道模态框模块 -->
   <n-modal v-model:show="showLeaveModal">
     <div style="position: relative;">
+      <n-spin v-if="isLoading"
+          style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);"></n-spin>
       <n-card style="width: 600px" title="确认退出频道" :bordered="false" size="huge" role="dialog" aria-modal="true">
         <p>您确定要退出此频道吗？</p>
         <template #footer>
@@ -80,6 +82,8 @@
   </n-modal>
   <n-modal v-model:show="showdeleteModal">
     <div style="position: relative;">
+      <n-spin v-if="isLoading"
+          style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);"></n-spin>
       <n-card style="width: 600px" title="确认删除频道" :bordered="false" size="huge" role="dialog" aria-modal="true">
         <p>您确定要删除此频道吗？</p>
         <template #footer>
@@ -171,7 +175,6 @@ const options = [
 
 //右键菜单点击(退出频道)
 function handleSelect(key) {
-  isLoading.value = true
   showDropdownRef.value = false
   if (key === 'key1') {
     showLeaveModal.value = true
@@ -184,6 +187,7 @@ function handleSelect(key) {
 
 //退出频道
 async function confirmLeaveChannel() {
+  isLoading.value = true;
   showLeaveModal.value = false
   try {
     const res = await leave_channel({ "channel_id": channel_id.value , "user_id": localStorage.userid})
@@ -195,7 +199,9 @@ async function confirmLeaveChannel() {
     }
   } catch (error) {
     console.error('Error leaving channel:', error)
-  } 
+  } finally {
+    isLoading.value = false;
+  }
 }
 
 //删除频道
@@ -212,6 +218,8 @@ async function deleteChannel() {
     }
   } catch (error) {
     console.error('Error leaving channel:', error)
+  } finally {
+    isLoading.value = false;
   }
 }
 
