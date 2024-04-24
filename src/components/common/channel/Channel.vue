@@ -56,6 +56,21 @@
       </n-card>
       <n-spin v-if="isLoading"
         style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);"></n-spin>
+      </div>
+  </n-modal>
+  <n-modal v-model:show="showConfirmModal">
+    <div style="position: relative;">
+      <n-card style="width: 600px" title="确认退出频道" :bordered="false" size="huge" role="dialog" aria-modal="true">
+        <p>您确定要退出此频道吗？</p>
+        <template #footer>
+          <div style="display: flex; justify-content: flex-end;">
+            <n-space>
+              <n-button @click="confirmLeaveChannel">确定</n-button>
+              <n-button @click="cancelLeaveChannel">取消</n-button>
+            </n-space>
+          </div>
+        </template>
+      </n-card>
     </div>
   </n-modal>
 </template>
@@ -74,14 +89,14 @@
 import { Add } from '@vicons/ionicons5'
 import { ref,onMounted, computed, nextTick } from 'vue';
 import Chat from "./Chat.vue";
-import { useMessage, NButton, NSpace, NScrollbar, NIcon, NCard, NModal, NInput, NSpin, NRadio, NDropdown } from "naive-ui";
+import { useMessage, NButton, NSpace, NIcon, NCard, NModal, NInput, NSpin, NRadio, NDropdown } from "naive-ui";
 import { CloseOutline } from '@vicons/ionicons5'
 import { create_channel, get_channel_list, join_channel,leave_channel } from '@/utils/jianghu_api';
 
 
 
 const channelAction = ref('join');
-
+const showConfirmModal = ref(false)
 const showModal = ref(false)
 const channelName = ref('')
 const nameRef = ref(1)
@@ -107,8 +122,14 @@ const options = [
 ]
 
 //右键菜单点击(退出频道)
-async function handleSelect() {
+function handleSelect() {
   showDropdownRef.value = false
+  showConfirmModal.value = true
+}
+
+//退出频道
+async function confirmLeaveChannel() {
+  showConfirmModal.value = false
   try {
     const res = await leave_channel({ "channel_id": channel_id.value , "user_id": localStorage.userid})
     if (res.code == 200) {
@@ -121,6 +142,13 @@ async function handleSelect() {
     console.error('Error leaving channel:', error)
   }
 }
+
+function cancelLeaveChannel() {
+  showConfirmModal.value = false
+}
+
+
+
 //右键菜单
 function handleContextMenu(channelId,e) {
   e.preventDefault()
@@ -265,3 +293,5 @@ function handleClose(name) {
   }
 }
 </script>
+
+
