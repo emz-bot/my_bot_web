@@ -14,8 +14,8 @@
           </div>
         </n-space>
       </n-space>
-      <div style="padding-left: 20px;" class="channel_msg">
-        <span v-html="formatMessage(i.message)"></span>
+      <div style="margin-left: 20px;" class="channel_msg">
+        <span v-html="i.message"></span>
       </div>
       <br>
     </n-space>
@@ -28,14 +28,18 @@
       placeholder="请输入消息内容"
       @keydown="handleKeyDown"
     />
-    <n-button @click="sendMessage">发送 (Ctrl+Enter)</n-button>
+    <div style="margin-top: 10px; display: flex; justify-content: flex-end;align-items: center;">
+      <n-checkbox v-model:checked="is_markdown" size="medium" label="MarkDown" />
+      <n-button @click="sendMessage">发送 (Ctrl+Enter)</n-button>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { ref, inject, watch, nextTick, onMounted, defineProps, onUpdated } from 'vue';
+import { ref, inject, watch, nextTick, onMounted, defineProps, onUpdated, onUnmounted } from 'vue';
 import WebSocketService from '@/utils/websocket';
-import { NInput, NButton, NSpace, NAvatar } from "naive-ui";
+import { NInput, NButton, NSpace, NAvatar, NCheckbox } from "naive-ui";
+import marked from 'marked';
 
 const avatarbase_url = ref(`${window.gurl.OSS_BASE_URL}jianghu/avatar/`)
 const self_id = ref(localStorage.userid);
@@ -43,6 +47,7 @@ const self_id = ref(localStorage.userid);
 const wsService = ref(null);
 const message_content = ref('');
 const isAtBottom = ref(true);
+const is_markdown = ref(false);
 
 let messageContainer = ref(null);
 let message_history = ref([]);
@@ -63,7 +68,13 @@ const sendMessage = () => {
     message_history.value.push(message_content.value);
   }
   current_history_index.value = message_history.value.length;
-  wsService.value.send({ message: message_content.value, type: 'channel_message', "channel_id": props.chatRoomId});
+  let send_message = ""
+  if (is_markdown.value) {
+    send_message = marked(message_content.value);
+  } else {
+    send_message = formatMessage(message_content.value);
+  }
+  wsService.value.send({ message: send_message, type: 'channel_message', "channel_id": props.chatRoomId});
   message_content.value = '';
 };
 
@@ -90,15 +101,23 @@ function formatMessage(message) {
   return message.replace(/\n/g, '<br/>');
 }
 
-onMounted(() => {
-  inputRef.value.focus();
-});
-
 onUpdated(() => {
   inputRef.value.focus();
 });
 
+
+let storedMessages = localStorage.getItem('messages');
+if (storedMessages) {
+  messages.value = JSON.parse(storedMessages);
+}
+
 onMounted(() => {
+  const observer = new MutationObserver(() => {
+    if (isAtBottom.value) {
+      messageContainer.value.scrollTop = messageContainer.value.scrollHeight;
+    }
+  });
+  observer.observe(messageContainer.value, { childList: true });
   messageContainer.value.onscroll = () => {
     isAtBottom.value = messageContainer.value.scrollTop + messageContainer.value.clientHeight === messageContainer.value.scrollHeight;
   };
@@ -106,16 +125,26 @@ onMounted(() => {
 
 watch(messages.value, () => {
   nextTick(() => {
-    if (isAtBottom.value) {
-      messageContainer.value.scrollTop = messageContainer.value.scrollHeight;
+    let messagesJson = JSON.stringify(messages.value);
+    // 检查 JSON 字符串的大小是否超过 1MB
+    if (new Blob([messagesJson]).size > 1024 * 1024) {
+      // 如果超过 1MB，删除最旧的消息，直到大小小于 1MB
+      while (new Blob([messagesJson]).size > 1024 * 1024) {
+        messages.value.shift();
+        messagesJson = JSON.stringify(messages.value);
+      }
     }
+    localStorage.setItem('messages', messagesJson);
   });
 });
 </script>
 <style scoped>
-.channel_msg >>> img {
+.channel_msg :deep(img) {
   max-width: 100%;
   height: auto;
   border-radius: 10px;
+}
+.channel_msg {
+  margin-top: 0px;
 }
 </style>
