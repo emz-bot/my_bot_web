@@ -3,7 +3,7 @@
     <n-space style="margin-left: 20px;" vertical size="medium" v-for="i in messages[props.chatRoomId]" :key="i.id">
       <n-space>
         <n-space>
-          <n-avatar size="medium" :src="avatarbase_url + i.user_info._id + '.webp'" />
+          <n-avatar size="medium" :src="avatarbase_url + i.user_info._id + '.webp'" fallback-src="https://oss.ermaozi.cn/jianghu/default.webp" />
         </n-space>
         <n-space vertical size="small">
           <div style="margin-left: 10px;">

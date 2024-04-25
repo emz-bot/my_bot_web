@@ -1,7 +1,7 @@
 <template>
   <!-- 搜索和创建频道按钮 -->
   <n-space>
-    <n-input type="text" v-model:value="searchTerm" @keyup.enter="search" placeholder="搜索..." style="width: 150px;" />
+    <n-input type="text" v-model:value="searchTerm" @keyup.enter="search" placeholder="搜索..." style="width: 180px;" />
     <n-button type="success" quaternary circle @click="showModal = true" style="margin-bottom: 10px;">
       <n-icon size="22">
         <Add />
@@ -10,7 +10,7 @@
   </n-space>
   <!-- 频道列表 -->
   <n-space style="display: flex;">
-    <div style="width: 200px;">
+    <div style="width: 230px;">
       <n-space vertical>
         <div v-for="(panel, index) in panelsRef" :key="index" class="panel-button"
           style="display: flex;  position: relative;">
@@ -18,19 +18,34 @@
           <n-space @click="handleClick(panel.channel_id)"
             :class="{ 'active-button': selectedPanel === panel.channel_id }"
             style="display: flex; align-items: center;width: 100%; text-overflow: ellipsis; white-space: nowrap;"
-            @contextmenu="handleContextMenu(panel.channel_id, $event)">
-            <n-avatar style="margin-left: 10px;margin-top: 7px;" size="medium" src="https://p0.ssl.qhimg.com/t019b1a140f615d4b0b.jpg" />
-            <n-space vertical size="small">
-              <div >
-                <div style="color: cadetblue; font-size: small; margin-top: 5px;"> {{ panel.channel_name }} <span>{{ channel_new_msg_count[panel.channel_id] }}</span></div>
+            @contextmenu="handleContextMenu(panel.channel_id, $event)"
+            >
+            <n-avatar style="margin-left: 10px;margin-top: 8px;" size="large" :src="channelavatarbase_url + panel.channel_id + '.webp'"
+              fallback-src="https://oss.ermaozi.cn/jianghu/default.webp"
+            />
+            <n-space vertical size="small" style="width: 110px;">
+              <div>
+                <div style="color: cadetblue; font-size: medium; margin-top: 5px;max-width: 120px;overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"> 
+                  {{ panel.channel_name }}
+                </div>
                 <div
                   v-if="messages[panel.channel_id] && messages[panel.channel_id].length > 0"
-                  style="color: dimgrey; font-size:xx-small; max-width: 100px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
-                  {{ messages[panel.channel_id][messages[panel.channel_id].length - 1]["user_info"]["nickname"] }}:
-                  {{ messages[panel.channel_id][messages[panel.channel_id].length - 1]["message"] }}
+                  style="color: dimgrey; font-size:small; max-width: 100px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                  {{ channel_new_msg[panel.channel_id]["user_info"]["nickname"] }}:
+                  {{ channel_new_msg[panel.channel_id]["message"] }}
                 </div>
-
               </div>
+            </n-space>
+            <n-space vertical style="margin-right: 10px;justify-content: flex-end;">
+              <div style="color: dimgrey; font-size: small; margin-top: 5px;">
+                {{ new Date(channel_new_msg[panel.channel_id]["time"] * 1000).toLocaleTimeString().slice(0, 5) }}
+              </div>
+              <n-badge
+                v-if="panel.channel_id != selectedPanel" 
+                style="top: -8px;"
+                :value="channel_new_msg_count[panel.channel_id]" 
+                :max="99" 
+              />
             </n-space>
             <n-button class="close-button" @click="handleClose(panel.channel_id)" text
               style="padding: 5px; visibility: hidden; position: absolute; right: 0; top: 50%; transform: translateY(-50%);">
@@ -141,11 +156,11 @@
 import { Add } from '@vicons/ionicons5'
 import { ref, onMounted, computed, nextTick, inject, watch } from 'vue';
 import Chat from "./Chat.vue";
-import { useMessage, NButton, NSpace, NIcon, NCard, NModal, NInput, NSpin, NRadio, NDropdown, NAvatar } from "naive-ui";
+import { useMessage, NButton, NSpace, NIcon, NCard, NModal, NInput, NSpin, NRadio, NDropdown, NAvatar, NBadge } from "naive-ui";
 import { CloseOutline } from '@vicons/ionicons5'
 import { create_channel, get_channel_list, join_channel, leave_channel, delete_channel } from '@/utils/jianghu_api';
 
-
+const channelavatarbase_url = ref(`${window.gurl.OSS_BASE_URL}jianghu/channel_avatar/`)
 const messages = inject('channel_message');
 const channelAction = ref('join');
 const channelName = ref('')
@@ -166,6 +181,7 @@ const xRef = ref(0)
 const yRef = ref(0)
 const channel_msg_count = ref({})
 const channel_new_msg_count = ref({})
+const channel_new_msg = ref({})
 
 
 //右键菜单选项
@@ -233,8 +249,6 @@ async function deleteChannel() {
     isLoading.value = false;
   }
 }
-
-
 
 
 //取消退出频道
@@ -337,6 +351,8 @@ function handleCancel() {
 
 //点击频道列表
 function handleClick(panel) {
+  // 切换频道时重置新消息数量
+  channel_new_msg_count.value[selectedPanel.value] = 0
   selectedPanel.value = panel
 }
 
@@ -380,8 +396,8 @@ watch(messages, newVal => {
         channel_new_msg_count.value[key] += newVal[key].length - channel_msg_count.value[key]
       }
       channel_msg_count.value[key] = newVal[key].length
+      channel_new_msg.value[key] = newVal[key][newVal[key].length - 1]
     }
-    console.log('channel_new_msg_count:', channel_new_msg_count.value)
   }, { deep: true });
 
 //切换频道
@@ -393,7 +409,6 @@ function switchTab(isShiftKey) {
     : (currentIndex + 1) % panels.length; // 否则，切换到下一个标签
   nameRef.value = panels[nextIndex];
 }
-
 
 //关闭频道
 function handleClose(name) {
