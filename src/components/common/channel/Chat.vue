@@ -36,7 +36,7 @@
 </template>
 
 <script setup>
-import { ref, inject, watch, nextTick, onMounted, defineProps, onUpdated, onUnmounted } from 'vue';
+import { ref, inject, watch, nextTick, onMounted, defineProps, onUpdated } from 'vue';
 import WebSocketService from '@/utils/websocket';
 import { NInput, NButton, NSpace, NAvatar, NCheckbox } from "naive-ui";
 import marked from 'marked';

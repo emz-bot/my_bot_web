@@ -22,8 +22,9 @@
             <n-avatar style="margin-left: 10px;margin-top: 7px;" size="medium" src="https://p0.ssl.qhimg.com/t019b1a140f615d4b0b.jpg" />
             <n-space vertical size="small">
               <div >
-                <div style="color: cadetblue; font-size: small; margin-top: 5px;"> {{ panel.channel_name }}</div>
+                <div style="color: cadetblue; font-size: small; margin-top: 5px;"> {{ panel.channel_name }} <span>{{ channel_new_msg_count[panel.channel_id] }}</span></div>
                 <div
+                  v-if="messages[panel.channel_id] && messages[panel.channel_id].length > 0"
                   style="color: dimgrey; font-size:xx-small; max-width: 100px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
                   {{ messages[panel.channel_id][messages[panel.channel_id].length - 1]["user_info"]["nickname"] }}:
                   {{ messages[panel.channel_id][messages[panel.channel_id].length - 1]["message"] }}
@@ -161,15 +162,10 @@ const showDetailsModal = ref(false)
 const showdeleteModal = ref(false)
 const showDropdownRef = ref(false)
 const channel_id = ref(0)
-const currentChannelId = ref('')
 const xRef = ref(0)
 const yRef = ref(0)
-const latestMessages = ref({});
-
-// 其他代码
-
-// 处理新消息
-
+const channel_msg_count = ref({})
+const channel_new_msg_count = ref({})
 
 
 //右键菜单选项
@@ -199,17 +195,6 @@ function handleSelect(key) {
     showdeleteModal.value = true
   }
 }
-
-
-watch(messages, () => {
-  nextTick(() => {
-    // 将相应聊天室的最新消息更新为新消息
-    console.log('handleNewMessage', messages.value)
-    console.log('messages.content', messages.content)
-    latestMessages.value[messages.channel_id] = messages.content;
-
-  })
-});
 
 //退出频道
 async function confirmLeaveChannel() {
@@ -381,6 +366,23 @@ function handleKeyDown(event) {
     switchTab(event.shiftKey);
   }
 }
+
+watch(messages, newVal => {
+    // 记录当前频道消息数量
+    for (const key in newVal) {
+      if (!channel_new_msg_count.value[key]) {
+        channel_new_msg_count.value[key] = 0
+      }
+      if (!channel_msg_count.value[key]) {
+        channel_msg_count.value[key] = newVal[key].length
+      }
+      if (newVal[key].length > channel_msg_count.value[key]) {
+        channel_new_msg_count.value[key] += newVal[key].length - channel_msg_count.value[key]
+      }
+      channel_msg_count.value[key] = newVal[key].length
+    }
+    console.log('channel_new_msg_count:', channel_new_msg_count.value)
+  }, { deep: true });
 
 //切换频道
 function switchTab(isShiftKey) {
