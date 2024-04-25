@@ -13,23 +13,35 @@
     <div style="width: 200px;">
       <n-space vertical>
         <div v-for="(panel, index) in panelsRef" :key="index" class="panel-button"
-          style="display: flex; align-items: center; position: relative;">
-          <n-button @click="handleClick(panel.channel_id)"
+          style="display: flex;  position: relative;">
+
+          <n-space @click="handleClick(panel.channel_id)"
             :class="{ 'active-button': selectedPanel === panel.channel_id }"
-            style="width: 100%; text-overflow: ellipsis; white-space: nowrap;" @contextmenu="handleContextMenu(panel.channel_id,$event)">
-            {{ panel.channel_name }}
-          </n-button>
-          <!-- 关闭按钮 -->
-          <n-button class="close-button" @click="handleClose(panel.channel_id)" text
-            style="padding: 5px; visibility: hidden; position: absolute; right: 0; top: 50%; transform: translateY(-50%);">
-            <n-icon>
-              <CloseOutline />
-            </n-icon>
-          </n-button>
+            style="display: flex; align-items: center;width: 100%; text-overflow: ellipsis; white-space: nowrap;"
+            @contextmenu="handleContextMenu(panel.channel_id, $event)">
+            <n-avatar style="margin-left: 10px;margin-top: 7px;" size="medium" src="https://p0.ssl.qhimg.com/t019b1a140f615d4b0b.jpg" />
+            <n-space vertical size="small">
+              <div >
+                <div style="color: cadetblue; font-size: small; margin-top: 5px;"> {{ panel.channel_name }}</div>
+                <div
+                  style="color: dimgrey; font-size:xx-small; max-width: 100px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                  {{ messages[panel.channel_id][messages[panel.channel_id].length - 1]["user_info"]["nickname"] }}:
+                  {{ messages[panel.channel_id][messages[panel.channel_id].length - 1]["message"] }}
+                </div>
+
+              </div>
+            </n-space>
+            <n-button class="close-button" @click="handleClose(panel.channel_id)" text
+              style="padding: 5px; visibility: hidden; position: absolute; right: 0; top: 50%; transform: translateY(-50%);">
+              <n-icon>
+                <CloseOutline />
+              </n-icon>
+            </n-button>
+          </n-space>
         </div>
         <!-- 右键菜单 -->
         <n-dropdown placement="bottom-start" trigger="manual" :x="xRef" :y="yRef" :options="options"
-          :show="showDropdownRef" :on-clickoutside="onClickoutside " @select="handleSelect" />
+          :show="showDropdownRef" :on-clickoutside="onClickoutside" @select="handleSelect" />
       </n-space>
     </div>
     <div style="width: 400px;">
@@ -47,7 +59,7 @@
         <n-radio value="create" :checked="channelAction === 'create'" @change="channelAction = 'create'">
           创建频道
         </n-radio>
-        <n-input v-model:value="channelName" :placeholder="placeholderText" ></n-input>
+        <n-input v-model:value="channelName" :placeholder="placeholderText"></n-input>
         <template #footer>
           <div style="display: flex; justify-content: flex-end;">
             <n-space>
@@ -60,13 +72,13 @@
       <!-- 加载中 -->
       <n-spin v-if="isLoading"
         style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);"></n-spin>
-      </div>
+    </div>
   </n-modal>
   <!-- 退出频道模态框模块 -->
   <n-modal v-model:show="showLeaveModal">
     <div style="position: relative;">
       <n-spin v-if="isLoading"
-          style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);"></n-spin>
+        style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);"></n-spin>
       <n-card style="width: 600px" title="确认退出频道" :bordered="false" size="huge" role="dialog" aria-modal="true">
         <p>您确定要退出此频道吗？</p>
         <template #footer>
@@ -83,7 +95,7 @@
   <n-modal v-model:show="showdeleteModal">
     <div style="position: relative;">
       <n-spin v-if="isLoading"
-          style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);"></n-spin>
+        style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);"></n-spin>
       <n-card style="width: 600px" title="确认删除频道" :bordered="false" size="huge" role="dialog" aria-modal="true">
         <p>您确定要删除此频道吗？</p>
         <template #footer>
@@ -97,11 +109,11 @@
       </n-card>
     </div>
   </n-modal>
-<!-- 频道详情模态框模块 -->
+  <!-- 频道详情模态框模块 -->
   <n-modal v-model:show="showDetailsModal">
     <div style="position: relative;">
       <n-card style="width: 600px" title="频道详情" :bordered="false" size="huge" role="dialog" aria-modal="true">
-        <p>频道 ID: {{ currentChannelId }}</p>
+        <p>频道 ID: {{ channel_id }}</p>
         <template #footer>
           <div style="display: flex; justify-content: flex-end;">
             <n-space>
@@ -115,7 +127,6 @@
 </template>
 
 <style scoped>
- 
 .active-button {
   background-color: rgb(51, 56, 53) !important;
 }
@@ -127,14 +138,14 @@
 
 <script setup>
 import { Add } from '@vicons/ionicons5'
-import { ref,onMounted, computed, nextTick } from 'vue';
+import { ref, onMounted, computed, nextTick, inject, watch } from 'vue';
 import Chat from "./Chat.vue";
-import { useMessage, NButton, NSpace, NIcon, NCard, NModal, NInput, NSpin, NRadio, NDropdown } from "naive-ui";
+import { useMessage, NButton, NSpace, NIcon, NCard, NModal, NInput, NSpin, NRadio, NDropdown, NAvatar } from "naive-ui";
 import { CloseOutline } from '@vicons/ionicons5'
-import { create_channel, get_channel_list, join_channel,leave_channel,delete_channel } from '@/utils/jianghu_api';
+import { create_channel, get_channel_list, join_channel, leave_channel, delete_channel } from '@/utils/jianghu_api';
 
 
-
+const messages = inject('channel_message');
 const channelAction = ref('join');
 const channelName = ref('')
 const nameRef = ref(1)
@@ -148,20 +159,24 @@ const showLeaveModal = ref(false)
 const showModal = ref(false)
 const showDetailsModal = ref(false)
 const showdeleteModal = ref(false)
-const currentChannelId = ref('')
-
-
-//右键点击
-const xRef = ref(0)
-const yRef = ref(0)
 const showDropdownRef = ref(false)
 const channel_id = ref(0)
+const currentChannelId = ref('')
+const xRef = ref(0)
+const yRef = ref(0)
+const latestMessages = ref({});
+
+// 其他代码
+
+// 处理新消息
+
+
 
 //右键菜单选项
 const options = [
   {
     label: '退出频道',
-    key: 'key1', 
+    key: 'key1',
   },
   {
     label: '频道详情',
@@ -185,12 +200,23 @@ function handleSelect(key) {
   }
 }
 
+
+watch(messages, () => {
+  nextTick(() => {
+    // 将相应聊天室的最新消息更新为新消息
+    console.log('handleNewMessage', messages.value)
+    console.log('messages.content', messages.content)
+    latestMessages.value[messages.channel_id] = messages.content;
+
+  })
+});
+
 //退出频道
 async function confirmLeaveChannel() {
   isLoading.value = true;
   showLeaveModal.value = false
   try {
-    const res = await leave_channel({ "channel_id": channel_id.value , "user_id": localStorage.userid})
+    const res = await leave_channel({ "channel_id": channel_id.value, "user_id": localStorage.userid })
     if (res.code == 200) {
       message.success('退出成功')
       await fetchChannelList();
@@ -209,7 +235,7 @@ async function deleteChannel() {
   isLoading.value = true
   showdeleteModal.value = false
   try {
-    const res = await delete_channel({ "channel_id": channel_id.value , "user_id": localStorage.userid})
+    const res = await delete_channel({ "channel_id": channel_id.value, "user_id": localStorage.userid })
     if (res.code == 200) {
       message.success('删除成功')
       await fetchChannelList();
@@ -240,7 +266,7 @@ function closeDetailsModal() {
 }
 
 //右键菜单
-function handleContextMenu(channelId,e) {
+function handleContextMenu(channelId, e) {
   e.preventDefault()
   showDropdownRef.value = false
   nextTick().then(() => {
@@ -292,7 +318,7 @@ async function api_join_channel() {
 async function api_create_channel() {
   isLoading.value = true
   try {
-    const res = await create_channel({ "channel_name": channelName.value, "user_id": localStorage.userid});
+    const res = await create_channel({ "channel_name": channelName.value, "user_id": localStorage.userid });
     if (res.code == 200) {
       message.success('创建成功')
       showModal.value = false
@@ -383,5 +409,3 @@ function handleClose(name) {
   }
 }
 </script>
-
-

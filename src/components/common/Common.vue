@@ -14,22 +14,6 @@
             </n-space>
           </n-space>
           <n-space style="padding:23px 70px">
-            <n-button text @click="router.push({ path: '/common/botmanage' })" v-if="user_permission >= 1">
-              机器人管理
-            </n-button>
-            <n-button text @click="router.push({ path: '/common/j3team/0' })" v-if="user_permission >= 1">
-              团队大厅
-            </n-button>
-            <n-dropdown trigger="hover" :options="options" @select="sandHandleSelect">
-              <n-button text @click="router.push({ path: '/common/sand/破阵子' })">
-                沙盘
-              </n-button>
-            </n-dropdown>
-            <n-dropdown trigger="hover" :options="options" @select="rankingHandleSelect">
-              <n-button text @click="router.push({ path: '/common/ranking/破阵子' })">
-                战功榜
-              </n-button>
-            </n-dropdown>
             <n-button text @click="router.push({ path: '/common/channel' })">
               频道
             </n-button>
@@ -140,31 +124,6 @@ const user_options = ref([
   { label: computedMessageCount.value, key: "消息", icon: renderIcon(NotificationsOutline) }
 ]);
 
-const options = ref([
-  { label: "破阵子", key: "破阵子" },
-  { label: "唯我独尊", key: "唯我独尊" },
-  { label: "天鹅坪", key: "天鹅坪" },
-  { label: "梦江南", key: "梦江南" },
-  { label: "斗转星移", key: "斗转星移" },
-  { label: "幽月轮", key: "幽月轮" },
-  { label: "绝代天骄", key: "绝代天骄" },
-  { label: "龙争虎斗", key: "龙争虎斗" },
-  { label: "蝶恋花", key: "蝶恋花" },
-  { label: "长安城", key: "长安城" },
-  { label: "剑胆琴心", key: "剑胆琴心" },
-  { label: "乾坤一掷", key: "乾坤一掷" },
-  { label: "飞龙在天", key: "飞龙在天" },
-  { label: "青梅煮酒", key: "青梅煮酒" },
-])
-
-function sandHandleSelect(key) {
-  router.push({ path: '/common/sand/' + key })
-}
-
-function rankingHandleSelect(key) {
-  router.push({ path: '/common/ranking/' + key })
-}
-
 function userHandleSelect(key) {
   if (key == "退出登录") {
     logout();
@@ -208,7 +167,7 @@ function logout() {
 }
 
 if (router.currentRoute.value.path == "/common") {
-  router.push({ path: "/common/botmanage" })
+  router.push({ path: "/common/channel" })
 }
 </script>
 <style>

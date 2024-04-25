@@ -14,11 +14,7 @@
         click_num++
         if (click_num >= 5){
             if (localStorage.token != 0){
-                if (localStorage.user_permission >= 3){
-                    router.push({ path: "/management" });
-                } else {
-                    router.push({ path: "/common" });
-                }
+                router.push({ path: "/common" });
             }else{
                 router.push({ path: "/login" });
             }

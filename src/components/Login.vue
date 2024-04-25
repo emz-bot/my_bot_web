@@ -131,8 +131,6 @@ async function start_login() {
       localStorage.setItem("nickname", res.data.nickname);
       if (localStorage.beforeRouter && localStorage.beforeRouter != "/") {
         router.push({ path: localStorage.beforeRouter });
-      } else if (res.data.user_permission >= 3) {
-        router.push({ path: "/management" });
       } else {
         router.push({ path: "/common" });
       }
