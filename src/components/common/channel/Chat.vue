@@ -7,8 +7,10 @@
         </n-space>
         <n-space vertical size="small">
           <div style="margin-left: 10px;">
-            <div style="color: cadetblue;"> {{ i.time }}</div>
-            <div><span :style="{ color: i.user_info._id === self_id ? 'aquamarine' : 'darkcyan' }">
+            <div style="color: cadetblue;">
+              {{ new Date(i.time * 1000).toLocaleString() }}
+            </div>
+            <div><span :style="{ color: i.user_info._id == self_id ? 'aquamarine' : 'darkcyan' }">
               {{ i.user_info.nickname }}( {{ i.user_info._id }} )
             </span></div>
           </div>
@@ -42,7 +44,7 @@ import { NInput, NButton, NSpace, NAvatar, NCheckbox } from "naive-ui";
 import marked from 'marked';
 
 const avatarbase_url = ref(`${window.gurl.OSS_BASE_URL}jianghu/avatar/`)
-const self_id = ref(localStorage.userid);
+const self_id = ref(Number(localStorage.userid));
 
 const wsService = ref(null);
 const message_content = ref('');
