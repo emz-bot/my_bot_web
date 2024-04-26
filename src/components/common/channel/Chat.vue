@@ -1,41 +1,84 @@
 <template>
   <div ref="messageContainer" style="height: 500px; overflow: auto;">
     <n-space style="margin-left: 20px;" vertical size="medium" v-for="i in messages[props.chatRoomId]" :key="i.id">
-      <n-space>
+
+      <n-space class="msg">
         <n-space>
-          <n-avatar size="medium" :src="avatarbase_url + i.user_info._id + '.webp'" fallback-src="https://oss.ermaozi.cn/jianghu/default.webp" />
+          <n-avatar size="medium" :src="avatarbase_url + i.user_info._id + '.webp'"
+            fallback-src="https://oss.ermaozi.cn/jianghu/default.webp" />
         </n-space>
-        <n-space vertical size="small">
-          <div style="margin-left: 10px;">
-            <div style="color: cadetblue;">
-              {{ new Date(i.time * 1000).toLocaleString() }}
+        <n-space vertical style="max-width: 100%;margin-bottom: 20px;">
+          <n-space>
+            <div style="display: flex; align-items: center; max-width: 100%;">
+              <span :style="{ color: i.user_info._id == self_id ? 'aquamarine' : 'darkcyan', fontSize: 'small' }">
+                {{ i.user_info.nickname }}
+              </span>
+              <div class="msg_time" :style="{ color: 'cadetblue', marginLeft: '10px' }">
+                {{ new Date(i.time * 1000).toLocaleString() }}
+              </div>
             </div>
-            <div><span :style="{ color: i.user_info._id == self_id ? 'aquamarine' : 'darkcyan' }">
-              {{ i.user_info.nickname }}( {{ i.user_info._id }} )
-            </span></div>
-          </div>
+          </n-space>
+          <n-space style="max-width: 320px; margin-top: -5px;">
+            <div class="channel_msg bubble" v-html="i.message" />
+          </n-space>
+        </n-space>
+        <n-space>
         </n-space>
       </n-space>
-      <div style="margin-left: 20px;" class="channel_msg">
-        <span v-html="i.message"></span>
-      </div>
-      <br>
     </n-space>
   </div>
   <div style="margin-left: 20px;">
-    <n-input
-      ref="inputRef"
-      v-model:value="message_content"
-      type="textarea"
-      placeholder="请输入消息内容"
-      @keydown="handleKeyDown"
-    />
+    <n-input ref="inputRef" v-model:value="message_content" type="textarea" placeholder="请输入消息内容"
+      @keydown="handleKeyDown" />
     <div style="margin-top: 10px; display: flex; justify-content: flex-end;align-items: center;">
       <n-checkbox v-model:checked="is_markdown" size="medium" label="MarkDown" />
       <n-button @click="sendMessage">发送 (Ctrl+Enter)</n-button>
     </div>
   </div>
 </template>
+
+<style scoped>
+.bubble {
+  position: relative;
+  background: #2c2929; 
+  border-radius: 0.4em;
+  padding: 10px;
+}
+
+.bubble:after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: -10;
+  height: 0;
+  border: 20px solid transparent;
+  border-right-color: #000000;
+  border-left: 0;
+  border-right: 0;
+  margin-top: -10px;
+  margin-left: -10px;
+}
+.channel_msg :deep(img) {
+  max-width: 100%;
+  height: auto;
+  border-radius: 10px;
+}
+
+.channel_msg {
+  margin-top: 0px;
+}
+
+.msg_time {
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.msg:hover .msg_time {
+  opacity: 1;
+}
+</style>
+
 
 <script setup>
 import { ref, inject, watch, nextTick, onMounted, defineProps, onUpdated } from 'vue';
@@ -55,11 +98,14 @@ let messageContainer = ref(null);
 let message_history = ref([]);
 let current_history_index = ref(-1);
 
+
+
 const messages = inject('channel_message');
 const inputRef = ref(null);
 const props = defineProps({
   chatRoomId: Number
 })
+
 
 const sendMessage = () => {
   wsService.value = new WebSocketService();
@@ -76,18 +122,18 @@ const sendMessage = () => {
   } else {
     send_message = formatMessage(message_content.value);
   }
-  wsService.value.send({ message: send_message, type: 'channel_message', "channel_id": props.chatRoomId});
+  wsService.value.send({ message: send_message, type: 'channel_message', "channel_id": props.chatRoomId });
   message_content.value = '';
 };
 
 function getHistoryMessage(btn_type) {
-    if (btn_type === 'ArrowUp' && current_history_index.value > 0) {
-      current_history_index.value--;
-    } else if (btn_type === 'ArrowDown' && current_history_index.value < message_history.value.length - 1){
-      current_history_index.value++;
-    }
-    message_content.value = message_history.value[current_history_index.value];
+  if (btn_type === 'ArrowUp' && current_history_index.value > 0) {
+    current_history_index.value--;
+  } else if (btn_type === 'ArrowDown' && current_history_index.value < message_history.value.length - 1) {
+    current_history_index.value++;
   }
+  message_content.value = message_history.value[current_history_index.value];
+}
 
 function handleKeyDown(event) {
   if (event.key === 'Enter' && event.ctrlKey) {
@@ -140,13 +186,3 @@ watch(messages.value, () => {
   });
 });
 </script>
-<style scoped>
-.channel_msg :deep(img) {
-  max-width: 100%;
-  height: auto;
-  border-radius: 10px;
-}
-.channel_msg {
-  margin-top: 0px;
-}
-</style>
