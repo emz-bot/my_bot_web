@@ -72,7 +72,6 @@ const handleFileUpload = (event) => {
 const uploadFile = async (file) => {
     await upload_avatar(file).then((res) => {
     if (res.code == 200) {
-        console.log(res.data.avatar_url);
         avatarUrl.value = res.data.avatar_url
     }
   });

@@ -37,7 +37,7 @@
               </div>
             </n-space>
             <n-space vertical style="margin-right: 10px;justify-content: flex-end;">
-              <div style="color: dimgrey; font-size: small; margin-top: 5px;">
+              <div v-if="channel_new_msg[panel.channel_id] && channel_new_msg[panel.channel_id]['time']" style="color: dimgrey; font-size: small; margin-top: 5px;">
                 {{ new Date(channel_new_msg[panel.channel_id]["time"] * 1000).toLocaleTimeString().slice(0, 5) }}
               </div>
               <n-badge
@@ -384,7 +384,6 @@ function handleKeyDown(event) {
 }
 
 watch(messages, newVal => {
-    // 记录当前频道消息数量
     for (const key in newVal) {
       if (!channel_new_msg_count.value[key]) {
         channel_new_msg_count.value[key] = 0
@@ -398,6 +397,14 @@ watch(messages, newVal => {
       channel_msg_count.value[key] = newVal[key].length
       channel_new_msg.value[key] = newVal[key][newVal[key].length - 1]
     }
+    // panelsRef 按照新消时间排序
+    panelsRef.value.sort((a, b) => {
+      if (channel_new_msg.value[a.channel_id] && channel_new_msg.value[b.channel_id]) {
+        return channel_new_msg.value[b.channel_id]["time"] - channel_new_msg.value[a.channel_id]["time"]
+      } else {
+        return 0
+      }
+    })
   }, { deep: true });
 
 //切换频道

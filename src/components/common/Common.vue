@@ -151,7 +151,6 @@ function get_sys_message() {
     if (res.code == 200) {
       sys_message.value = res.data
       sys_message_count.value = res.data.filter(item => item.is_read == false).length
-      console.log(sys_message.value)
     }
   })
 }
