@@ -84,6 +84,14 @@ const sys_message_show = ref(false);
 const channel_message = ref({});
 const wsService = ref(null);
 wsService.value = new WebSocketService();
+// 连接成功后发送消息
+wsService.value.socket.onopen = () => {
+  wsService.value.send({
+    type: "connect",
+    user_id: localStorage.userid,
+    token: localStorage.token
+  });
+};
 provide('channel_message', channel_message);
 
 onMounted(() => {
@@ -98,8 +106,6 @@ onMounted(() => {
   };
 });
 
-
-var user_permission = ref(localStorage.user_permission);
 
 const router = useRouter();
 const message = useMessage();

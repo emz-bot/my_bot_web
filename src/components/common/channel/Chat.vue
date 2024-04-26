@@ -45,29 +45,14 @@
   padding: 10px;
 }
 
-.bubble:after {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 50%;
-  width: -10;
-  height: 0;
-  border: 20px solid transparent;
-  border-right-color: #000000;
-  border-left: 0;
-  border-right: 0;
-  margin-top: -10px;
-  margin-left: -10px;
-}
-
 .channel_msg :deep(img) {
   max-width: 100%;
   height: auto;
   border-radius: 10px;
 }
 
-.channel_msg {
-  margin-top: 0px;
+.channel_msg :deep(*) {
+  margin: 0;
 }
 
 .msg_time {
@@ -147,7 +132,7 @@ function handleKeyDown(event) {
 }
 
 function formatMessage(message) {
-  return message.replace(/\n/g, '<br/>');
+  return message.replace(/\n/g, '<br/>').replace(/ /g, '&nbsp;');
 }
 
 onUpdated(() => {

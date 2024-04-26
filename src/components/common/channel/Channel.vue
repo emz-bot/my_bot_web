@@ -7,8 +7,8 @@
         <Add />
       </n-icon>
     </n-button>
-    <n-space>
-      {{ selectedPanel ? channel_map[selectedPanel.toString()]["channel_name"] : '' }}({{selectedPanel}})
+    <n-space style="font-size:large;margin-left: 30px;font-weight: 700;" v-if="selectedPanel">
+      {{ channel_map[selectedPanel.toString()]["channel_name"] }}({{selectedPanel}})
     </n-space>
   </n-space>
   <!-- 频道列表 -->
@@ -63,7 +63,7 @@
           :show="showDropdownRef" :on-clickoutside="onClickoutside" @select="handleSelect" />
       </n-space>
     </div>
-    <div style="width: 400px;">
+    <div style="width: 600px;">
       <Chat :chatRoomId="selectedPanel" />
     </div>
   </n-space>
