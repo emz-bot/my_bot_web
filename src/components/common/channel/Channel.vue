@@ -1,19 +1,22 @@
 <template>
   <!-- 搜索和创建频道按钮 -->
-  <n-space>
+  <n-space >
     <n-input type="text" v-model:value="searchTerm" @keyup.enter="search" placeholder="搜索..." style="width: 180px;" />
     <n-button type="success" quaternary circle @click="showModal = true" style="margin-bottom: 10px;">
       <n-icon size="22">
         <Add />
       </n-icon>
     </n-button>
+    <n-space>
+      {{ selectedPanel ? channel_map[selectedPanel.toString()]["channel_name"] : '' }}({{selectedPanel}})
+    </n-space>
   </n-space>
   <!-- 频道列表 -->
   <n-space style="display: flex;">
     <div style="width: 230px;">
       <n-space vertical>
         <div v-for="(panel, index) in panelsRef" :key="index" class="panel-button"
-          style="display: flex;  position: relative;">
+        style="display: flex;  position: relative;">
 
           <n-space @click="handleClick(panel.channel_id)"
             :class="{ 'active-button': selectedPanel === panel.channel_id }"
@@ -168,6 +171,7 @@ const nameRef = ref(1)
 const message = useMessage()
 const selectedPanel = ref(null)
 const panelsRef = ref([])
+const channel_map = ref({})
 const isLoading = ref(false)
 const searchTerm = ref('');
 const closedChannels = ref([]);
@@ -360,7 +364,9 @@ function handleClick(panel) {
 const fetchChannelList = async () => {
   const res = await get_channel_list()
   if (res.code === 200) {
-    panelsRef.value = res.data.filter(panel => !closedChannels.value.includes(panel.channel_id)); //过滤掉已关闭的频道
+    var channel_list = res.data.channel_list
+    channel_map.value = res.data.channel_map
+    panelsRef.value = channel_list.filter(panel => !closedChannels.value.includes(panel.channel_id)); //过滤掉已关闭的频道
     return panelsRef.value
   } else {
     message.error(res.msg)

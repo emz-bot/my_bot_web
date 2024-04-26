@@ -40,7 +40,7 @@
 <style scoped>
 .bubble {
   position: relative;
-  background: #2c2929; 
+  background: #2c2929;
   border-radius: 0.4em;
   padding: 10px;
 }
@@ -59,6 +59,7 @@
   margin-top: -10px;
   margin-left: -10px;
 }
+
 .channel_msg :deep(img) {
   max-width: 100%;
   height: auto;
