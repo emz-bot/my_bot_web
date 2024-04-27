@@ -156,7 +156,11 @@ function get_sys_message() {
   get_sys_msg().then(res => {
     if (res.code == 200) {
       sys_message.value = res.data
-      sys_message_count.value = res.data.filter(item => item.is_read == false).length
+      if (res.data.length > 0) {
+        sys_message_count.value = res.data.filter(item => item.is_read == false).length
+      } else {
+        sys_message_count.value = 0
+      }
     }
   })
 }

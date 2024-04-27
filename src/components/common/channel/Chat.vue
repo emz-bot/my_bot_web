@@ -93,8 +93,9 @@ const props = defineProps({
 })
 
 
+wsService.value = new WebSocketService();
+
 const sendMessage = () => {
-  wsService.value = new WebSocketService();
   if (!message_content.value) {
     return;
   }
