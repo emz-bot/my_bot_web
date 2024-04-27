@@ -172,6 +172,7 @@ function logout() {
   localStorage.token = 0;
   localStorage.user_permission = 0;
   localStorage.beforeRouter = null;
+  wsService.value.socket.close();
   router.push({ path: "/" });
 }
 
