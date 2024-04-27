@@ -1,7 +1,7 @@
 <template>
     <n-space>
         <n-space class="avatar-container">
-            <n-avatar :size="100" :src="avatarUrl" class="avatar" />
+            <n-avatar :size="100" :src="avatarUrl" class="avatar" fallback-src="https://oss.ermaozi.cn/jianghu/default.webp"/>
             <input type="file" ref="fileInput" @change="handleFileUpload" style="display: none">
             <div class="avatar-buttons">
                 <n-button class="avatar-button" text @click="fileInputClick">

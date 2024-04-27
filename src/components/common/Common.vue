@@ -22,7 +22,7 @@
         <n-space style="padding:15px">
           <n-dropdown trigger="hover" :options="user_options" @select="userHandleSelect">
             <n-badge :value="sys_message_count" :max="99">
-              <n-avatar round size="medium" :src="vatar_url" />
+              <n-avatar round size="medium" :src="vatar_url" fallback-src="https://oss.ermaozi.cn/jianghu/default.webp"/>
             </n-badge>
           </n-dropdown>
         </n-space>
@@ -83,14 +83,18 @@ const sys_message_show = ref(false);
 
 const channel_message = ref({});
 const wsService = ref(null);
+const router = useRouter();
+const message = useMessage();
+
+const computedMessageCount = ref("");
 wsService.value = new WebSocketService();
-// 连接成功后发送消息
+
 wsService.value.socket.onopen = () => {
   wsService.value.send({
-    type: "connect",
-    user_id: localStorage.userid,
-    token: localStorage.token
-  });
+      type: "connect",
+      user_id: localStorage.userid,
+      token: localStorage.token
+    });
 };
 provide('channel_message', channel_message);
 
@@ -107,10 +111,6 @@ onMounted(() => {
 });
 
 
-const router = useRouter();
-const message = useMessage();
-
-const computedMessageCount = ref("");
 
 watchEffect(() => {
   computedMessageCount.value = computed(() => {
