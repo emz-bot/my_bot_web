@@ -1,5 +1,5 @@
 <template>
-  <div ref="messageContainer" style="height: 500px; overflow: auto;">
+  <div ref="messageContainer" style="height: 500px; overflow: auto; background:">
     <n-space style="margin-left: 20px;" vertical size="medium" v-for="i in messages[props.chatRoomId]" :key="i.id">
 
       <n-space class="msg">

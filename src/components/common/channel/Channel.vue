@@ -1,38 +1,37 @@
 <template>
   <!-- 搜索和创建频道按钮 -->
-  <n-space >
+  <n-space>
     <n-input type="text" v-model:value="searchTerm" @keyup.enter="search" placeholder="搜索..." style="width: 180px;" />
     <n-button type="success" quaternary circle @click="showModal = true" style="margin-bottom: 10px;">
       <n-icon size="22">
         <Add />
       </n-icon>
     </n-button>
-    <n-space style="font-size:large;margin-left: 30px;font-weight: 700;" v-if="selectedPanel">
-      {{ channel_map[selectedPanel.toString()]["channel_name"] }}({{selectedPanel}})
+    <n-space style="font-size:large; color: cadetblue; margin-left: 30px;" v-if="selectedPanel">
+      {{ channel_map[selectedPanel.toString()]["channel_name"] }}({{ selectedPanel }})
     </n-space>
   </n-space>
-  <!-- 频道列表 -->
   <n-space style="display: flex;">
     <div style="width: 230px;">
-      <n-space vertical>
+      <!-- 频道列表 -->
+      <n-space vertical style="color: rgb(23, 24, 25);">
         <div v-for="(panel, index) in panelsRef" :key="index" class="panel-button"
-        style="display: flex;  position: relative;">
+          style="display: flex;  position: relative;">
 
           <n-space @click="handleClick(panel.channel_id)"
             :class="{ 'active-button': selectedPanel === panel.channel_id }"
             style="display: flex; align-items: center;width: 100%; text-overflow: ellipsis; white-space: nowrap;"
-            @contextmenu="handleContextMenu(panel.channel_id, $event)"
-            >
-            <n-avatar style="margin-left: 10px;margin-top: 8px;" size="large" :src="channelavatarbase_url + panel.channel_id + '.webp'"
-              fallback-src="https://oss.ermaozi.cn/jianghu/default.webp"
-            />
+            @contextmenu="handleContextMenu(panel.channel_id, $event)">
+            <n-avatar style="margin-left: 10px;margin-top: 8px;" size="large"
+              :src="channelavatarbase_url + panel.channel_id + '.webp'"
+              fallback-src="https://oss.ermaozi.cn/jianghu/default.webp" />
             <n-space vertical size="small" style="width: 110px;">
               <div>
-                <div style="color: cadetblue; font-size: medium; margin-top: 5px;max-width: 120px;overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"> 
+                <div
+                  style="color: cadetblue; font-size: medium; margin-top: 5px;max-width: 120px;overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
                   {{ panel.channel_name }}
                 </div>
-                <div
-                  v-if="messages[panel.channel_id] && messages[panel.channel_id].length > 0"
+                <div v-if="messages[panel.channel_id] && messages[panel.channel_id].length > 0"
                   style="color: dimgrey; font-size:small; max-width: 100px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
                   {{ channel_new_msg[panel.channel_id]["user_info"]["nickname"] }}:
                   {{ channel_new_msg[panel.channel_id]["message"] }}
@@ -40,15 +39,12 @@
               </div>
             </n-space>
             <n-space vertical style="margin-right: 10px;justify-content: flex-end;">
-              <div v-if="channel_new_msg[panel.channel_id] && channel_new_msg[panel.channel_id]['time']" style="color: dimgrey; font-size: small; margin-top: 5px;">
+              <div v-if="channel_new_msg[panel.channel_id] && channel_new_msg[panel.channel_id]['time']"
+                style="color: dimgrey; font-size: small; margin-top: 5px;">
                 {{ new Date(channel_new_msg[panel.channel_id]["time"] * 1000).toLocaleTimeString().slice(0, 5) }}
               </div>
-              <n-badge
-                v-if="panel.channel_id != selectedPanel" 
-                style="top: -8px;"
-                :value="channel_new_msg_count[panel.channel_id]" 
-                :max="99" 
-              />
+              <n-badge v-if="panel.channel_id != selectedPanel" style="top: -8px;"
+                :value="channel_new_msg_count[panel.channel_id]" :max="99" />
             </n-space>
             <n-button class="close-button" @click="handleClose(panel.channel_id)" text
               style="padding: 5px; visibility: hidden; position: absolute; right: 0; top: 50%; transform: translateY(-50%);">
@@ -63,8 +59,30 @@
           :show="showDropdownRef" :on-clickoutside="onClickoutside" @select="handleSelect" />
       </n-space>
     </div>
+    <!-- 聊天室 -->
     <div style="width: 600px;">
       <Chat :chatRoomId="selectedPanel" />
+    </div>
+    <div style="width:300px;">
+      <!-- 公告栏 -->
+      <n-space vertical style="width: 200px; height: 200px; border: 1px solid rgb(34, 37, 42); padding: 10px;">
+        公告
+      </n-space>
+      <!-- 成员列表 -->
+      <n-space vertical style="width: 200px; height: 350px; border: 1px solid rgb(34, 37, 42); padding: 10px;  margin-left: 20px;margin-top: 5px;"
+        v-if="selectedPanel" >
+        <div v-for="(value, key, index) in channel_map[selectedPanel.toString()]['channel_member']" :key="index"
+          :style="{ color: value.online ? 'white' : 'gray'}"
+          style="display: flex; align-items: center;">
+
+            <n-avatar style="margin-left: 10px; margin-top: 10px;"  size="tiny" :src="useravatarbase_url + key + '.webp'"
+              fallback-src="https://oss.ermaozi.cn/jianghu/default.webp" />
+            <span style="margin-top: 5px; margin-left: 5px;">
+                {{ key }}
+            </span>
+        </div>
+      </n-space>
+
     </div>
   </n-space>
   <!-- 创建或加入频道模态框模块 -->
@@ -132,7 +150,9 @@
   <n-modal v-model:show="showDetailsModal">
     <div style="position: relative;">
       <n-card style="width: 600px" title="频道详情" :bordered="false" size="huge" role="dialog" aria-modal="true">
-        <p>频道 ID: {{ channel_id }}</p>
+        <p>频道 ID: {{ selectedPanel }}</p>
+        <p>频道 创建者 : {{ channel_map[selectedPanel.toString()]["channel_author"] }}</p>
+        <p>频道 管理员 : {{ channel_map[selectedPanel.toString()]["channel_manager"] }}</p>
         <template #footer>
           <div style="display: flex; justify-content: flex-end;">
             <n-space>
@@ -147,7 +167,7 @@
 
 <style scoped>
 .active-button {
-  background-color: rgb(51, 56, 53) !important;
+  background-color: rgb(41, 43, 44) !important;
 }
 
 .panel-button:hover .close-button {
@@ -159,17 +179,20 @@
 import { Add } from '@vicons/ionicons5'
 import { ref, onMounted, computed, nextTick, inject, watch } from 'vue';
 import Chat from "./Chat.vue";
-import { useMessage, NButton, NSpace, NIcon, NCard, NModal, NInput, NSpin, NRadio, NDropdown, NAvatar, NBadge } from "naive-ui";
+import { useMessage, NButton, NSpace, NIcon, NCard, NModal, NInput, NSpin, NRadio, NDropdown, NAvatar, NBadge, } from "naive-ui";
 import { CloseOutline } from '@vicons/ionicons5'
 import { create_channel, get_channel_list, join_channel, leave_channel, delete_channel } from '@/utils/jianghu_api';
 
 const channelavatarbase_url = ref(`${window.gurl.OSS_BASE_URL}jianghu/channel_avatar/`)
+const useravatarbase_url = ref(`${window.gurl.OSS_BASE_URL}jianghu/avatar/`)
 const messages = inject('channel_message');
 const channelAction = ref('join');
 const channelName = ref('')
 const nameRef = ref(1)
 const message = useMessage()
 const selectedPanel = ref(null)
+const dialogVisible = ref(false);
+const announcement = ref('');
 const panelsRef = ref([])
 const channel_map = ref({})
 const isLoading = ref(false)
@@ -180,7 +203,6 @@ const showModal = ref(false)
 const showDetailsModal = ref(false)
 const showdeleteModal = ref(false)
 const showDropdownRef = ref(false)
-const channel_id = ref(0)
 const xRef = ref(0)
 const yRef = ref(0)
 const channel_msg_count = ref({})
@@ -215,6 +237,8 @@ function handleSelect(key) {
     showdeleteModal.value = true
   }
 }
+
+
 
 //退出频道
 async function confirmLeaveChannel() {
@@ -274,7 +298,6 @@ function handleContextMenu(channelId, e) {
   showDropdownRef.value = false
   nextTick().then(() => {
     showDropdownRef.value = true
-    channel_id.value = channelId
     xRef.value = e.clientX
     yRef.value = e.clientY
   })
@@ -363,6 +386,7 @@ function handleClick(panel) {
 //刷新频道列表
 const fetchChannelList = async () => {
   const res = await get_channel_list()
+  console.log(res)
   if (res.code === 200) {
     var channel_list = res.data.channel_list
     channel_map.value = res.data.channel_map
@@ -390,28 +414,28 @@ function handleKeyDown(event) {
 }
 
 watch(messages, newVal => {
-    for (const key in newVal) {
-      if (!channel_new_msg_count.value[key]) {
-        channel_new_msg_count.value[key] = 0
-      }
-      if (!channel_msg_count.value[key]) {
-        channel_msg_count.value[key] = newVal[key].length
-      }
-      if (newVal[key].length > channel_msg_count.value[key]) {
-        channel_new_msg_count.value[key] += newVal[key].length - channel_msg_count.value[key]
-      }
-      channel_msg_count.value[key] = newVal[key].length
-      channel_new_msg.value[key] = newVal[key][newVal[key].length - 1]
+  for (const key in newVal) {
+    if (!channel_new_msg_count.value[key]) {
+      channel_new_msg_count.value[key] = 0
     }
-    // panelsRef 按照新消时间排序
-    panelsRef.value.sort((a, b) => {
-      if (channel_new_msg.value[a.channel_id] && channel_new_msg.value[b.channel_id]) {
-        return channel_new_msg.value[b.channel_id]["time"] - channel_new_msg.value[a.channel_id]["time"]
-      } else {
-        return 0
-      }
-    })
-  }, { deep: true });
+    if (!channel_msg_count.value[key]) {
+      channel_msg_count.value[key] = newVal[key].length
+    }
+    if (newVal[key].length > channel_msg_count.value[key]) {
+      channel_new_msg_count.value[key] += newVal[key].length - channel_msg_count.value[key]
+    }
+    channel_msg_count.value[key] = newVal[key].length
+    channel_new_msg.value[key] = newVal[key][newVal[key].length - 1]
+  }
+  // panelsRef 按照新消时间排序
+  panelsRef.value.sort((a, b) => {
+    if (channel_new_msg.value[a.channel_id] && channel_new_msg.value[b.channel_id]) {
+      return channel_new_msg.value[b.channel_id]["time"] - channel_new_msg.value[a.channel_id]["time"]
+    } else {
+      return 0
+    }
+  })
+}, { deep: true });
 
 //切换频道
 function switchTab(isShiftKey) {
