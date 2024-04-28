@@ -67,10 +67,10 @@
 
 
 <script setup>
-import { ref, inject, watch, nextTick, onMounted, defineProps, onUpdated } from 'vue';
+import { ref, inject, watch, nextTick, onMounted, onUpdated } from 'vue';
 import WebSocketService from '@/utils/websocket';
 import { NInput, NButton, NSpace, NAvatar, NCheckbox } from "naive-ui";
-import marked from 'marked';
+import { marked } from 'marked';
 
 const avatarbase_url = ref(`${window.gurl.OSS_BASE_URL}jianghu/avatar/`)
 const self_id = ref(Number(localStorage.userid));

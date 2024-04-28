@@ -11,10 +11,10 @@
   },
   "dependencies": {
     "@vicons/ionicons5": "^0.12.0",
-    "axios": "^0.26.0",
+    "axios": "^1.6.8",
     "compressing": "^1.6.2",
     "core-js": "^3.6.5",
-    "marked": "^0.3.19",
+    "marked": "^12.0.2",
     "qiniu": "^7.6.1",
     "qs": "^6.11.0",
     "ssh2": "^1.11.0",
@@ -22,9 +22,9 @@
     "vue-router": "^4.0.14"
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "~4.5.15",
-    "@vue/cli-plugin-eslint": "~4.5.15",
-    "@vue/cli-service": "~4.5.15",
+    "@vue/cli-plugin-babel": "^5.0.8",
+    "@vue/cli-plugin-eslint": "^5.0.8",
+    "@vue/cli-service": "^5.0.8",
     "@vue/compiler-sfc": "^3.0.0",
     "babel-eslint": "^10.1.0",
     "eslint": "^6.7.2",
