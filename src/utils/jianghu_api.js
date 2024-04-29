@@ -12,3 +12,5 @@ export const get_sys_msg = data => get('/api/v1/channel/sys_msg', {})
 export const read_sys_msg = data => post('/api/v1/channel/read_sys_msg', data)
 export const accept_channel_apply = data => post('/api/v1/channel/accept_apply', data)
 export const reject_channel_apply = data => post('/api/v1/channel/reject_apply', data)
+
+export const get_jianghu_user_info = data => get('/api/v1/jianghu/user/get_user_info', data)

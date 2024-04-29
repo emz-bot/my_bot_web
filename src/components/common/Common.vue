@@ -18,6 +18,11 @@
               频道
             </n-button>
           </n-space>
+          <n-space style="padding:23px 70px">
+            <n-button text @click="router.push({ path: '/common/jianghu' })">
+              江湖
+            </n-button>
+          </n-space>
         </n-space>
         <n-space style="padding:15px">
           <n-dropdown trigger="hover" :options="user_options" @select="userHandleSelect">

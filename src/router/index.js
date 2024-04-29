@@ -21,6 +21,10 @@ const router = createRouter({
             {
               path: 'channel',
               component: () => import("@/components/common/channel/Channel.vue"),
+            },
+            {
+              path: 'jianghu',
+              component: () => import("@/components/common/jianghu/JiangHu.vue"),
             }
           ],
         },
