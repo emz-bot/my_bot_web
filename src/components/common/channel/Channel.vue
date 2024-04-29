@@ -104,10 +104,10 @@ import MemberList from "./MemberList.vue";
 import CreateJoin from "./CreateJoin.vue";
 import LeaveChannel from "./LeaveChannel.vue";
 import DeletChannel from "./DeletChannel.vue";
-// import DetailsChannel from "./DetailsChannel.vue";
-import { useMessage, NButton, NSpace, NIcon, NCard, NModal, NInput, NSpin, NDropdown, NAvatar, NBadge, } from "naive-ui";
+import DetailsChannel from "./DetailsChannel.vue";
+import { useMessage, NButton, NSpace, NIcon,  NModal, NInput, NDropdown, NAvatar, NBadge } from "naive-ui";
 import { CloseOutline } from '@vicons/ionicons5'
-import { get_channel_list, delete_channel } from '@/utils/jianghu_api';
+import { get_channel_list } from '@/utils/jianghu_api';
 
 const channelavatarbase_url = ref(`${window.gurl.OSS_BASE_URL}jianghu/channel_avatar/`)
 const messages = inject('channel_message');

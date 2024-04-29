@@ -16,10 +16,8 @@
 </template>
 
 <script setup >
-import { ref, onMounted, nextTick, inject, watch } from 'vue';
-
-import { get_channel_list, delete_channel } from '@/utils/jianghu_api';
-import { useMessage, NButton, NSpace, NIcon, NCard, NModal, NInput, NSpin, NDropdown, NAvatar, NBadge, } from "naive-ui";
+import { ref } from 'vue';
+import {  NButton, NSpace,  NCard } from "naive-ui";
  
 const props = defineProps({ channel_id: Number, fetchChannelList: Function ,channel_author:String})
 const channel_id = ref(props.channel_id)

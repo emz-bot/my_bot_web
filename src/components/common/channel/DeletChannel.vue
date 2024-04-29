@@ -17,10 +17,10 @@
 </template>
 
 <script setup >
-import { ref, onMounted, nextTick, inject, watch } from 'vue';
+import { ref } from 'vue';
 
-import { get_channel_list, delete_channel } from '@/utils/jianghu_api';
-import { useMessage, NButton, NSpace, NIcon, NCard, NModal, NInput, NSpin, NDropdown, NAvatar, NBadge, } from "naive-ui";
+import { delete_channel } from '@/utils/jianghu_api';
+import { useMessage, NButton, NSpace, NIcon, NCard, NSpin } from "naive-ui";
 
 const message = useMessage();  
 const props = defineProps({ channel_id: Number, fetchChannelList: Function })
