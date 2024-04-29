@@ -7,19 +7,19 @@
         <Add />
       </n-icon>
     </n-button>
-    <n-space style="font-size:large; color: cadetblue; margin-left: 30px;" v-if="selectedPanel">
-      {{ channel_map[selectedPanel.toString()]["channel_name"] }}({{ selectedPanel }})
+    <n-space style="font-size:large; color: cadetblue; margin-left: 30px;" v-if="CurrentChannelId">
+      {{ ChannelInfoMap[CurrentChannelId.toString()]["channel_name"] }}({{ CurrentChannelId }})
     </n-space>
   </n-space>
   <n-space style="display: flex;">
     <div style="width: 230px;">
       <!-- 频道列表 -->
       <n-space vertical style="color: rgb(23, 24, 25);">
-        <div v-for="(panel, index) in panelsRef" :key="index" class="panel-button"
+        <div v-for="(panel, index) in ChannelIdList" :key="index" class="panel-button"
           style="display: flex;  position: relative;">
 
           <n-space @click="handleClick(panel.channel_id)"
-            :class="{ 'active-button': selectedPanel === panel.channel_id }"
+            :class="{ 'active-button': CurrentChannelId === panel.channel_id }"
             style="display: flex; align-items: center;width: 100%; text-overflow: ellipsis; white-space: nowrap;"
             @contextmenu="handleContextMenu(panel.channel_id, $event)">
             <n-avatar style="margin-left: 10px;margin-top: 8px;" size="large"
@@ -31,7 +31,7 @@
                   style="color: cadetblue; font-size: medium; margin-top: 5px;max-width: 120px;overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
                   {{ panel.channel_name }}
                 </div>
-                <div v-if="messages[panel.channel_id] && messages[panel.channel_id].length > 0"
+                <div v-if="channel_new_msg[panel.channel_id]"
                   style="color: dimgrey; font-size:small; max-width: 100px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
                   {{ channel_new_msg[panel.channel_id]["user_info"]["nickname"] }}:
                   {{ channel_new_msg[panel.channel_id]["message"] }}
@@ -43,7 +43,7 @@
                 style="color: dimgrey; font-size: small; margin-top: 5px;">
                 {{ new Date(channel_new_msg[panel.channel_id]["time"] * 1000).toLocaleTimeString().slice(0, 5) }}
               </div>
-              <n-badge v-if="panel.channel_id != selectedPanel" style="top: -8px;"
+              <n-badge v-if="panel.channel_id != CurrentChannelId" style="top: -8px;"
                 :value="channel_new_msg_count[panel.channel_id]" :max="99" />
             </n-space>
             <n-button class="close-button" @click="handleClose(panel.channel_id)" text
@@ -61,107 +61,28 @@
     </div>
     <!-- 聊天室 -->
     <div style="width: 600px;">
-      <Chat :chatRoomId="selectedPanel" />
+      <Chat :chatRoomId="CurrentChannelId" v-if="CurrentChannelId" />
     </div>
-    <div style="width:300px;">
-      <!-- 公告栏 -->
-      <n-space vertical style="width: 200px; height: 200px; border: 1px solid rgb(34, 37, 42); padding: 10px;">
-        公告
-      </n-space>
-      <!-- 成员列表 -->
-      <n-space vertical style="width: 200px; height: 350px; border: 1px solid rgb(34, 37, 42); padding: 10px;  margin-left: 20px;margin-top: 5px;"
-        v-if="selectedPanel" >
-        <div v-for="(value, key, index) in channel_map[selectedPanel.toString()]['channel_member']" :key="index"
-          :style="{ color: value.online ? 'white' : 'gray'}"
-          style="display: flex; align-items: center;">
-
-            <n-avatar style="margin-left: 10px; margin-top: 10px;"  size="tiny" :src="useravatarbase_url + key + '.webp'"
-              fallback-src="https://oss.ermaozi.cn/jianghu/default.webp" />
-            <span style="margin-top: 5px; margin-left: 5px;">
-                {{ key }}
-            </span>
-        </div>
-      </n-space>
-
+    <div style="width:300px;" v-if="CurrentChannelId">
+      <MemberList
+        :channel_member="ChannelInfoMap[CurrentChannelId.toString()] ? ChannelInfoMap[CurrentChannelId.toString()]['channel_member'] : ''" />
     </div>
   </n-space>
   <!-- 创建或加入频道模态框模块 -->
   <n-modal v-model:show="showModal">
-    <div style="position: relative;">
-      <n-card style="width: 600px" title="创建或加入频道" :bordered="false" size="huge" role="dialog" aria-modal="true">
-        <n-radio value="join" :default-checked="true" :checked="channelAction === 'join'"
-          @change="channelAction = 'join'">
-          加入频道
-        </n-radio>
-        <n-radio value="create" :checked="channelAction === 'create'" @change="channelAction = 'create'">
-          创建频道
-        </n-radio>
-        <n-input v-model:value="channelName" :placeholder="placeholderText"></n-input>
-        <template #footer>
-          <div style="display: flex; justify-content: flex-end;">
-            <n-space>
-              <n-button @click="handleChannelAction">确定</n-button>
-              <n-button @click="handleCancel">取消</n-button>
-            </n-space>
-          </div>
-        </template>
-      </n-card>
-      <!-- 加载中 -->
-      <n-spin v-if="isLoading"
-        style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);"></n-spin>
-    </div>
+    <CreateJoin :fetchChannelList="fetchChannelList" />
   </n-modal>
   <!-- 退出频道模态框模块 -->
   <n-modal v-model:show="showLeaveModal">
-    <div style="position: relative;">
-      <n-spin v-if="isLoading"
-        style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);"></n-spin>
-      <n-card style="width: 600px" title="确认退出频道" :bordered="false" size="huge" role="dialog" aria-modal="true">
-        <p>您确定要退出此频道吗？</p>
-        <template #footer>
-          <div style="display: flex; justify-content: flex-end;">
-            <n-space>
-              <n-button @click="confirmLeaveChannel">确定</n-button>
-              <n-button @click="cancelLeaveChannel">取消</n-button>
-            </n-space>
-          </div>
-        </template>
-      </n-card>
-    </div>
+    <LeaveChannel :channel_id="RightclickChannelId" :fetchChannelList="fetchChannelList" />
   </n-modal>
+  <!-- 删除频道模态框模块 -->
   <n-modal v-model:show="showdeleteModal">
-    <div style="position: relative;">
-      <n-spin v-if="isLoading"
-        style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);"></n-spin>
-      <n-card style="width: 600px" title="确认删除频道" :bordered="false" size="huge" role="dialog" aria-modal="true">
-        <p>您确定要删除此频道吗？</p>
-        <template #footer>
-          <div style="display: flex; justify-content: flex-end;">
-            <n-space>
-              <n-button @click="deleteChannel">确定</n-button>
-              <n-button @click="canceldeleteChannel">取消</n-button>
-            </n-space>
-          </div>
-        </template>
-      </n-card>
-    </div>
+    <DeletChannel :channel_id="RightclickChannelId" :fetchChannelList="fetchChannelList" />
   </n-modal>
   <!-- 频道详情模态框模块 -->
   <n-modal v-model:show="showDetailsModal">
-    <div style="position: relative;">
-      <n-card style="width: 600px" title="频道详情" :bordered="false" size="huge" role="dialog" aria-modal="true">
-        <p>频道 ID: {{ selectedPanel }}</p>
-        <p>频道 创建者 : {{ channel_map[selectedPanel.toString()]["channel_author"] }}</p>
-        <p>频道 管理员 : {{ channel_map[selectedPanel.toString()]["channel_manager"] }}</p>
-        <template #footer>
-          <div style="display: flex; justify-content: flex-end;">
-            <n-space>
-              <n-button @click="closeDetailsModal">关闭</n-button>
-            </n-space>
-          </div>
-        </template>
-      </n-card>
-    </div>
+    备用
   </n-modal>
 </template>
 
@@ -177,38 +98,40 @@
 
 <script setup>
 import { Add } from '@vicons/ionicons5'
-import { ref, onMounted, computed, nextTick, inject, watch } from 'vue';
+import { ref, onMounted, nextTick, inject, watch } from 'vue';
 import Chat from "./Chat.vue";
-import { useMessage, NButton, NSpace, NIcon, NCard, NModal, NInput, NSpin, NRadio, NDropdown, NAvatar, NBadge, } from "naive-ui";
+import MemberList from "./MemberList.vue";
+import CreateJoin from "./CreateJoin.vue";
+import LeaveChannel from "./LeaveChannel.vue";
+import DeletChannel from "./DeletChannel.vue";
+// import DetailsChannel from "./DetailsChannel.vue";
+import { useMessage, NButton, NSpace, NIcon, NCard, NModal, NInput, NSpin, NDropdown, NAvatar, NBadge, } from "naive-ui";
 import { CloseOutline } from '@vicons/ionicons5'
-import { create_channel, get_channel_list, join_channel, leave_channel, delete_channel } from '@/utils/jianghu_api';
+import { get_channel_list, delete_channel } from '@/utils/jianghu_api';
 
 const channelavatarbase_url = ref(`${window.gurl.OSS_BASE_URL}jianghu/channel_avatar/`)
-const useravatarbase_url = ref(`${window.gurl.OSS_BASE_URL}jianghu/avatar/`)
 const messages = inject('channel_message');
-const channelAction = ref('join');
-const channelName = ref('')
 const nameRef = ref(1)
 const message = useMessage()
-const selectedPanel = ref(null)
-const dialogVisible = ref(false);
-const announcement = ref('');
-const panelsRef = ref([])
-const channel_map = ref({})
-const isLoading = ref(false)
+const CurrentChannelId = ref(null)
+const ChannelIdList = ref([])
+const ChannelInfoMap = ref({})
 const searchTerm = ref('');
 const closedChannels = ref([]);
+
+const xRef = ref(0)
+const yRef = ref(0)
+
+const channel_msg_count = ref({})
+const channel_new_msg_count = ref({})
+const channel_new_msg = ref({})
+const RightclickChannelId = ref(null)
+
 const showLeaveModal = ref(false)
 const showModal = ref(false)
 const showDetailsModal = ref(false)
 const showdeleteModal = ref(false)
 const showDropdownRef = ref(false)
-const xRef = ref(0)
-const yRef = ref(0)
-const channel_msg_count = ref({})
-const channel_new_msg_count = ref({})
-const channel_new_msg = ref({})
-
 
 //右键菜单选项
 const options = [
@@ -240,62 +163,11 @@ function handleSelect(key) {
 
 
 
-//退出频道
-async function confirmLeaveChannel() {
-  isLoading.value = true;
-  showLeaveModal.value = false
-  try {
-    const res = await leave_channel({ "channel_id": channel_id.value, "user_id": localStorage.userid })
-    if (res.code == 200) {
-      message.success('退出成功')
-      await fetchChannelList();
-    } else {
-      message.error(res.msg)
-    }
-  } catch (error) {
-    console.error('Error leaving channel:', error)
-  } finally {
-    isLoading.value = false;
-  }
-}
-
-//删除频道
-async function deleteChannel() {
-  isLoading.value = true
-  showdeleteModal.value = false
-  try {
-    const res = await delete_channel({ "channel_id": channel_id.value, "user_id": localStorage.userid })
-    if (res.code == 200) {
-      message.success('删除成功')
-      await fetchChannelList();
-    } else {
-      message.error(res.msg)
-    }
-  } catch (error) {
-    console.error('Error leaving channel:', error)
-  } finally {
-    isLoading.value = false;
-  }
-}
-
-
-//取消退出频道
-function cancelLeaveChannel() {
-  showLeaveModal.value = false
-}
-//取消删除频道
-function canceldeleteChannel() {
-  showdeleteModal.value = false
-}
-//关闭频道详情
-function closeDetailsModal() {
-  showDetailsModal.value = false
-}
-
 //右键菜单
 function handleContextMenu(channelId, e) {
   e.preventDefault()
   showDropdownRef.value = false
+  RightclickChannelId.value = channelId
   nextTick().then(() => {
     showDropdownRef.value = true
     xRef.value = e.clientX
@@ -307,57 +179,6 @@ function onClickoutside() {
   showDropdownRef.value = false
 }
 
-//提示文字
-const placeholderText = computed(() => {
-  const text = channelAction.value === 'create' ? '请输入频道名称' : '请输入频道id';
-  return text;
-});
-
-//加号单选卡
-async function handleChannelAction() {
-  if (channelAction.value === 'create') {
-    await api_create_channel()
-  } else if (channelAction.value === 'join') {
-    await api_join_channel()
-  }
-}
-//加入频道
-async function api_join_channel() {
-  isLoading.value = true
-  try {
-    const channelId = parseInt(channelName.value, 10);
-    const res = await join_channel({ "channel_id": channelId, "user_id": localStorage.userid });
-    if (res.code == 200) {
-      message.success('申请成功')
-      showModal.value = false
-      await fetchChannelList();
-    } else {
-      message.error(res.msg)
-    }
-  } catch (error) {
-    message.error('请求失败: ' + error.message)
-  } finally {
-    isLoading.value = false
-  }
-}
-//创建频道
-async function api_create_channel() {
-  isLoading.value = true
-  try {
-    const res = await create_channel({ "channel_name": channelName.value, "user_id": localStorage.userid });
-    if (res.code == 200) {
-      message.success('创建成功')
-      showModal.value = false
-      await fetchChannelList();
-    } else {
-      message.error(res.msg)
-    }
-  } catch (error) {
-    message.error('请求失败: ' + error.message)
-  } finally {
-    isLoading.value = false
-  }
-}
 
 //搜索
 async function search() {
@@ -371,39 +192,41 @@ async function search() {
   }
 }
 
-//关闭单选卡
-function handleCancel() {
-  showModal.value = false
-}
 
 //点击频道列表
 function handleClick(panel) {
   // 切换频道时重置新消息数量
-  channel_new_msg_count.value[selectedPanel.value] = 0
-  selectedPanel.value = panel
+  channel_new_msg_count.value[CurrentChannelId.value] = 0
+  CurrentChannelId.value = panel
 }
 
 //刷新频道列表
 const fetchChannelList = async () => {
-  const res = await get_channel_list()
-  console.log(res)
-  if (res.code === 200) {
-    var channel_list = res.data.channel_list
-    channel_map.value = res.data.channel_map
-    panelsRef.value = channel_list.filter(panel => !closedChannels.value.includes(panel.channel_id)); //过滤掉已关闭的频道
-    return panelsRef.value
-  } else {
-    message.error(res.msg)
+  try {
+    const res = await get_channel_list()
+    if (res.code === 200) {
+      var channel_list = res.data.channel_list
+      ChannelInfoMap.value = res.data.channel_map
+      ChannelIdList.value = channel_list.filter(panel => !closedChannels.value.includes(panel.channel_id)); //过滤掉已关闭的频道
+      if (ChannelIdList.value.length === 0) {
+          message.error('没有频道');
+        } else {
+          // 设置第一个频道为当前频道
+          CurrentChannelId.value = ChannelIdList.value[0].channel_id;
+        }
+    } else {
+      message.error(res.msg)
+    }
+  } finally {
+    showModal.value = false
+    showLeaveModal.value = false
+    showdeleteModal.value = false
+    showDetailsModal.value = false
+
   }
 }
 onMounted(async () => {
-  const channels = await fetchChannelList();
-  if (channels.length === 0) {
-    message.error('没有频道');
-  } else {
-    // 设置第一个频道为当前频道
-    selectedPanel.value = channels[0].channel_id;
-  }
+  await fetchChannelList()
 });
 
 function handleKeyDown(event) {
@@ -427,8 +250,8 @@ watch(messages, newVal => {
     channel_msg_count.value[key] = newVal[key].length
     channel_new_msg.value[key] = newVal[key][newVal[key].length - 1]
   }
-  // panelsRef 按照新消时间排序
-  panelsRef.value.sort((a, b) => {
+  // ChannelIdList 按照新消时间排序
+  ChannelIdList.value.sort((a, b) => {
     if (channel_new_msg.value[a.channel_id] && channel_new_msg.value[b.channel_id]) {
       return channel_new_msg.value[b.channel_id]["time"] - channel_new_msg.value[a.channel_id]["time"]
     } else {
@@ -439,7 +262,7 @@ watch(messages, newVal => {
 
 //切换频道
 function switchTab(isShiftKey) {
-  const { value: panels } = panelsRef;
+  const { value: panels } = ChannelIdList;
   const currentIndex = panels.indexOf(nameRef.value);
   const nextIndex = isShiftKey
     ? (currentIndex - 1 + panels.length) % panels.length // 如果按下了Shift键，切换到上一个标签
@@ -449,7 +272,7 @@ function switchTab(isShiftKey) {
 
 //关闭频道
 function handleClose(name) {
-  const { value: panels } = panelsRef
+  const { value: panels } = ChannelIdList
   if (panels.length === 1) {
     message.error('最后一个了')
     return
