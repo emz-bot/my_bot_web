@@ -107,7 +107,7 @@ import DeletChannel from "./DeletChannel.vue";
 import DetailsChannel from "./DetailsChannel.vue";
 import { useMessage, NButton, NSpace, NIcon,  NModal, NInput, NDropdown, NAvatar, NBadge } from "naive-ui";
 import { CloseOutline } from '@vicons/ionicons5'
-import { get_channel_list } from '@/utils/jianghu_api';
+import { get_channel_list, get_offline_msg } from '@/utils/jianghu_api';
 
 const channelavatarbase_url = ref(`${window.gurl.OSS_BASE_URL}jianghu/channel_avatar/`)
 const messages = inject('channel_message');
@@ -196,9 +196,11 @@ async function search() {
 //点击频道列表
 function handleClick(panel) {
   // 切换频道时重置新消息数量
+  console.log(CurrentChannelId.value)
   channel_new_msg_count.value[CurrentChannelId.value] = 0
   CurrentChannelId.value = panel
 }
+
 
 //刷新频道列表
 const fetchChannelList = async () => {
@@ -209,11 +211,17 @@ const fetchChannelList = async () => {
       ChannelInfoMap.value = res.data.channel_map
       ChannelIdList.value = channel_list.filter(panel => !closedChannels.value.includes(panel.channel_id)); //过滤掉已关闭的频道
       if (ChannelIdList.value.length === 0) {
-          message.error('没有频道');
-        } else {
-          // 设置第一个频道为当前频道
-          CurrentChannelId.value = ChannelIdList.value[0].channel_id;
-        }
+        message.error('没有频道');
+      } else {
+        ChannelIdList.value.sort((a, b) => {
+          if (a.last_message_time && b.last_message_time) {
+            return b.last_message_time - a.last_message_time
+          } else {
+            return 0
+          }
+        })
+        CurrentChannelId.value = ChannelIdList.value[0].channel_id;
+      }
     } else {
       message.error(res.msg)
     }
@@ -227,6 +235,7 @@ const fetchChannelList = async () => {
 }
 onMounted(async () => {
   await fetchChannelList()
+  const res = await get_offline_msg()
 });
 
 function handleKeyDown(event) {
@@ -250,7 +259,6 @@ watch(messages, newVal => {
     channel_msg_count.value[key] = newVal[key].length
     channel_new_msg.value[key] = newVal[key][newVal[key].length - 1]
   }
-  // ChannelIdList 按照新消时间排序
   ChannelIdList.value.sort((a, b) => {
     if (channel_new_msg.value[a.channel_id] && channel_new_msg.value[b.channel_id]) {
       return channel_new_msg.value[b.channel_id]["time"] - channel_new_msg.value[a.channel_id]["time"]

@@ -40,9 +40,6 @@
         </n-card>
       </n-layout>
     </n-layout>
-    <n-layout-footer position="absolute" style="height: 64px; padding: 24px">
-      <a id="record" href="https://beian.miit.gov.cn"> 陕ICP备2022002093号 </a>
-    </n-layout-footer>
   </n-layout>
   <n-modal
       v-model:show="sys_message_show"

@@ -1,5 +1,5 @@
 <template>
-  <div ref="messageContainer" style="height: 500px; overflow: auto; background:">
+  <div ref="messageContainer" style="max-height: 50vh; overflow: auto; background:">
     <n-space style="margin-left: 20px;" vertical size="medium" v-for="i in messages[props.chatRoomId]" :key="i.id">
 
       <n-space class="msg">
@@ -147,6 +147,7 @@ if (storedMessages) {
 }
 
 onMounted(() => {
+  messageContainer.value.scrollTop = messageContainer.value.scrollHeight;
   const observer = new MutationObserver(() => {
     if (isAtBottom.value) {
       messageContainer.value.scrollTop = messageContainer.value.scrollHeight;
@@ -154,16 +155,17 @@ onMounted(() => {
   });
   observer.observe(messageContainer.value, { childList: true });
   messageContainer.value.onscroll = () => {
-    isAtBottom.value = messageContainer.value.scrollTop + messageContainer.value.clientHeight === messageContainer.value.scrollHeight;
+    const { scrollTop, scrollHeight, clientHeight } = messageContainer.value;
+    const atBottom = scrollHeight - scrollTop <= clientHeight + 1; // 加1是为了防止浮点数计算误差
+    isAtBottom.value = atBottom;
+    console.log(isAtBottom.value);
   };
 });
 
 watch(messages.value, () => {
   nextTick(() => {
     let messagesJson = JSON.stringify(messages.value);
-    // 检查 JSON 字符串的大小是否超过 1MB
     if (new Blob([messagesJson]).size > 1024 * 1024) {
-      // 如果超过 1MB，删除最旧的消息，直到大小小于 1MB
       while (new Blob([messagesJson]).size > 1024 * 1024) {
         messages.value.shift();
         messagesJson = JSON.stringify(messages.value);

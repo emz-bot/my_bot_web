@@ -14,3 +14,4 @@ export const accept_channel_apply = data => post('/api/v1/channel/accept_apply',
 export const reject_channel_apply = data => post('/api/v1/channel/reject_apply', data)
 
 export const get_jianghu_user_info = data => get('/api/v1/jianghu/user/get_user_info', data)
+export const get_offline_msg = data => get('/api/v1/channel/send_offline_msg', {})
