@@ -74,7 +74,7 @@ import {
 import { ref, onMounted, provide, h, computed, watchEffect } from "vue";
 import { useRouter } from "vue-router";
 import WebSocketService from '@/utils/websocket';
-import { get_sys_msg } from '@/utils/jianghu_api';
+import { get_sys_msg, get_offline_msg } from '@/utils/jianghu_api';
 import SysMsg from "./channel/sysmsg/SysMsg.vue";
 
 const vatar_url = ref(`${window.gurl.OSS_BASE_URL}jianghu/avatar/${localStorage.userid}.webp`)
@@ -110,6 +110,8 @@ onMounted(() => {
       channel_message.value[messageJson.channel_id].push(messageJson)
     }
   };
+  const _ = get_offline_msg()
+  get_sys_message()
 });
 
 
@@ -166,8 +168,6 @@ function get_sys_message() {
     }
   })
 }
-
-get_sys_message()
 
 function logout() {
   message.success("登出成功");

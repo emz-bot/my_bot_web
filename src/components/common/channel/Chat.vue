@@ -32,7 +32,14 @@
       @keydown="handleKeyDown" />
     <div style="margin-top: 10px; display: flex; justify-content: flex-end;align-items: center;">
       <n-checkbox v-model:checked="is_markdown" size="medium" label="MarkDown" />
-      <n-button @click="sendMessage">发送 (Ctrl+Enter)</n-button>
+      <n-button-group>
+        <n-button @click="sendMessage">
+          {{ enter_send_msg ? '发送 (Ctrl + Enter)' : '发送 (Enter)' }}
+        </n-button>
+        <n-button @click="enter_send_msg=!enter_send_msg">
+          切换
+        </n-button>
+        </n-button-group>
     </div>
   </div>
 </template>
@@ -67,9 +74,9 @@
 
 
 <script setup>
-import { ref, inject, watch, nextTick, onMounted, onUpdated } from 'vue';
+import { ref, inject, watch, nextTick, onMounted, onUpdated, watchEffect } from 'vue';
 import WebSocketService from '@/utils/websocket';
-import { NInput, NButton, NSpace, NAvatar, NCheckbox } from "naive-ui";
+import { NInput, NButton, NButtonGroup, NSpace, NAvatar, NCheckbox, c } from "naive-ui";
 import { marked } from 'marked';
 
 const avatarbase_url = ref(`${window.gurl.OSS_BASE_URL}jianghu/avatar/`)
@@ -78,7 +85,8 @@ const self_id = ref(Number(localStorage.userid));
 const wsService = ref(null);
 const message_content = ref('');
 const isAtBottom = ref(true);
-const is_markdown = ref(false);
+const is_markdown = ref(JSON.parse(localStorage.getItem('is_markdown')) || false);
+const enter_send_msg = ref(JSON.parse(localStorage.getItem('enter_send_msg')) || false);
 
 let messageContainer = ref(null);
 let message_history = ref([]);
@@ -122,9 +130,24 @@ function getHistoryMessage(btn_type) {
   message_content.value = message_history.value[current_history_index.value];
 }
 
+function insertAtCursor(input, textToInsert) {
+  const start = input.selectionStart;
+  const end = input.selectionEnd;
+  input.value = input.value.substring(0, start) + textToInsert + input.value.substring(end);
+  input.selectionStart = input.selectionEnd = start + textToInsert.length;
+}
+
 function handleKeyDown(event) {
-  if (event.key === 'Enter' && event.ctrlKey) {
-    sendMessage();
+  if (event.key === 'Enter') {
+    if (event.ctrlKey ^ enter_send_msg.value) {
+      event.preventDefault();
+      insertAtCursor(event.target, '\n');
+      console.log(enter_send_msg.value);
+    } else {
+      event.preventDefault();
+      sendMessage();
+      message_content.value = '';
+    }
   } else if (event.key === 'ArrowUp') {
     getHistoryMessage('ArrowUp');
   } else if (event.key === 'ArrowDown') {
@@ -160,6 +183,11 @@ onMounted(() => {
     isAtBottom.value = atBottom;
     console.log(isAtBottom.value);
   };
+});
+
+watchEffect(() => {
+  localStorage.setItem('is_markdown', JSON.stringify(is_markdown.value));
+  localStorage.setItem('enter_send_msg', JSON.stringify(enter_send_msg.value));
 });
 
 watch(messages.value, () => {

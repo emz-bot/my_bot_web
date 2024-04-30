@@ -104,10 +104,9 @@ import MemberList from "./MemberList.vue";
 import CreateJoin from "./CreateJoin.vue";
 import LeaveChannel from "./LeaveChannel.vue";
 import DeletChannel from "./DeletChannel.vue";
-import DetailsChannel from "./DetailsChannel.vue";
 import { useMessage, NButton, NSpace, NIcon,  NModal, NInput, NDropdown, NAvatar, NBadge } from "naive-ui";
 import { CloseOutline } from '@vicons/ionicons5'
-import { get_channel_list, get_offline_msg } from '@/utils/jianghu_api';
+import { get_channel_list } from '@/utils/jianghu_api';
 
 const channelavatarbase_url = ref(`${window.gurl.OSS_BASE_URL}jianghu/channel_avatar/`)
 const messages = inject('channel_message');
@@ -235,7 +234,6 @@ const fetchChannelList = async () => {
 }
 onMounted(async () => {
   await fetchChannelList()
-  const res = await get_offline_msg()
 });
 
 function handleKeyDown(event) {

@@ -1,8 +1,8 @@
 <template>
     <div id="home">
         <img src="@/assets/logo.svg" @click="login">
-        <h1>谓言挂席<span style="color: #336f87;">度</span>沧海</h1>
-        <h2>却来<span style="color: #336f87;">应是</span>无长风</h2>
+        <h1>问君何<span style="color: #336f87;">能</span>尔</h1>
+        <h2>心<span style="color: #336f87;">远</span>地自偏</h2>
     </div>
 </template>
 <script setup>
