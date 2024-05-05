@@ -1,7 +1,7 @@
 <template>
     <n-space>
         <n-space class="avatar-container">
-            <n-avatar :size="100" :src="avatarUrl" class="avatar" fallback-src="https://oss.ermaozi.cn/jianghu/default.webp"/>
+            <n-avatar :size="100" :src="avatarUrl" class="avatar" :fallback-src="default_vatar_url"/>
             <input type="file" ref="fileInput" @change="handleFileUpload" style="display: none">
             <div class="avatar-buttons">
                 <n-button class="avatar-button" text @click="fileInputClick">
@@ -39,6 +39,7 @@ import { CreateOutline, EyeOutline } from '@vicons/ionicons5'
 import { upload_avatar, set_user_info } from "@/utils/jianghu_api";
 
 let avatarUrl = ref(`${window.gurl.OSS_BASE_URL}jianghu/avatar/${localStorage.userid}.webp`);
+const default_vatar_url = ref(`${window.gurl.OSS_BASE_URL}jianghu/avatar/default.webp`)
 let fileInput = ref(null);
 let showDialog = ref(false);
 
@@ -66,12 +67,14 @@ const handleFileUpload = (event) => {
         return;
     }
     uploadFile(file).then();
-    window.location.reload();
+    // window.location.reload();
 };
 
 const uploadFile = async (file) => {
+    console.log(file);
     await upload_avatar(file).then((res) => {
     if (res.code == 200) {
+        console.log(res.data.avatar_url);
         avatarUrl.value = res.data.avatar_url
     }
   });

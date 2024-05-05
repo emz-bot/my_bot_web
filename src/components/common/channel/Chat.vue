@@ -5,7 +5,7 @@
       <n-space class="msg">
         <n-space>
           <n-avatar size="medium" :src="avatarbase_url + i.user_info._id + '.webp'"
-            fallback-src="https://oss.ermaozi.cn/jianghu/default.webp" />
+            :fallback-src="default_vatar_url" />
         </n-space>
         <n-space vertical style="max-width: 100%;margin-bottom: 20px;">
           <n-space>
@@ -80,6 +80,7 @@ import { NInput, NButton, NButtonGroup, NSpace, NAvatar, NCheckbox, c } from "na
 import { marked } from 'marked';
 
 const avatarbase_url = ref(`${window.gurl.OSS_BASE_URL}jianghu/avatar/`)
+const default_vatar_url = ref(`${window.gurl.OSS_BASE_URL}jianghu/avatar/default.webp`)
 const self_id = ref(Number(localStorage.userid));
 
 const wsService = ref(null);

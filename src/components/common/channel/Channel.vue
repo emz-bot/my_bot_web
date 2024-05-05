@@ -24,7 +24,7 @@
             @contextmenu="handleContextMenu(panel.channel_id, $event)">
             <n-avatar style="margin-left: 10px;margin-top: 8px;" size="large"
               :src="channelavatarbase_url + panel.channel_id + '.webp'"
-              fallback-src="https://oss.ermaozi.cn/jianghu/default.webp" />
+              :fallback-src="default_vatar_url" />
             <n-space vertical size="small" style="width: 110px;">
               <div>
                 <div
@@ -109,6 +109,7 @@ import { CloseOutline } from '@vicons/ionicons5'
 import { get_channel_list } from '@/utils/jianghu_api';
 
 const channelavatarbase_url = ref(`${window.gurl.OSS_BASE_URL}jianghu/channel_avatar/`)
+const default_vatar_url = ref(`${window.gurl.OSS_BASE_URL}jianghu/avatar/default.webp`)
 const messages = inject('channel_message');
 const nameRef = ref(1)
 const message = useMessage()

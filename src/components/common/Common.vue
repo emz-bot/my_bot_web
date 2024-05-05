@@ -32,7 +32,7 @@
         <n-space style="padding:15px">
           <n-dropdown trigger="hover" :options="user_options" @select="userHandleSelect">
             <n-badge :value="sys_message_count" :max="99">
-              <n-avatar round size="medium" :src="vatar_url" fallback-src="https://oss.ermaozi.cn/jianghu/default.webp"/>
+              <n-avatar round size="medium" :src="vatar_url" :fallback-src="default_vatar_url"/>
             </n-badge>
           </n-dropdown>
         </n-space>
@@ -83,6 +83,7 @@ import { get_sys_msg, get_offline_msg } from '@/utils/jianghu_api';
 import SysMsg from "./channel/sysmsg/SysMsg.vue";
 
 const vatar_url = ref(`${window.gurl.OSS_BASE_URL}jianghu/avatar/${localStorage.userid}.webp`)
+const default_vatar_url = ref(`${window.gurl.OSS_BASE_URL}jianghu/avatar/default.webp`)
 
 var sys_message = ref([]);
 var sys_message_count = ref(0);
