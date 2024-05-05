@@ -25,6 +25,10 @@ const router = createRouter({
             {
               path: 'jianghu',
               component: () => import("@/components/common/jianghu/JiangHu.vue"),
+            },
+            {
+              path: 'novel',
+              component: () => import("@/components/common/novel/Novel.vue"),
             }
           ],
         },

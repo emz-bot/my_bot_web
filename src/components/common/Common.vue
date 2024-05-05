@@ -13,14 +13,19 @@
               </n-text>
             </n-space>
           </n-space>
-          <n-space style="padding:23px 70px">
+          <n-space style="padding:23px">
             <n-button text @click="router.push({ path: '/common/channel' })">
               频道
             </n-button>
           </n-space>
-          <n-space style="padding:23px 70px">
+          <n-space style="padding:23px">
             <n-button text @click="router.push({ path: '/common/jianghu' })">
               江湖
+            </n-button>
+          </n-space>
+          <n-space style="padding:23px">
+            <n-button text @click="router.push({ path: '/common/novel' })">
+              小说
             </n-button>
           </n-space>
         </n-space>
