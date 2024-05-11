@@ -16,6 +16,10 @@ class WebSocketService {
     return new Promise((resolve, reject) => {
       this.socket.onopen = () => resolve();
       this.socket.onerror = error => reject(error);
+      this.socket.onclose = () => {
+        console.log('WebSocket connection closed, retrying...');
+        setTimeout(() => this.connect(), 1000);
+      };
     });
   }
 

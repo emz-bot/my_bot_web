@@ -109,7 +109,12 @@ provide('channel_message', channel_message);
 onMounted(() => {
   wsService.value.socket.onmessage = (event) => {
     const messageJson = JSON.parse(event.data);
-    if (messageJson.type == "channel_message") {
+    if (messageJson.type == "connect_message") {
+      if (messageJson.code == 500) {
+        message.error(messageJson.message);
+        router.push({ path: "/login" })
+      }
+    } else if (messageJson.type == "channel_message") {
       if (!channel_message.value[messageJson.channel_id]) {
         channel_message.value[messageJson.channel_id] = []
       }
