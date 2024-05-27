@@ -45,6 +45,7 @@
         <th style="width: 120px">加群</th>
         <th style="width: 160px">登陆时间</th>
         <th>删除</th>
+        <th>是否收费</th>
         <th v-if="user_permission >= 1">更多</th>
       </tr>
     </thead>
@@ -94,6 +95,9 @@
         <td>
           <n-button quaternary type="error" @click="del_bot(i._id)">删除</n-button>
         </td>
+        <td>
+          <n-switch v-model:value="bot_data[i._id].is_com" @update:value="set_bot_info(i._id)" />
+        </td>
         <td v-if="user_permission >= 1">
           <n-button
             quaternary
@@ -127,8 +131,12 @@
           </n-button>
           <n-input-group-label>主人QQ</n-input-group-label>
           <n-input-number v-model:value="bot_data[cur_bot_id].master" :show-button="false" />
-          <n-button tertiary @click="set_bot_info">确定</n-button>
+          <n-button tertiary @click="set_bot_info(cur_bot_id)">确定</n-button>
         </n-input-group>
+        <br>
+        <span>
+          开启收费<n-switch v-model:value="bot_data[cur_bot_id].is_com" @update:value="set_bot_info(cur_bot_id)" />
+        </span>
       </div>
       <br>
       <n-table :bordered="false" :single-line="false">
@@ -398,13 +406,7 @@ async function start() {
       resData.value = res;
       for (var i=0;i<res.data.length;i++)
       {
-        let bot_id = res.data[i]["_id"]
-          let master = res.data[i]["master"]
-          let enable = res.data[i]["enable"]
-          bot_data.value[bot_id] = {
-            "master": master,
-            "enable": enable
-          };
+        bot_data.value[res.data[i]["_id"]] = res.data[i]
       }
       if (res.token) {
         localStorage.token = res.token
@@ -420,14 +422,18 @@ async function start() {
 }
 start();
 
-async function set_bot_info() {
+async function set_bot_info(bot_id=null) {
+  if (!bot_id){
+    bot_id = cur_bot_id.value
+  }
+  var set_data = {
+    "is_com": bot_data.value[bot_id]["is_com"],
+    "enable": bot_data.value[bot_id]["enable"],
+    "master": bot_data.value[bot_id]["master"]
+  }
   var req_data = {
     action: "set_info",
-    data: {
-      bot_id: cur_bot_id.value,
-      enable: bot_data.value[cur_bot_id.value].enable,
-      master: bot_data.value[cur_bot_id.value].master,
-    },
+    data: {bot_id: bot_id, data: set_data},
   };
   await manipulate_bot(req_data).then((res) => {
     if (res.code == 200) {
