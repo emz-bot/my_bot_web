@@ -40,9 +40,6 @@ jobs:
         run: |
           npm install
           npm run build-server
-      - name: Get version
-        id: get_version
-        run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
       - name: 创建GitHub Release
         if: ${{ env.build != 'qiniu' }}
         id: create_release
@@ -50,8 +47,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
         with:
-          tag_name: ${{ steps.get_version.outputs.VERSION }}
-          release_name: ${{ steps.get_version.outputs.VERSION }}
+          tag_name: latest
+          release_name: latest
           body: 管理面板前端
           draft: false
           prerelease: false
