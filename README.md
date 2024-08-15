@@ -8,7 +8,7 @@
 # 安装依赖
 npm install
 # 运行
-npm run serve
+npm run dev
 # 构建
 npm run build
 ```

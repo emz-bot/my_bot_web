@@ -30,9 +30,10 @@
                   战功榜
                 </n-button>
               </n-dropdown>
-              <n-button text @click="router.push({ path: '/common/role_online' })" v-if="user_permission >= 2">
-                角色位置
+              <n-button text @click="router.push({ path: '/common/doc' })" v-if="user_permission >= 2">
+                使用说明
               </n-button>
+              
               <!-- <n-button text @click="router.push({ path: '/common/shop' })">
                 商店
               </n-button> -->
