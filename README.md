@@ -2,8 +2,6 @@
 
 ## 本地调测
 
-推荐 node 版本`v22.1.0` npm 版本`v10.7.0`
-
 ``` shell
 # 安装依赖
 npm install
