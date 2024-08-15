@@ -32,6 +32,9 @@ export const api_get_config = data => get('/api/config', data)
 export const api_set_config = data => post('/api/config', data)
 export const api_test_mail = data => post('/api/test_mail', data)
 
+export const api_update_doc = data => post('/api/manage/update_doc', data)
+export const api_get_doc = data => get('/api/get_doc', data)
+
 export const api_get_group_list = data => get('/api/get_group_list', data)
 export const api_renewal = data => post('/api/renewal', data)
 export const api_pay = data => get('/api/pay', data)

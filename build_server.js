@@ -1,5 +1,7 @@
-const Client = require('ssh2').Client
-const compressing = require('compressing');
+import { Client } from 'ssh2';
+
+import compressing from 'compressing';
+
 const conn = new Client()
 // 服务器账号
 const server = {
