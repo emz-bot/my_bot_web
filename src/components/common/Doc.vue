@@ -1,11 +1,11 @@
 <template>
     <n-button v-if="user_permission >= 5" @click="is_edit = !is_edit">编辑</n-button>
     <div v-if="!is_edit" class="preview-container">
-        <n-scrollbar :style="{ height: table_height + 'px', width: '80%' }">
+        <n-scrollbar class="responsive-preview" :style="{ height: table_height + 'px' }">
             <MdPreview :modelValue="state.text" :editorId="state.id" :theme="state.theme" :previewTheme="state.pre_theme"
             @onGetCatalog="onGetCatalog" />
         </n-scrollbar>
-        <n-scrollbar :style="{ height: table_height + 'px',  width: '20%' }">
+        <n-scrollbar class="responsive-anchor" :style="{ height: table_height + 'px' }">
             <n-anchor
             listen-to=".document-scroll-container"
             :trigger-top="24"
@@ -102,7 +102,21 @@ get_doc();
 #mybot_doc {
     background-color: #0000;
 }
-
+.responsive-anchor {
+    width: 20%;
+    overflow: auto;
+}
+.responsive-preview {
+    width: 80%
+}
+@media (max-width: 800px) {
+  .responsive-anchor {
+    display: none;
+  }
+  .responsive-preview {
+    width: 100%;
+  }
+}
 .preview-container,
 .editor-container {
     display: flex;
