@@ -51,6 +51,10 @@ const options = ref([
   {label: "乾坤一掷", value: "乾坤一掷"},
   {label: "飞龙在天", value: "飞龙在天"},
   {label: "青梅煮酒", value: "青梅煮酒"},
+  {label: "眉间雪", value: "眉间雪"},
+  {label: "有人赴约", value: "有人赴约"},
+  {label: "山海相逢", value: "山海相逢"},
+  {label: "万象长安", value: "万象长安"},
 ])
 
 const auto_update = ref(false);
