@@ -10,21 +10,8 @@ on:
 jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
-    env:
-        build: ${{ secrets.build }}
-        prefixhost: ${{ secrets.PREFIXHOST }}
-        accessKey: ${{ secrets.ACCESSKEY }}
-        secretKey: ${{ secrets.SECRETKEY }}
-        space: ${{ secrets.SPACE }}
-        zone: ${{ secrets.ZONE }}
-        host: ${{secrets.host}}
-        username: ${{secrets.username}}
-        password: ${{secrets.password}}
-        port: ${{secrets.port}}
-        remote_path: ${{secrets.remote_path}}
-        end_cmd: ${{secrets.end_cmd}}
     steps:
-      # 拉取代码
+      # 打包
       - name: Check Out Repo
         uses: actions/checkout@v2
 
@@ -42,7 +29,7 @@ jobs:
         id: create_release
         uses: actions/create-release@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
         with:
           tag_name: ${{ github.ref }}
           release_name: Release ${{ github.ref }}
@@ -53,7 +40,7 @@ jobs:
       - name: Upload Release Asset
         uses: actions/upload-release-asset@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: dist.zip
