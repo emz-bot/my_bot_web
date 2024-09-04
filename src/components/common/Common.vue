@@ -111,6 +111,10 @@ const options = ref([
   {label: "乾坤一掷", key: "乾坤一掷"},
   {label: "飞龙在天", key: "飞龙在天"},
   {label: "青梅煮酒", key: "青梅煮酒"},
+  {label: "眉间雪", key: "眉间雪"},
+  {label: "有人赴约", key: "有人赴约"},
+  {label: "山海相逢", key: "山海相逢"},
+  {label: "万象长安", key: "万象长安"},
 ])
 
 function sandHandleSelect(key) {
