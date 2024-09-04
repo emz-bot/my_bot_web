@@ -28,16 +28,34 @@ jobs:
       - name: Check Out Repo
         uses: actions/checkout@v2
 
-      - name: build-qiniu
-        if: ${{ env.build == 'qiniu' }}
-        run: |
-          NODE_OPTIONS=--openssl-legacy-provider
-          npm start
-          npm install
-          npm run build-qiniu
-      - name: build-server
-        if: ${{ env.build != 'qiniu' }}
-        run: |
-          npm install
-          npm run build-server
+      - name: Install dependencies
+        run: npm install
 
+      - name: Build project
+        run: npm run build
+
+      - name: Zip build files
+        run: zip -r dist.zip dist
+
+      # 创建 GitHub Release
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
+
+      # 上传打包后的文件到 Release
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: dist.zip
+          asset_name: dist.zip
+          asset_content_type: application/zip
