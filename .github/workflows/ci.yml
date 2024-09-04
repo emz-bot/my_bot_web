@@ -26,11 +26,9 @@ jobs:
       - name: Zip build files
         run: mv dist web && zip -r web.zip web
 
-      - name: Delete existing tag
-        if: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags/') }}
-        run: |
-          git tag -d ${{ github.ref_name }}
-          git push origin :refs/tags/${{ github.ref_name }}
+      - name: Generate unique tag name
+        id: generate_tag
+        run: echo "::set-output name=tag::v$(date +'%Y%m%d%H%M%S')"
 
       - name: Create Release
         id: create_release
@@ -38,8 +36,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ github.ref_name }}
-          release_name: Release ${{ github.ref_name }}
+          tag_name: ${{ steps.generate_tag.outputs.tag }}
+          release_name: Release ${{ steps.generate_tag.outputs.tag }}
           draft: false
           prerelease: false
 
