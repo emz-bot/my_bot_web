@@ -51,7 +51,7 @@
               teamDetailInfo.info.team_configuration["人数"]
             }}
             <template #avatar>
-              <n-avatar :src="require(`@/assets/sect/人数.png`)" />
+              <n-avatar :src="getImageUrl('人数.png')" />
             </template>
           </n-tag>
           <template :key="role" v-for="(role_num, role) in teamDetailInfo.info.role_num">
@@ -62,7 +62,7 @@
                   : ""
               }}
               <template #avatar>
-                <n-avatar :src="require(`@/assets/sect/${role}.png`)" />
+                <n-avatar :src="getImageUrl(`${role}.png`)" />
               </template>
             </n-tag>
           </template>
@@ -76,7 +76,7 @@
                   : ""
               }}
               <template #avatar>
-                <n-avatar :src="require(`@/assets/sect/${pro}.png`)" />
+                <n-avatar :src="getImageUrl(`${pro}.png`)" />
               </template>
             </n-tag>
           </template>
@@ -115,12 +115,12 @@
                 <img
                   v-if="sitem.role"
                   style="width: 23px"
-                  :src="require(`@/assets/sect/${sitem.role}.png`)"
+                  :src="getImageUrl(`${sitem.role}.png`)"
                 />
                 <img
                   v-if="sitem.profession"
                   style="width: 23px"
-                  :src="require(`@/assets/sect/${sitem.profession}.png`)"
+                  :src="getImageUrl(`${sitem.profession}.png`)"
                 />
                 {{ sitem.user_name ? sitem.user_name : "" }}
               </div>
@@ -188,6 +188,10 @@ const selectOptions = ref([
   {label: "山海相逢", value: "山海相逢"},
   {label: "万象长安", value: "万象长安"},
 ])
+
+const getImageUrl = (name) => {
+    return new URL(`/src/assets/sect/${name}`, import.meta.url).href
+}
 
 const showDropdownRef = ref(false);
 const xRef = ref(0);

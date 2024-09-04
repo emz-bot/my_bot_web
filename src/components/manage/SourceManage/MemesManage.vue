@@ -9,7 +9,7 @@
   <n-image-group>
     <n-space>
       <div class="memes" v-for="i in memes" :key="i.id">
-        <n-image height="100" :src="i.content" :fallback-src="require(`@/assets/img/图片无法加载.svg`)" />
+        <n-image height="100" :src="i.content" :fallback-src="getImageUrl('图片无法加载.svg')" />
         <n-button class="delete" type="error" round @click="del_meme(i._id)">x</n-button>
         </div>
     </n-space>
@@ -23,6 +23,10 @@ import { ref } from "vue";
 const memes = ref([]);
 const page = ref(1)
 const page_count = ref()
+
+const getImageUrl = (name) => {
+    return new URL(`/src/assets/img/${name}`, import.meta.url).href
+}
 
 async function del_meme(meme_id) {
     var req_data = {
