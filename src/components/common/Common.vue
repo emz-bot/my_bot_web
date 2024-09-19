@@ -33,10 +33,9 @@
               <n-button text @click="router.push({ path: '/common/doc' })" v-if="user_permission >= 2">
                 使用说明
               </n-button>
-              
-              <!-- <n-button text @click="router.push({ path: '/common/shop' })">
+              <n-button text @click="router.push({ path: '/common/shop' })">
                 商店
-              </n-button> -->
+              </n-button>
           </n-space>
         </n-space>
         <n-space style="padding:15px">
@@ -139,7 +138,7 @@ if (router.currentRoute.value.path == "/common"){
 </script>
 <style>
 .n-card--bordered {
-  width: 1220px;
+  max-width: 1350px;
   margin: 0 auto;
 }
 @media screen and (max-width: 1000px) {

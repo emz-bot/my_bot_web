@@ -14,6 +14,7 @@ const router = createRouter({
         { path: 'chatlog', component: () => import("../components/manage/ChatLog.vue"), },
         { path: 'source', component: () => import("../components/manage/SourceManage/main.vue"), },
         { path: 'usermanage', component: () => import("../components/manage/UserManage/main.vue"), },
+        { path: 'activation_code', component: () => import("../components/manage/ActivationCode.vue"), },
         { path: 'configmanage', component: () => import("../components/manage/ConfigManage.vue"), },
       ]
     },

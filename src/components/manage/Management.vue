@@ -29,6 +29,9 @@
               <n-button text @click="router.push({ path: '/management/usermanage' })" v-if="user_permission >= 100">
                 用户管理
               </n-button>
+              <n-button text @click="router.push({ path: '/management/activation_code' })" v-if="user_permission >= 100">
+                激活码管理
+              </n-button>
               <n-button text @click="router.push({ path: '/management/configmanage' })" v-if="user_permission >= 100">
                 配置管理
               </n-button>
