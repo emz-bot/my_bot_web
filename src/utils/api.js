@@ -2,6 +2,7 @@ import { get, post } from './http'
 
 // BotManage
 export const get_bot_list = data => get('/api/get_bot_list', data)
+export const get_group_list_for_master = data => get('/api/get_group_list_for_master', data)
 export const manipulate_bot = data => post('/api/manipulate_bot', data)
 export const set_access_group_num = data => post('/api/set_access_group_num', data)
 

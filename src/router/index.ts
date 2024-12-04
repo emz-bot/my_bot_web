@@ -24,6 +24,7 @@ const router = createRouter({
       children: [
         {path: 'doc', component: () => import("../components/common/Doc.vue"),},
         {path: 'shop', component: () => import("../components/common/shop/Shop.vue"),},
+        {path: 'groupmanage', component: () => import("../components/common/group_management/GroupManagement.vue"),},
         {path: 'botmanage', component: () => import("../components/manage/BotManage.vue"),},
         {path: 'j3team/:team_id', component: () => import("../components/common/TeamManagement.vue"),},
         {path: 'sand/:server', component: () => import("../components/common/Sand.vue"),},

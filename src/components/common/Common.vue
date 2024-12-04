@@ -17,10 +17,13 @@
               <n-button text @click="router.push({ path: '/common/botmanage' })" v-if="user_permission >= 1">
                 机器人管理
               </n-button>
+              <n-button text @click="router.push({ path: '/common/groupmanage' })" v-if="user_permission >= 1">
+                群管理
+              </n-button>
               <n-button text @click="router.push({ path: '/common/j3team/0' })" v-if="user_permission >= 1">
                 团队大厅
               </n-button>
-              <n-dropdown trigger="hover" :options="options" @select="sandHandleSelect">
+              <!-- <n-dropdown trigger="hover" :options="options" @select="sandHandleSelect">
                 <n-button text @click="router.push({ path: '/common/sand/破阵子' })">
                   沙盘
                 </n-button>
@@ -29,13 +32,13 @@
                 <n-button text @click="router.push({ path: '/common/ranking/破阵子' })">
                   战功榜
                 </n-button>
-              </n-dropdown>
+              </n-dropdown> -->
               <n-button text @click="router.push({ path: '/common/doc' })" v-if="user_permission >= 2">
                 使用说明
               </n-button>
-              <n-button text @click="router.push({ path: '/common/shop' })">
+              <!-- <n-button text @click="router.push({ path: '/common/shop' })">
                 商店
-              </n-button>
+              </n-button> -->
           </n-space>
         </n-space>
         <n-space style="padding:15px">
@@ -53,7 +56,7 @@
       </n-space>
     </n-layout-header>
     <n-layout has-sider position="absolute" style="top: 64px; bottom: 64px">
-      <n-layout-sider bordered content-style="padding: 24px;"> </n-layout-sider>
+      <!-- <n-layout-sider bordered content-style="padding: 24px;"> </n-layout-sider> -->
       <n-layout content-style="padding: 24px;">
         <n-card style="margin-bottom: 16px;margin: 0 auto;">
           <router-view />

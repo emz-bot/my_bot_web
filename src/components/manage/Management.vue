@@ -52,7 +52,7 @@
       </n-space>
     </n-layout-header>
     <n-layout has-sider position="absolute" style="top: 64px; bottom: 64px">
-      <n-layout-sider bordered content-style="padding: 24px;"> </n-layout-sider>
+      <!-- <n-layout-sider bordered content-style="padding: 24px;"> </n-layout-sider> -->
       <n-layout content-style="padding: 24px;">
         <n-card style="margin-bottom: 16px" v-if="user_permission >= 3">
           <router-view />
