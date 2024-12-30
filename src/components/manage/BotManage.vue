@@ -133,10 +133,15 @@
           <n-input-number v-model:value="bot_data[cur_bot_id].master" :show-button="false" />
           <n-button tertiary @click="set_bot_info(cur_bot_id)">确定</n-button>
         </n-input-group>
+        <br><br>
+        <n-input-group>
+          <n-input-group-label>机器人性格</n-input-group-label>
+          <n-input autosize style="min-width: 30%" v-model:value="bot_data[cur_bot_id].character":maxlength="25" show-count></n-input>
+          <n-button tertiary @click="set_bot_info(cur_bot_id)">确定</n-button>
+        </n-input-group>
         <br>
-        <span>
-          开启收费<n-switch v-model:value="bot_data[cur_bot_id].is_com" @update:value="set_bot_info(cur_bot_id)" />
-        </span>
+        <br>
+        <span v-if="user_permission >= 5">开启收费<n-switch v-model:value="bot_data[cur_bot_id].is_com" @update:value="set_bot_info(cur_bot_id)" /></span>
       </div>
       <br>
       <n-table :bordered="false" :single-line="false">
@@ -429,7 +434,8 @@ async function set_bot_info(bot_id=null) {
   var set_data = {
     "is_com": bot_data.value[bot_id]["is_com"],
     "enable": bot_data.value[bot_id]["enable"],
-    "master": bot_data.value[bot_id]["master"]
+    "master": bot_data.value[bot_id]["master"],
+    "character": bot_data.value[bot_id]["character"],
   }
   var req_data = {
     action: "set_info",
