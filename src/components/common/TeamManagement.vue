@@ -264,6 +264,7 @@ const selectProfession = ref({
     {label: "毒经", value: "毒经"},
     {label: "惊羽诀", value: "惊羽诀"},
     {label: "天罗诡道", value: "天罗诡道"},
+    {label: "问水诀", value: "问水诀"},
     {label: "山居剑意", value: "山居剑意"},
     {label: "笑尘诀", value: "笑尘诀"},
     {label: "焚影圣诀", value: "焚影圣诀"},

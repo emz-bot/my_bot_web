@@ -165,7 +165,7 @@ const data = ref({
     ad_content: "",
     ws_path: "wss://socket.nicemoe.cn",
     ws_token: "",
-    jx3_url: "https://www.jx3api.com",
+    jx3_url: "https://api.jx3api.com",
     jx3_token: "",
     sender: "",
     default_host: "",

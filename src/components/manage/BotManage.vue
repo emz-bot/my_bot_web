@@ -27,6 +27,7 @@
   <n-input type="text" v-model:value="re_data.bot_id" placeholder="机器人QQ" clearable/>
   <n-input type="text" v-model:value="re_data.bot_name" placeholder="机器人名称" clearable/>
   <n-input type="text" v-model:value="re_data.master" placeholder="主人QQ" clearable/>
+  <n-switch v-if="user_permission >= 5" v-model:value="is_manager" @update:value="start"></n-switch>
   <n-button @click="start">搜索</n-button>
 </n-space>
 <br>
@@ -42,7 +43,8 @@
       <tr>
         <th style="width: 280px">QQ</th>
         <th>节点名称</th>
-        <th style="width: 120px">加群</th>
+        <th style="width: 120px">加群数量</th>
+        <th style="width: 160px">发言数量(今日/昨日)</th>
         <th style="width: 160px">登陆时间</th>
         <th>删除</th>
         <th v-if="user_permission >= 5">是否收费</th>
@@ -51,7 +53,7 @@
     </thead>
     <tbody>
       <tr v-for="i in re_data.data" :key="i.id">
-        <td>
+        <td><!-- QQ -->
           <n-space>
             <n-space>
               <n-avatar
@@ -73,10 +75,10 @@
             </n-space>
           </n-space>
         </td>
-        <td>
+        <td><!-- 节点名称 -->
           {{ i.node_name }}
         </td>
-        <td>
+        <td><!-- 加群数量 -->
           <n-input-number
             v-model:value="i.access_group_num"
             :show-button="false"
@@ -90,6 +92,11 @@
               /
             </template>
           </n-input-number>
+        </td>
+        <td><!-- 发言数量 -->
+          <n-text :type="isOK[i.bot_today_message_count < 5000]">
+            {{ i.bot_today_message_count }}/{{ i.bot_yesterday_message_count }}
+          </n-text>
         </td>
         <td>{{ i.login_data }}</td>
         <td>
@@ -172,7 +179,9 @@
             <td>{{i.server}}</td>
             <td>{{i.robot_active}}</td>
             <td>{{i.last_sent}}</td>
-            <td>{{i.expire_date}}({{i.expire_days}})</td>
+            <td>
+              {{i.expire_date}}(<n-text :type="isOK[i.expire_days > 0]">{{i.expire_days}}天</n-text>)
+            </td>
             <td><n-button type="error" quaternary @click="exit_group(i.bot_id, i._id)">退群</n-button></td>
             <td>
               <n-input-group>
@@ -291,6 +300,7 @@ const delbot_id = ref();
 const cur_delbot_id = ref();
 const del_stat = ref()
 const del_btn = ref(true)
+const is_manager = ref(true)
 
 async function del_bot(bot_id){
   delbot_id.value = bot_id
@@ -311,9 +321,9 @@ async function check_del_bot(){
 async function open_modal(bot_id) {
   showModal.value = true;
   cur_bot_id.value = bot_id;
-  console.log(cur_bot_id.value)
   await api_get_group_list({bot_id: bot_id}).then((res) => {
     if (res.code == 200) {
+      console.log(res.data)
       group_list.value = res.data
     } else {
       message.error("账号未登录, 前往登录页面..");
@@ -326,7 +336,6 @@ async function open_modal(bot_id) {
 }
 
 async function renewal(bot_id, group_id){
-  console.log(bot_id, group_id, renewal_num.value[group_id])
   if (!renewal_num.value[group_id]){
     message.warning("输入具体时间!");
     return
@@ -401,7 +410,13 @@ async function start() {
   if (resData.value.master){
     filter.master = Number(resData.value.master)
   }
-  await get_bot_list({page: resData.value.page, filter: filter}).then((res) => {
+  if (is_manager.value){
+    filter.is_com = true
+  }else{
+    delete filter.is_com
+  }
+  const filterJson = JSON.stringify(filter);
+  await get_bot_list({page: resData.value.page, filter: filterJson}).then((res) => {
     if (res.code == 200) {
       resData.value = res;
       for (var i=0;i<res.data.length;i++)
