@@ -44,7 +44,8 @@
         <th style="width: 280px">QQ</th>
         <th>节点名称</th>
         <th style="width: 120px">加群数量</th>
-        <th style="width: 160px">发言数量(今日/昨日)</th>
+        <th style="width: 60px">今日发言</th>
+        <th style="width: 60px">昨日发言</th>
         <th style="width: 160px">登陆时间</th>
         <th>删除</th>
         <th v-if="user_permission >= 5">是否收费</th>
@@ -93,9 +94,14 @@
             </template>
           </n-input-number>
         </td>
-        <td><!-- 发言数量 -->
+        <td><!-- 今日发言 -->
           <n-text :type="isOK[i.bot_today_message_count < 5000]">
-            {{ i.bot_today_message_count }}/{{ i.bot_yesterday_message_count }}
+            {{ i.bot_today_message_count }}
+          </n-text>
+        </td>
+        <td><!-- 昨日发言 -->
+          <n-text :type="isOK[i.bot_yesterday_message_count < 5000]">
+            {{ i.bot_yesterday_message_count }}
           </n-text>
         </td>
         <td>{{ i.login_data }}</td>
@@ -161,7 +167,7 @@
             <th>最后发言</th>
             <th>到期时间</th>
             <th>退群</th>
-            <th>续费</th>
+            <th style="width: 140px">续费</th>
           </tr>
         </thead>
         <tbody>
@@ -306,6 +312,7 @@ const cur_delbot_id = ref();
 const del_stat = ref()
 const del_btn = ref(true)
 const is_manager = ref(true)
+is_manager.value = (user_permission.value >= 5)
 
 async function del_bot(bot_id){
   delbot_id.value = bot_id
