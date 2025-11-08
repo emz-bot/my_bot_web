@@ -9,6 +9,8 @@ export const set_access_group_num = data => post('/api/set_access_group_num', da
 // 支付相关
 export const create_activation_code = data => post('/api/create_activation_code', data)
 export const get_activation_code = data => get('/api/activation_code_list', data)
+export const api_get_bill = data => get('/api/get_bill', data)
+export const api_refund_bill = data => post('/api/refund_bill', data)
 
 export const get_chat_log = data => get('/api/get_chat_log', data)
 
